@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS 1
+#pragma warning(disable: 6031)
 #include <stdio.h>
 
 // A calculator program that adds, subtracts, multiplies, and divides two numbers with different functions
@@ -9,15 +11,15 @@ int main()
 
     // Ask for a number
     printf("Enter a number: ");
-    scanf_s("%d", &a);
+    scanf("%d", &a);
 
     // Ask for another number
     printf("Enter another number: ");
-    scanf_s("%d", &b);
+    scanf("%d", &b);
 
     // Ask for an operation
     printf("Enter an operation: ");
-    scanf_s(" %c", &operation, 1);
+    scanf(" %c", &operation);
 
     // Check if the operation is valid
     if (operation == '+')
