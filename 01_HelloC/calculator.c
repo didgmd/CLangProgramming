@@ -1,6 +1,5 @@
-// 由于Visual Studio认为scanf()不够安全，因此须添加如下prefix才能使用scanf()
 #define _CRT_SECURE_NO_WARNINGS 1
-
+#pragma warning(disable: 6031)
 #include <stdio.h>
 
 // A calculator program that adds, subtracts, multiplies, and divides two numbers with different functions
