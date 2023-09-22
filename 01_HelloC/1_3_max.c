@@ -1,4 +1,8 @@
-﻿#include <stdio.h>
+﻿// 由于Visual Studio认为scanf()不够安全，因此须添加如下prefix才能使用scanf()
+#define _CRT_SECURE_NO_WARNINGS 1
+#pragma warning(disable: 6031)
+
+#include <stdio.h>
 
 //求两个整数中的较大者的max函数
 int max(int x, int y)		                	//定义max函数,函数值为整型, 形式参数x和y为整型 
@@ -25,9 +29,9 @@ int main()					                	//定义主函数
     int a, b, c;				                //定义变量a，b，c
 
     printf("The first number: ");
-    scanf_s("%d", &a);                          //输入变量a的值
+    scanf("%d", &a);                          //输入变量a的值
     printf("The second number: ");
-    scanf_s("%d", &b);                          //输入变量b的值
+    scanf("%d", &b);                          //输入变量b的值
     c = max(a, b);			                	//调用max函数，将得到的值赋给c
 
     printf("max = %d\n", c);                	//输出c的值

@@ -6,7 +6,8 @@ This repository is for sharing sample codes to students in the class of **C Lang
 |-- README.md
 |-- 01_HelloC
 |   |-- 1_1_helloWorld.c
-|   |-- 1_2_add.c
+|   |-- 1_2_1_add.c
+|	|-- 1_2_2_addTwoNumbers.c
 |   |-- 1_3_max.c
 |   |-- 1_4_calculator.c
 |   |-- 1_5_calculatorWithInfiniteLoop.c
