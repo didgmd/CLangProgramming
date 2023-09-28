@@ -8,7 +8,7 @@ This repository is for sharing sample codes to students in the class of **C Lang
 |-- 01_HelloC
 |   |-- 1_1_HelloWorld.c
 |   |-- 1_2_1_Add.c
-|	|-- 1_2_2_AddTwoNumbers.c
+|   |-- 1_2_2_AddTwoNumbers.c
 |   |-- 1_3_Max.c
 |   |-- 1_4_1_Calculator.c
 |   |-- 1_4_2_CalculatorFunction.c
