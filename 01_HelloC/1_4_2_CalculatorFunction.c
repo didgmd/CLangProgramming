@@ -41,18 +41,22 @@ int calculator(int x, int y, char z)
 	if (z == '+')
 	{
 		res = x + y;
+		printf("%d + %d = %d\n", x, y, res);
 	}
 	else if (z == '-')
 	{
 		res = x - y;
+		printf("%d - %d = %d\n", x, y, res);
 	}
 	else if (z == '*')
 	{
 		res = x * y;
+		printf("%d * %d = %d\n", x, y, res);
 	}
 	else if (z == '/')
 	{
 		res = x / y;
+		printf("%d / %d = %d\n", x, y, res);
 	}
 	else
 	{
