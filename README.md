@@ -21,6 +21,7 @@ This repository is for sharing sample codes to students in the class of **C Lang
 |   |-- ex2_1_1.c
 |   |-- ex2_1_2.c
 |   |-- ex2_3.c
+|   |-- ex2_4(课上).c
 |   |-- ex2_4.c
 |   |-- ex2_5.c
 ```
