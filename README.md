@@ -24,4 +24,19 @@ This repository is for sharing sample codes to students in the class of **C Lang
 |   |-- ex2_4(课上).c
 |   |-- ex2_4.c
 |   |-- ex2_5.c
+|-- 03_Sequential
+|   |-- 01_FloatDouble.c
+|   |-- 02_DecOctHex.c
+|   |-- 03_Integer.c
+|   |-- 04_Complement.c
+|   |-- 05_SelfOperation.c
+|   |-- 06_Expression.c
+|   |-- 07_ex3_3.c
+|   |-- 08_Alignment.c
+|   |-- 09_ex3_4.c
+|   |-- 10_ex3_5.c
+|   |-- 11_ex3_6.c
+|   |-- 12_ex3_8.c
+|   |-- 13_ex3_9.c
+|   |-- 14_ex3_10.c
 ```
