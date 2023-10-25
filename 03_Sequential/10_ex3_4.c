@@ -10,7 +10,7 @@ int main()
 	s = (a + b + c) / 2; 							//计算s 
 	area = sqrt(s * (s - a) * (s - b) * (s - c));	//计算area 
 	
-	printf("a=%f\tb=%f\t%f\n", a, b, c); 			//输出三边a,b,c的值 
+	printf("a=%f\tb=%f\tc=%f\n", a, b, c); 			//输出三边a,b,c的值 
 	printf("area=%f\n", area);						//输出面积area的值
 	
 	return 0;

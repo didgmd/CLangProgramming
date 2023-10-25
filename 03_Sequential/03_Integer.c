@@ -12,5 +12,9 @@ int main()
 	printf("Size of c is %d\n", sizeof(c));
 	printf("Size of d is %d\n", sizeof(d));
 
+	char f = 'a';
+	printf("f is %c\n", f);
+	printf("f is %d\n", f);
+
 	return 0;	
 }
