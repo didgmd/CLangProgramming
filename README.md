@@ -32,11 +32,12 @@ This repository is for sharing sample codes to students in the class of **C Lang
 |   |-- 05_SelfOperation.c
 |   |-- 06_Expression.c
 |   |-- 07_ex3_3.c
-|   |-- 08_Alignment.c
-|   |-- 09_ex3_4.c
-|   |-- 10_ex3_5.c
-|   |-- 11_ex3_6.c
-|   |-- 12_ex3_8.c
-|   |-- 13_ex3_9.c
-|   |-- 14_ex3_10.c
+|   |-- 08_Switch.c
+|   |-- 09_Alignment.c
+|   |-- 10_ex3_4.c
+|   |-- 11_ex3_5.c
+|   |-- 12_ex3_6.c
+|   |-- 13_ex3_8.c
+|   |-- 14_ex3_9.c
+|   |-- 15_ex3_10.c
 ```
