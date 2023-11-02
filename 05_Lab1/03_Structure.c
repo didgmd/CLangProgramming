@@ -16,6 +16,10 @@ int main()
     struct student *pStu;
 
     pStu = (struct student *)malloc(sizeof(struct student));
+    if (pStu == NULL) {
+		printf("Memory allocation failed\n");
+		exit(1);
+    }
 
     printf("%p\n", &stu);
     stu.id = 123;
@@ -30,6 +34,8 @@ int main()
     pStu->sex = 'f';
     pStu->age = 20;
     pStu->score = 96;
+
+    free(pStu);
 
     return 0;
 }

@@ -3,14 +3,14 @@
 
 int main()
 {
-	int* a = malloc(sizeof(int));
+	int* a = (int*)malloc(sizeof(int));
 	int b = 10;
 	a = &b;
 
 	printf("%d\n", *a);
 	printf("%p\n", a);
 
-	// free(a);
+	free(a);
 
 	return 0;
 }
