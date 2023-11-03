@@ -40,4 +40,37 @@ This repository is for sharing sample codes to students in the class of **C Lang
 |   |-- 13_ex3_8.c
 |   |-- 14_ex3_9.c
 |   |-- 15_ex3_10.c
+|-- 04_Selection
+|   |-- ex_4_01.c
+|   |-- ex_4_02.c
+|   |-- ex_4_03.c
+|   |-- ex_4_04.c
+|   |-- ex_4_05.c
+|   |-- ex_4_06.c
+|   |-- ex_4_07.c
+|   |-- ex_4_08.c
+|   |-- ex_4_09.c
+|   |-- ex_4_10.c
+|-- 05_Lab1
+|   |-- 01_Pointer.c
+|   |-- 02_Malloc.c
+|   |-- 03_Structure.c
+|   |-- 04_PointerAnalysis.c
+|   |-- 05_ToDoList.c
+|   |-- 06_StudentManagement.c
+|   |-- 07_BookManagement.c
+|-- 06_Loop
+|   |-- 01_ex5_01_While.c
+|   |-- 02_ex5_02_DoWhile.c
+|   |-- 03_ex5_03_WhileDoWhile.c
+|   |-- 04_ex5_04_Break.c
+|   |-- 05_ex5_05_Continue.c
+|   |-- 06_ex5_06_BreakContinue.c
+|   |-- 07_ex5_07.c
+|   |-- 08_ex5_08_1_Fibonacci.c
+|   |-- 09_ex5_08_2_Rabbit.c
+|   |-- 10_ex5_09_1_Prime.c
+|   |-- 11_ex5_09_2_PrimeImproved.c
+|   |-- 12_ex5_10.c
+|   |-- 13_ex5_11_Passcode.c
 ```
