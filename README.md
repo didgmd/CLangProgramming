@@ -73,4 +73,55 @@ This repository is for sharing sample codes to students in the class of **C Lang
 |   |-- 11_ex5_09_2_PrimeImproved.c
 |   |-- 12_ex5_10.c
 |   |-- 13_ex5_11_Passcode.c
+|-- 07_Lab2
+|   |-- Snake_Step1.c
+|   |-- Snake_Step2.c
+|   |-- Snake_Step3.c
+|   |-- Snake_Step4.c
+|-- 08_Array
+|   |-- 01_ex_6_1.c
+|   |-- 02_ex_6_2.c
+|   |-- 03_ex_6_3.c
+|   |-- 04_ex_6_4.c
+|   |-- 05_ex_6_5.c
+|   |-- 06_Pointer.c
+|   |-- 07_ex_6_6.c
+|   |-- 08_ex_6_7.c
+|   |-- 09_DiamondsPause.c
+|   |-- 10_String.c
+|   |-- 11_ex_6_8.c
+|   |-- 12_strcat.c
+|   |-- 13_ex_6_9.c
+|-- 09_Lab3
+|   |-- 2048_Step1.c
+|   |-- 2048_Step2.c
+|   |-- 2048_Step3.c
+|   |-- 2048_Step4.c
+|   |-- 2048_Step5.c
+|   |-- 2048_Step6.c
+|-- 10_Function
+|   |-- 01_ex_7_01.c
+|   |-- 02_ex_7_02.c
+|   |-- 03_ex_7_03.c
+|   |-- 04_ex_7_04.c
+|   |-- 05_ex_7_05.c
+|   |-- 06_ex_7_06.c
+|   |-- 07_ex_7_07.c
+|   |-- 08_ex_7_08.c
+|   |-- 09_ex_7_09.c
+|   |-- 10_ex_7_10.c
+|   |-- 11_ex_7_11.c
+|   |-- 12_ex_7_12.c
+|   |-- 13_ex_7_13.c
+|   |-- 14_ex_7_14.c
+|   |-- 15_ex_7_15.c
+|   |-- 16_ex_7_16.c
+|   |-- 17_ex_7_17.c
+|   |-- 18_ex_7_18.c
+|   |-- 19_ex_7_19_file1.c
+|   |-- 20_ex_7_19_file2.c
+|   |-- 21_ex_7_20_file1.c
+|   |-- 22_ex_7_20_file2.c
+|   |-- 23_ex_7_20_file3.c
+|   |-- 24_ex_7_20_file4.c
 ```
