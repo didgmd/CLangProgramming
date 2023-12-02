@@ -9,5 +9,9 @@ int main()
 		char addr[20];
 	}a = { 10101,"Li Lin",'M',"123 Beijing Road" };	//定义结构体变量a并初始化
 	printf("NO.:%ld\nname:%s\nsex:%c\naddress:%s\n", a.num, a.name, a.sex, a.addr);
+	printf("No.: %ld\n", a.num);
+	printf("name: %s\n", a.name);
+	printf("sex: %c\n", a.sex);
+	printf("address: %s\n", a.addr);
 	return 0;
 }
