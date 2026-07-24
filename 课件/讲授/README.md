@@ -1,10 +1,10 @@
 # 讲授课
 
-共16次讲授课、32学时。每次2课时、90分钟，只深讲1–2个程序。当前均为`planned`，目录内尚无HTML或PPTX。
+共16次讲授课、32学时。每次2课时、90分钟，只深讲1–2个程序。CW-L01已完成PPTX与HTML并通过校验，其余课次仍为`planned`。
 
 | ID | 章节 | 主题 | 核心程序 | 状态 |
 |---|---|---|---|---|
-| [CW-L01](01-course-introduction-and-hello-world/README.md) | 第1章 | 课程介绍、编译流程、Hello World | `EX-C01-001` | planned |
+| [CW-L01](01-course-introduction-and-hello-world/README.md) | 第1章 | 课程介绍、编译流程、Hello World | `EX-C01-001` | ready |
 | [CW-L02](02-algorithms-and-program-logic/README.md) | 第2章 | 算法、伪代码与程序执行顺序 | `EX-C02-001` | planned |
 | [CW-L03](03-sequential-programming/README.md) | 第3章 | 变量、表达式、scanf与printf | `EX-C03-006`、`QB-PG-041`（题库待补） | planned |
 | [CW-L04](04-selection-if/README.md) | 第4章 | 关系/逻辑表达式与if | `EX-C04-001` | planned |

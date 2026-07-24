@@ -1,12 +1,13 @@
 # CW-L01 课程介绍、编译流程、Hello World
 
-- 状态：`in_progress`
+- 状态：`ready`
 - 教材章节：第1章
 - 课时：2课时，共90分钟
+- HTML定位：第一次课后半段45分钟课堂投影与学生课后独立复习。
 - 先修课次：无
 - 核心程序：`EX-C01-001`
 - 关联题目：`QB-SC-001`、`QB-SC-002`
-- 未来HTML：`index.html`
+- HTML：[`index.html`](index.html)，已完成并通过离线结构与交互校验。
 
 ## 核心知识点
 
@@ -25,6 +26,12 @@
 - [课程引入讨论稿](课程引入讨论.md)：记录AI时代学习C语言的教学论证、PPT叙事和图像生成约束。
 - [course-introduction.pptx](course-introduction.pptx)：8页、16:9的gpt-image-2课程引入PPTX，已完成。
 - [image-intro-prompts.md](image-intro-prompts.md)：8页视觉提示词和嵌入说明，已完成。
-- `index.html`：Hello World交互式课件，待制作。
+- [`index.html`](index.html)：12页、离线运行的Hello World交互式课件，已完成。
 
-正式HTML制作前必须再次核对稳定ID、题面和例程源码；PPTX与HTML均需符合[课件制作规范](../../制作规范.md)。
+`EX-C01-001`仍是本课唯一权威例程，保持输出`This is a C program.`不变；课件中的`Hello World`仅是学生修改字符串的课堂练习变体，不新增例程ID。课件包含输出预测、逐行执行、错误诊断和GCC流程说明，但不在浏览器中真实编译C。页面主体可离线运行；P12的W3Schools链接仅为联网时的可选扩展，不属于课程运行依赖。
+
+已按[课件制作规范](../../制作规范.md)完成并通过：
+
+```powershell
+conda run -n base python tools/validate_courseware.py --id CW-L01
+```

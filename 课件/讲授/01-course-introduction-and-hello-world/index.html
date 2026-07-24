@@ -1,0 +1,1182 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Kevin@SUT">
+  <meta name="copyright" content="Kevin@SUT">
+  <meta name="description" content="CW-L01：面向零基础学生的最小 C 程序与 Hello World 交互课件">
+  <title>CW-L01 · Hello World：读懂第一段 C 程序</title>
+  <style>
+    :root {
+      --ink: #17212b;
+      --muted: #526270;
+      --paper: #f3f7fa;
+      --panel: #ffffff;
+      --accent: #0b7285;
+      --accent-deep: #075985;
+      --warm: #e09100;
+      --warm-soft: #fff1c7;
+      --blue: #2563eb;
+      --ok: #15803d;
+      --danger: #c2410c;
+      --line: #c8d5dc;
+      --code-bg: #0b1623;
+      --code-ink: #f8fafc;
+      --screen-bg: #06131a;
+      --screen-ink: #b6f5cf;
+      --shadow: 0 18px 42px rgba(15, 42, 58, 0.14);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    body {
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 8%, rgba(224, 145, 0, 0.16), transparent 25rem),
+        radial-gradient(circle at 92% 10%, rgba(11, 114, 133, 0.16), transparent 25rem),
+        linear-gradient(135deg, #f3f7fa 0%, #eaf4f4 100%);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-size: 22px;
+      line-height: 1.42;
+    }
+
+    button,
+    input { font: inherit; }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 14px;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: 800;
+      min-height: 48px;
+      padding: 10px 18px;
+      box-shadow: 0 8px 18px rgba(11, 114, 133, 0.18);
+      transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+    }
+
+    button:hover,
+    button:focus-visible {
+      outline: 4px solid rgba(37, 99, 235, 0.22);
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(11, 114, 133, 0.24);
+    }
+
+    button.secondary { background: var(--warm); color: #2b1d05; }
+    button.blue { background: var(--blue); }
+    button.ghost { background: #e4edf2; color: var(--accent-deep); box-shadow: none; }
+    button.choice-selected { background: var(--accent-deep); outline: 4px solid rgba(11, 114, 133, 0.22); }
+    button.choice-correct { background: var(--ok); }
+    button.choice-wrong { background: var(--danger); }
+
+    a {
+      color: var(--accent-deep);
+      font-weight: 800;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
+
+    code,
+    pre {
+      font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+    }
+
+    .deck {
+      width: 100vw;
+      height: 100vh;
+      padding: 24px 34px 82px;
+    }
+
+    .slide {
+      display: none;
+      height: calc(100vh - 118px);
+      overflow: hidden;
+      padding: 28px 32px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .slide.active { display: block; }
+
+    .slide[data-section="objectives"] .slide-inner { gap: 12px; }
+
+    .slide-inner {
+      display: grid;
+      align-content: start;
+      gap: 18px;
+      height: 100%;
+      min-height: 0;
+    }
+
+    h1,
+    h2,
+    h3,
+    p { margin: 0; }
+
+    h1 {
+      max-width: 920px;
+      color: var(--accent-deep);
+      font-size: clamp(44px, 5.2vw, 76px);
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+    }
+
+    h2 {
+      color: var(--accent-deep);
+      font-size: clamp(34px, 4vw, 56px);
+      letter-spacing: -0.03em;
+      line-height: 1.12;
+    }
+
+    h3 {
+      color: var(--accent-deep);
+      font-size: 27px;
+      line-height: 1.2;
+    }
+
+    .lead {
+      max-width: 960px;
+      color: var(--muted);
+      font-size: clamp(24px, 2.3vw, 32px);
+      font-weight: 750;
+    }
+
+    .eyebrow {
+      color: var(--warm);
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .note { color: var(--muted); font-size: 18px; }
+
+    .source-note {
+      border-left: 8px solid var(--warm);
+      border-radius: 12px;
+      background: var(--warm-soft);
+      color: #5c4309;
+      font-size: 19px;
+      padding: 12px 16px;
+    }
+
+    .objective-grid,
+    .card-grid,
+    .choice-grid,
+    .token-grid,
+    .error-grid,
+    .review-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .objective-grid { grid-template-columns: repeat(4, 1fr); }
+    .card-grid,
+    .choice-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .token-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .error-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .review-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .card,
+    .info-card,
+    .review-item,
+    .diagnosis-card {
+      min-height: 92px;
+      padding: 16px 18px;
+      background: var(--panel);
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .card strong,
+    .info-card strong,
+    .review-item strong {
+      display: block;
+      color: var(--accent-deep);
+      font-size: 22px;
+      margin-bottom: 5px;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #d5f3f0;
+      color: var(--accent-deep);
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .two-col,
+    .stepper-grid,
+    .practice-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      align-items: stretch;
+      gap: 20px;
+      min-height: 0;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: stretch;
+      gap: 16px;
+    }
+
+    .code-panel,
+    .explain-panel,
+    .stage-panel,
+    .state-card {
+      min-height: 0;
+      padding: 18px;
+      border-radius: var(--radius);
+      border: 2px solid var(--line);
+      background: var(--panel);
+    }
+
+    .code-panel {
+      background: var(--code-bg);
+      border-color: #24384b;
+    }
+
+    pre {
+      margin: 0;
+      overflow-x: auto;
+      color: var(--code-ink);
+      font-size: clamp(20px, 2vw, 28px);
+      line-height: 1.52;
+      white-space: pre;
+    }
+
+    .code-line {
+      display: block;
+      min-height: 1.52em;
+      padding: 0 10px;
+      border-radius: 8px;
+      transition: background 140ms ease, color 140ms ease;
+    }
+
+    .code-panel pre:has(.code-line) {
+      white-space: normal;
+    }
+
+    .code-panel pre:has(.code-line) .code-line {
+      white-space: pre;
+    }
+
+    .code-line.active-code-line {
+      background: #ffe08a;
+      color: #111827;
+      font-weight: 900;
+    }
+
+    .code-line[data-role="build"] { color: #a7c4d6; }
+    .code-line[data-role="output"] { color: #9fe8c5; }
+
+    .terminal {
+      min-height: 150px;
+      padding: 18px;
+      border: 4px solid #233d49;
+      border-radius: 18px;
+      background: var(--screen-bg);
+      color: var(--screen-ink);
+      font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+      font-size: clamp(22px, 2.2vw, 31px);
+      font-weight: 800;
+      white-space: pre-wrap;
+    }
+
+    .feedback {
+      min-height: 70px;
+      padding: 14px 18px;
+      border-left: 8px solid var(--blue);
+      border-radius: 14px;
+      background: #e8f0ff;
+      color: #173c70;
+      font-size: 19px;
+    }
+
+    .feedback[data-state="hidden"] {
+      border-left-color: var(--line);
+      background: #f3f6f7;
+      color: var(--muted);
+    }
+
+    .feedback.ok { border-left-color: var(--ok); background: #e6f7eb; color: #14532d; }
+    .feedback.bad { border-left-color: var(--danger); background: #fff0e9; color: #7c2d12; }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .choice-grid button { min-height: 64px; text-align: left; }
+    .choice-grid code { font-size: 20px; }
+
+    .token-grid button {
+      min-height: 70px;
+      background: #d7edf1;
+      color: var(--accent-deep);
+      box-shadow: none;
+    }
+
+    .token-grid button:hover,
+    .token-grid button:focus-visible,
+    .token-grid button.choice-selected {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .flow-card {
+      position: relative;
+      min-height: 112px;
+      padding: 16px;
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      color: var(--ink);
+      box-shadow: none;
+      text-align: left;
+    }
+
+    .flow-card:not(:last-child)::after {
+      position: absolute;
+      top: 38%;
+      right: -20px;
+      z-index: 2;
+      color: var(--warm);
+      content: "→";
+      font-size: 34px;
+      font-weight: 900;
+    }
+
+    .flow-card.active-stage {
+      border-color: var(--warm);
+      background: var(--warm-soft);
+      box-shadow: 0 0 0 4px rgba(224, 145, 0, 0.12);
+    }
+
+    .flow-card strong {
+      display: block;
+      color: var(--accent-deep);
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+
+    .state-card {
+      display: grid;
+      align-content: start;
+      gap: 12px;
+      min-height: 310px;
+    }
+
+    .stepper-grid {
+      grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    }
+
+    .state-label {
+      color: var(--warm);
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+    }
+
+    .stage-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stage-buttons button {
+      background: #d7edf1;
+      color: var(--accent-deep);
+      box-shadow: none;
+    }
+
+    .stage-buttons button.active-stage-button {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .diagnosis-card {
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      min-height: 206px;
+    }
+
+    .diagnosis-card h3 { font-size: 24px; }
+
+    .diagnosis-card pre {
+      padding: 10px;
+      border-radius: 12px;
+      background: var(--code-bg);
+      font-size: 18px;
+    }
+
+    .practice-input {
+      width: 100%;
+      min-height: 52px;
+      padding: 10px 14px;
+      border: 2px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--ink);
+      font-size: 22px;
+    }
+
+    .practice-input:focus {
+      outline: 4px solid rgba(37, 99, 235, 0.18);
+      border-color: var(--blue);
+    }
+
+    .review-item {
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .review-item.done {
+      border-color: var(--ok);
+      background: #eaf8ee;
+      color: #155e35;
+    }
+
+    .review-item.done strong,
+    .review-item.done code {
+      color: #155e35;
+    }
+
+    .review-item.done::before {
+      color: #155e35;
+      content: "✓ ";
+      font-weight: 900;
+    }
+
+    .review-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      align-items: center;
+    }
+
+    .attribution {
+      position: fixed;
+      top: 10px;
+      right: 24px;
+      color: rgba(23, 33, 43, 0.62);
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+    }
+
+    .controls {
+      position: fixed;
+      right: 34px;
+      bottom: 18px;
+      left: 34px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 12px;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .controls > * { pointer-events: auto; }
+    .controls .next-wrap { text-align: right; }
+
+    .progress {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 18px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .progress-track {
+      width: min(280px, 28vw);
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #d5e1e6;
+    }
+
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      background: var(--accent);
+      transition: width 180ms ease;
+    }
+
+    .muted { color: var(--muted); }
+    .small { font-size: 18px; }
+
+    @media (max-width: 980px) {
+      body { font-size: 18px; }
+      .deck { padding: 18px 18px 78px; }
+      .slide { height: calc(100vh - 108px); padding: 22px; }
+      .objective-grid,
+      .review-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .two-col,
+      .stepper-grid,
+      .practice-layout { grid-template-columns: 1fr; }
+      .controls { right: 18px; left: 18px; }
+      .slide[data-section="objectives"] .button-row { display: none; }
+      .slide[data-section="summary"] .review-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .slide[data-section="summary"] .review-item { min-height: 72px; padding: 9px 12px; }
+      .slide[data-section="summary"] .source-note { font-size: 16px; padding: 9px 12px; }
+    }
+
+    @media (max-height: 700px) {
+      .slide { padding: 20px 24px; }
+      .slide-inner { gap: 12px; }
+      .card,
+      .info-card,
+      .review-item { min-height: 72px; padding: 11px 14px; }
+      .lead { font-size: 24px; }
+      .note,
+      .source-note,
+      .feedback { font-size: 17px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body
+  data-courseware="c-freshman"
+  data-layout="slide-page"
+  data-course-id="CW-L01"
+  data-chapter="1"
+  data-routines="EX-C01-001"
+  data-questions="QB-SC-001,QB-SC-002"
+  data-status="ready"
+  data-attribution="Kevin@SUT">
+  <div class="attribution" aria-label="课件署名">CW-L01 · Kevin@SUT</div>
+
+  <main class="deck" data-deck>
+    <section class="slide active" data-slide data-section="objectives">
+      <div class="slide-inner">
+        <p class="eyebrow">CW-L01 · 第1章 · 最小 C 程序</p>
+        <h1>Hello World：读懂<br>第一段 C 程序</h1>
+        <p class="lead">本节结束时，你能读懂、运行、预测并改写一个最小 C 程序。</p>
+        <div class="objective-grid">
+          <div class="card"><span class="badge">目标 1</span><strong>读懂结构</strong>指出程序入口、输出语句和结束语句。</div>
+          <div class="card"><span class="badge">目标 2</span><strong>预测输出</strong>根据代码判断屏幕会显示什么。</div>
+          <div class="card"><span class="badge">目标 3</span><strong>找出错误</strong>区分编译错误与输出格式变化。</div>
+          <div class="card"><span class="badge">目标 4</span><strong>独立改写</strong>把输出文字改成 Hello World。</div>
+        </div>
+        <div class="source-note">例程：<code>EX-C01-001</code>。本次课不展开变量、输入和控制结构。</div>
+        <div class="button-row"><button type="button" data-go-slide="1">开始预测</button></div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide data-section="quiz" data-interaction="ask-wait-reveal">
+      <div class="slide-inner">
+        <p class="eyebrow">先想一步，再看解释</p>
+        <h2>先预测：屏幕会出现什么？</h2>
+        <div class="two-col">
+          <div class="code-panel">
+            <pre aria-label="EX-C01-001 的程序"><code>#include &lt;stdio.h&gt;
+
+int main()
+{
+    printf("This is a C program.\n");
+    return 0;
+}</code></pre>
+          </div>
+          <div class="explain-panel">
+            <p class="lead">先不要点击答案。观察双引号中的内容，预测屏幕输出。</p>
+            <div class="choice-grid" role="group" aria-label="输出预测选项">
+              <button type="button" data-prediction="correct">A. <code>This is a C program.</code></button>
+              <button type="button" data-prediction="code">B. <code>printf(...)</code> 整行代码</button>
+              <button type="button" data-prediction="hello">C. <code>Hello World</code></button>
+              <button type="button" data-prediction="none">D. 没有输出</button>
+            </div>
+            <div class="feedback" id="prediction-feedback" data-state="hidden" aria-live="polite">选择后揭示答案和判断依据。</div>
+            <button class="ghost" type="button" data-reset-prediction>重新预测</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide data-section="overview">
+      <div class="slide-inner">
+        <p class="eyebrow">从整体地图开始</p>
+        <h2>一段程序的地图</h2>
+        <div class="two-col">
+          <div class="code-panel">
+            <pre aria-label="最小 C 程序"><code><span class="code-line" data-overview-line="1" data-role="build">#include &lt;stdio.h&gt;</span>
+<span class="code-line" data-overview-line="2">int main()</span>
+<span class="code-line" data-overview-line="3">{</span>
+<span class="code-line" data-overview-line="4" data-role="output">    printf("This is a C program.\n");</span>
+<span class="code-line" data-overview-line="5">    return 0;</span>
+<span class="code-line" data-overview-line="6">}</span></code></pre>
+          </div>
+          <div class="card-grid">
+            <div class="info-card"><span class="badge">构建阶段</span><strong><code>#include</code></strong>让编译器知道标准输出工具的声明。</div>
+            <div class="info-card"><span class="badge">执行入口</span><strong><code>main</code></strong>程序从这里开始执行。</div>
+            <div class="info-card"><span class="badge">输出动作</span><strong><code>printf</code></strong>把字符串内容送到屏幕。</div>
+            <div class="info-card"><span class="badge">正常结束</span><strong><code>return 0</code></strong>告诉系统程序正常结束。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide data-section="concept-include" data-interaction="ask-wait-reveal">
+      <div class="slide-inner">
+        <p class="eyebrow">第一层：让工具认识函数</p>
+        <h2><code>#include &lt;stdio.h&gt;</code>：先让工具认识 <code>printf</code></h2>
+        <div class="two-col">
+          <div class="code-panel">
+            <pre><code><span class="code-line active-code-line">#include &lt;stdio.h&gt;</span>
+<span class="code-line">int main()</span>
+<span class="code-line">{</span>
+<span class="code-line">    printf("This is a C program.\n");</span>
+<span class="code-line">    return 0;</span>
+<span class="code-line">}</span></code></pre>
+          </div>
+          <div class="explain-panel">
+            <p class="lead"><code>stdio.h</code>不是屏幕，也不是输出内容；它提供标准输入输出工具的声明。</p>
+            <div class="button-row">
+              <button type="button" data-include-choice="with">保留头文件</button>
+              <button class="secondary" type="button" data-include-choice="without">去掉头文件</button>
+            </div>
+            <div class="feedback" id="include-feedback" data-state="hidden" aria-live="polite">先选择一种情况，再查看解释。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide data-section="concept-main" data-interaction="ask-wait-reveal">
+      <div class="slide-inner">
+        <p class="eyebrow">第二层：找到程序入口</p>
+        <h2><code>main</code> 与 <code>{ }</code>：程序从哪里开始？</h2>
+        <div class="three-col">
+          <div class="code-panel">
+            <pre><code><span class="code-line" data-main-line="main">int main()</span>
+<span class="code-line" data-main-line="open">{</span>
+<span class="code-line" data-main-line="body">    printf("...");</span>
+<span class="code-line" data-main-line="close">}</span></code></pre>
+          </div>
+          <div class="info-card">
+            <span class="badge">问题</span>
+            <strong>哪一行是入口？</strong>
+            <div class="button-row">
+              <button type="button" data-main-choice="main">选择 <code>main</code></button>
+              <button class="ghost" type="button" data-main-choice="printf">选择 <code>printf</code></button>
+            </div>
+            <div class="feedback" id="main-feedback" data-state="hidden" aria-live="polite">先做选择。</div>
+          </div>
+          <div class="info-card">
+            <span class="badge">边界</span>
+            <strong><code>{ }</code> 包住函数体</strong>
+            <p class="small muted">花括号告诉我们，哪些语句属于 <code>main</code>。本次课先把它理解为程序块边界。</p>
+            <button class="ghost" type="button" data-main-choice="brace">查看花括号说明</button>
+            <div class="feedback" id="brace-feedback" data-state="hidden" aria-live="polite">点击按钮后查看花括号的作用。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide data-section="concept-printf" data-interaction="ask-wait-reveal">
+      <div class="slide-inner">
+        <p class="eyebrow">第三层：把文字送到屏幕</p>
+        <h2><code>printf(...)</code>：把字符串送到屏幕</h2>
+        <div class="two-col">
+          <div class="code-panel">
+            <pre><code><span class="code-line">    </span><span class="code-line active-code-line">printf("This is a C program.\n");</span></code></pre>
+            <div class="terminal" id="printf-terminal" aria-label="printf输出预览">This is a C program.
+</div>
+          </div>
+          <div class="explain-panel">
+            <p class="lead">按顺序点击词法单元，观察它们分别负责什么。</p>
+            <div class="token-grid" role="group" aria-label="printf词法单元">
+              <button type="button" data-token="name"><code>printf</code></button>
+              <button type="button" data-token="paren"><code>( )</code></button>
+              <button type="button" data-token="string"><code>"..."</code></button>
+              <button type="button" data-token="newline"><code>\n</code></button>
+              <button type="button" data-token="semicolon"><code>;</code></button>
+            </div>
+            <div class="feedback" id="token-feedback" data-state="hidden" aria-live="polite">点击一个词法单元查看解释。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide data-section="concept-return" data-interaction="ask-wait-reveal">
+      <div class="slide-inner">
+        <p class="eyebrow">第四层：让程序有始有终</p>
+        <h2>分号与 <code>return 0</code>：让程序正常结束</h2>
+        <div class="three-col">
+          <div class="diagnosis-card">
+            <span class="badge">正确语句</span>
+            <pre><code>printf("...");</code></pre>
+            <button type="button" data-return-choice="correct">查看作用</button>
+          </div>
+          <div class="diagnosis-card">
+            <span class="badge">故意错误示例</span>
+            <pre><code>printf("...")</code></pre>
+            <button class="secondary" type="button" data-return-choice="semicolon">判断错误层次</button>
+          </div>
+          <div class="diagnosis-card">
+            <span class="badge">正常结束</span>
+            <pre><code>return 0;</code></pre>
+            <button class="blue" type="button" data-return-choice="return">查看作用</button>
+          </div>
+        </div>
+        <div class="feedback" id="return-feedback" data-state="hidden" aria-live="polite">先选择一个代码片段。</div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide data-section="interaction-stepper" data-interaction="ask-wait-reveal">
+      <div class="slide-inner">
+        <p class="eyebrow">把代码变成可观察的状态</p>
+        <h2>逐行执行：输出在哪一刻发生？</h2>
+        <div class="stepper-grid">
+          <div class="code-panel">
+            <pre aria-label="逐行执行代码"><code><span class="code-line" data-step-line="1" data-code-line="1" data-role="build">#include &lt;stdio.h&gt;</span>
+<span class="code-line" data-step-line="2" data-code-line="2">int main()</span>
+<span class="code-line" data-step-line="3" data-code-line="3">{</span>
+<span class="code-line" data-step-line="4" data-code-line="4" data-role="output">    printf("This is a C program.\n");</span>
+<span class="code-line" data-step-line="5" data-code-line="5">    return 0;</span>
+<span class="code-line" data-step-line="6" data-code-line="6">}</span></code></pre>
+          </div>
+          <div class="state-card">
+            <span class="state-label" id="step-status">尚未开始</span>
+            <div class="feedback" id="step-feedback" data-state="hidden" aria-live="polite">点击“下一步”，让程序向前走。</div>
+            <div class="terminal" id="step-output" aria-label="逐行执行输出">等待运行...</div>
+            <div class="button-row">
+              <button type="button" data-step-next>下一步</button>
+              <button class="ghost" type="button" data-step-reset>重置</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide data-section="workflow">
+      <div class="slide-inner">
+        <p class="eyebrow">从文本到屏幕</p>
+        <h2>编辑 → 编译 → 链接 → 运行</h2>
+        <div class="flow" role="group" aria-label="C程序构建流程">
+          <button class="flow-card active-stage" type="button" data-stage="edit"><strong>编辑</strong>保存一个 <code>.c</code> 源文件。</button>
+          <button class="flow-card" type="button" data-stage="compile"><strong>编译</strong>检查C语法并生成目标代码。</button>
+          <button class="flow-card" type="button" data-stage="link"><strong>链接</strong>把程序需要的部分组合起来。</button>
+          <button class="flow-card" type="button" data-stage="run"><strong>运行</strong>从 <code>main</code> 开始执行。</button>
+        </div>
+        <div class="stage-panel">
+          <div class="stage-buttons" role="group" aria-label="构建流程步骤">
+            <button type="button" class="active-stage-button" data-stage-button="edit">编辑</button>
+            <button type="button" data-stage-button="compile">编译</button>
+            <button type="button" data-stage-button="link">链接</button>
+            <button type="button" data-stage-button="run">运行</button>
+          </div>
+          <div class="feedback" id="stage-feedback" data-state="shown" aria-live="polite">先在编辑器中保存 <code>hello.c</code>，再交给GCC处理。</div>
+        </div>
+        <div class="source-note">MinGW GCC示例命令：<code>gcc hello.c -o hello.exe</code>，然后运行 <code>.\hello.exe</code>。本页只模拟流程，不在浏览器中真实编译。</div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide data-section="diagnosis" data-interaction="ask-wait-reveal">
+      <div class="slide-inner">
+        <p class="eyebrow">先定位，再修改</p>
+        <h2>常见错误：先判断发生在哪一层</h2>
+        <p class="lead">以下都是故意错误示例。先选一个，再查看它为什么错。</p>
+        <div class="error-grid">
+          <div class="diagnosis-card">
+            <h3>错误一：缺少分号</h3>
+            <pre><code>printf("...")</code></pre>
+            <button type="button" data-error-choice="semicolon">揭示判断</button>
+          </div>
+          <div class="diagnosis-card">
+            <h3>错误二：缺少双引号</h3>
+            <pre><code>printf(Hello World");</code></pre>
+            <button class="secondary" type="button" data-error-choice="quote">揭示判断</button>
+          </div>
+          <div class="diagnosis-card">
+            <h3>错误三：删除 <code>\n</code></h3>
+            <pre><code>printf("C program.");</code></pre>
+            <button class="blue" type="button" data-error-choice="newline">揭示判断</button>
+          </div>
+        </div>
+        <div class="feedback" id="error-feedback" data-state="hidden" aria-live="polite">选择一个错误示例。</div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide data-section="exercise" data-interaction="ask-wait-reveal">
+      <div class="slide-inner">
+        <p class="eyebrow">课堂练习变体 · 非独立例程</p>
+        <h2>把输出改成 <code>Hello World</code></h2>
+        <div class="practice-layout">
+          <div class="code-panel">
+            <pre><code>#include &lt;stdio.h&gt;
+
+int main()
+{
+    printf("<span id="practice-string">Hello World</span>\n");
+    return 0;
+}</code></pre>
+            <p class="note" style="color:#b6cedb;margin-top:14px">只替换双引号中的文字；头文件、<code>main</code>、花括号、分号和返回语句都保留。</p>
+          </div>
+          <div class="explain-panel">
+            <label for="practice-input"><strong>输入你想输出的一行文字</strong></label>
+            <input class="practice-input" id="practice-input" type="text" maxlength="40" value="Hello World" autocomplete="off">
+            <div class="button-row">
+              <button type="button" data-preview-practice>预演输出</button>
+              <button class="ghost" type="button" data-reset-practice>恢复示例</button>
+            </div>
+            <div class="terminal" id="practice-output" aria-label="Hello World变体输出预览">Hello World
+</div>
+            <div class="feedback" id="practice-feedback" data-state="hidden" aria-live="polite">这是浏览器中的输出预演，不是真实C编译。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide data-section="summary">
+      <div class="slide-inner">
+        <p class="eyebrow">把程序讲给自己听</p>
+        <h2>复习清单：七个问题都能回答吗？</h2>
+        <div class="review-grid" role="group" aria-label="课后复习清单">
+          <button class="review-item" type="button" data-review-item><strong>1 · 入口</strong>程序从哪里开始执行？</button>
+          <button class="review-item" type="button" data-review-item><strong>2 · 头文件</strong><code>stdio.h</code>帮助什么？</button>
+          <button class="review-item" type="button" data-review-item><strong>3 · 输出</strong><code>printf</code>输出什么？</button>
+          <button class="review-item" type="button" data-review-item><strong>4 · 换行</strong><code>\n</code>做什么？</button>
+          <button class="review-item" type="button" data-review-item><strong>5 · 分号</strong>为什么不能省略？</button>
+          <button class="review-item" type="button" data-review-item><strong>6 · 结束</strong><code>return 0;</code>表示什么？</button>
+          <button class="review-item" type="button" data-review-item><strong>7 · GCC</strong>如何编译并运行？</button>
+          
+        </div>
+        <div class="feedback" id="review-feedback" data-state="shown" aria-live="polite">点击一个问题，先在心里回答，再点一次标记为“已复习”。</div>
+        <div class="source-note">能独立解释、运行、测试并修改这段程序，才算真正开始学习C语言。</div>
+        <div class="source-note">可选在线扩展：W3Schools在线教程：<a data-external-resource="optional" href="https://w3schools.org.cn/c/index.php" target="_blank" rel="noopener noreferrer">https://w3schools.org.cn/c/index.php</a></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="controls" aria-label="课件翻页控制">
+    <div><button class="ghost" type="button" data-prev-slide aria-label="上一页">上一页</button></div>
+    <div class="progress" aria-live="polite">
+      <span id="page-label">1 / 12</span>
+      <div class="progress-track" aria-hidden="true"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+    <div class="next-wrap"><button type="button" data-next-slide aria-label="下一页">下一页</button></div>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const slides = Array.from(document.querySelectorAll("[data-slide]"));
+      const pageLabel = document.getElementById("page-label");
+      const progressFill = document.getElementById("progress-fill");
+      let slideIndex = 0;
+
+      function setFeedback(element, message, state) {
+        element.innerHTML = message;
+        element.dataset.state = state || "shown";
+        element.classList.toggle("ok", state === "ok");
+        element.classList.toggle("bad", state === "bad");
+      }
+
+      function resetFeedback(element, message) {
+        element.textContent = message;
+        element.dataset.state = "hidden";
+        element.classList.remove("ok", "bad");
+      }
+
+      function renderSlide() {
+        slides.forEach(function (slide, index) {
+          slide.classList.toggle("active", index === slideIndex);
+        });
+        pageLabel.textContent = (slideIndex + 1) + " / " + slides.length;
+        progressFill.style.width = (((slideIndex + 1) / slides.length) * 100) + "%";
+      }
+
+      function nextSlide() {
+        slideIndex = Math.min(slideIndex + 1, slides.length - 1);
+        renderSlide();
+      }
+
+      function prevSlide() {
+        slideIndex = Math.max(slideIndex - 1, 0);
+        renderSlide();
+      }
+
+      document.querySelector("[data-next-slide]").addEventListener("click", nextSlide);
+      document.querySelector("[data-prev-slide]").addEventListener("click", prevSlide);
+      document.querySelectorAll("[data-go-slide]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          slideIndex = Number(button.dataset.goSlide);
+          renderSlide();
+        });
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (event.target && /INPUT|TEXTAREA|BUTTON/.test(event.target.tagName)) {
+          if (event.key !== "Escape") return;
+        }
+        if (event.key === "ArrowRight" || event.key === "PageDown") nextSlide();
+        if (event.key === "ArrowLeft" || event.key === "PageUp") prevSlide();
+        if (event.key === "Home") {
+          slideIndex = 0;
+          renderSlide();
+        }
+        if (event.key === "End") {
+          slideIndex = slides.length - 1;
+          renderSlide();
+        }
+      });
+
+      const predictionFeedback = document.getElementById("prediction-feedback");
+      document.querySelectorAll("[data-prediction]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          document.querySelectorAll("[data-prediction]").forEach(function (item) {
+            item.classList.remove("choice-selected", "choice-correct", "choice-wrong");
+          });
+          button.classList.add("choice-selected");
+          if (button.dataset.prediction === "correct") {
+            button.classList.add("choice-correct");
+            setFeedback(predictionFeedback, "<strong>正确。</strong>屏幕显示双引号中的文字；<code>\\n</code>只负责换行，不会把整行代码显示出来。", "ok");
+          } else if (button.dataset.prediction === "code") {
+            button.classList.add("choice-wrong");
+            setFeedback(predictionFeedback, "<strong>还不对。</strong><code>printf</code>是发出输出要求的函数，屏幕不显示整行C代码。", "bad");
+          } else if (button.dataset.prediction === "hello") {
+            button.classList.add("choice-wrong");
+            setFeedback(predictionFeedback, "<strong>还不对。</strong>当前权威例程输出的是 <code>This is a C program.</code>；<code>Hello World</code>会在后面的改写练习中出现。", "bad");
+          } else {
+            button.classList.add("choice-wrong");
+            setFeedback(predictionFeedback, "<strong>还不对。</strong>程序包含<code>printf</code>输出语句，正常编译运行后会显示字符串。", "bad");
+          }
+        });
+      });
+
+      document.querySelector("[data-reset-prediction]").addEventListener("click", function () {
+        document.querySelectorAll("[data-prediction]").forEach(function (item) {
+          item.classList.remove("choice-selected", "choice-correct", "choice-wrong");
+        });
+        resetFeedback(predictionFeedback, "选择后揭示答案和判断依据。");
+      });
+
+      const includeFeedback = document.getElementById("include-feedback");
+      document.querySelectorAll("[data-include-choice]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          if (button.dataset.includeChoice === "with") {
+            setFeedback(includeFeedback, "<strong>推荐保留。</strong><code>printf</code>需要标准输入输出相关声明；头文件让编译器知道它的接口。", "ok");
+          } else {
+            setFeedback(includeFeedback, "<strong>这是故意的错误尝试。</strong>去掉头文件后，编译器可能无法正确确认<code>printf</code>的声明，不能把“能否运行”交给猜测。", "bad");
+          }
+        });
+      });
+
+      const mainFeedback = document.getElementById("main-feedback");
+      const braceFeedback = document.getElementById("brace-feedback");
+      document.querySelectorAll("[data-main-line]").forEach(function (line) {
+        line.addEventListener("click", function () {
+          document.querySelectorAll("[data-main-line]").forEach(function (item) {
+            item.classList.remove("active-code-line");
+          });
+          line.classList.add("active-code-line");
+        });
+      });
+      document.querySelectorAll("[data-main-choice]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          if (button.dataset.mainChoice === "main") {
+            setFeedback(mainFeedback, "<strong>正确。</strong>程序从<code>main</code>开始；花括号内的语句属于这个函数。", "ok");
+          } else if (button.dataset.mainChoice === "brace") {
+            setFeedback(braceFeedback, "<strong>边界说明。</strong><code>{ }</code>界定<code>main</code>函数体；花括号内的语句属于这个函数，本次课先把它理解为“程序块的边界”。", "shown");
+          } else {
+            setFeedback(mainFeedback, "<strong>还不对。</strong><code>printf</code>是被执行的输出动作，不是程序入口。", "bad");
+          }
+        });
+      });
+
+      const tokenFeedback = document.getElementById("token-feedback");
+      const tokenMessages = {
+        name: "<strong><code>printf</code>：</strong>函数名，表示“按格式输出”。本次课只使用它输出一段文字。",
+        paren: "<strong><code>( )</code>：</strong>函数调用的括号，输出内容写在括号内部。",
+        string: "<strong><code>\"...\"</code>：</strong>双引号包住字符串；这里的文字就是屏幕要显示的内容。",
+        newline: "<strong><code>\\n</code>：</strong>转义字符，表示换行；它不对应屏幕上的普通字母。",
+        semicolon: "<strong><code>;</code>：</strong>普通语句结束标志；遗漏时通常无法按正确程序编译。"
+      };
+      document.querySelectorAll("[data-token]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          document.querySelectorAll("[data-token]").forEach(function (item) {
+            item.classList.remove("choice-selected");
+          });
+          button.classList.add("choice-selected");
+          setFeedback(tokenFeedback, tokenMessages[button.dataset.token], "shown");
+        });
+      });
+
+      const returnFeedback = document.getElementById("return-feedback");
+      document.querySelectorAll("[data-return-choice]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          const choice = button.dataset.returnChoice;
+          if (choice === "correct") {
+            setFeedback(returnFeedback, "<strong>正确语句。</strong>分号标记普通语句结束，程序可以继续按顺序执行。", "ok");
+          } else if (choice === "semicolon") {
+            setFeedback(returnFeedback, "<strong>编译阶段错误。</strong>缺少分号会破坏语句边界，程序应先修正再运行。", "bad");
+          } else {
+            setFeedback(returnFeedback, "<strong>正常结束。</strong><code>return 0;</code>表示<code>main</code>正常返回，程序执行路径完成。", "ok");
+          }
+        });
+      });
+
+      const stepStates = [
+        { line: 1, label: "构建阶段", explanation: "<code>#include</code>准备标准输出工具的声明，还没有屏幕输出。", output: "等待运行..." },
+        { line: 2, label: "进入 main", explanation: "程序找到入口函数<code>main</code>，准备执行函数体。", output: "等待运行..." },
+        { line: 3, label: "进入程序体", explanation: "左花括号表示进入<code>main</code>函数体。", output: "等待运行..." },
+        { line: 4, label: "执行 printf", explanation: "这一行把双引号中的文字送到屏幕，<code>\\n</code>让光标换行。", output: "This is a C program.\n" },
+        { line: 5, label: "正常结束", explanation: "<code>return 0;</code>让<code>main</code>正常返回。", output: "This is a C program.\n" },
+        { line: 6, label: "函数体结束", explanation: "右花括号表示函数体结束；这一轮执行完成。", output: "This is a C program.\n" }
+      ];
+      let stepIndex = -1;
+      const stepStatus = document.getElementById("step-status");
+      const stepFeedback = document.getElementById("step-feedback");
+      const stepOutput = document.getElementById("step-output");
+
+      function resetStepper() {
+        stepIndex = -1;
+        document.querySelectorAll("[data-step-line]").forEach(function (line) {
+          line.classList.remove("active-code-line");
+        });
+        stepStatus.textContent = "尚未开始";
+        resetFeedback(stepFeedback, "点击“下一步”，让程序向前走。");
+        stepOutput.textContent = "等待运行...";
+      }
+
+      function advanceStepper() {
+        stepIndex = Math.min(stepIndex + 1, stepStates.length - 1);
+        const state = stepStates[stepIndex];
+        document.querySelectorAll("[data-step-line]").forEach(function (line) {
+          line.classList.toggle("active-code-line", Number(line.dataset.stepLine) === state.line);
+        });
+        stepStatus.textContent = state.label;
+        setFeedback(stepFeedback, state.explanation, "shown");
+        stepOutput.textContent = state.output;
+      }
+
+      document.querySelector("[data-step-next]").addEventListener("click", advanceStepper);
+      document.querySelector("[data-step-reset]").addEventListener("click", resetStepper);
+
+      const stageFeedback = document.getElementById("stage-feedback");
+      const stageMessages = {
+        edit: "先在编辑器中保存<code>ex_c01_001_1_1.c</code>，源文件内容才有了确定的载体。",
+        compile: "GCC检查C语法并把源代码翻译成目标代码；发现错误时应先修复，不能直接运行。",
+        link: "链接阶段把程序需要的部分组合起来，形成可以启动的可执行文件。",
+        run: "运行阶段从<code>main</code>开始，<code>printf</code>把字符串送到屏幕。"
+      };
+      document.querySelectorAll("[data-stage], [data-stage-button]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          const stage = button.dataset.stage || button.dataset.stageButton;
+          document.querySelectorAll("[data-stage]").forEach(function (item) {
+            item.classList.toggle("active-stage", item.dataset.stage === stage);
+          });
+          document.querySelectorAll("[data-stage-button]").forEach(function (item) {
+            item.classList.toggle("active-stage-button", item.dataset.stageButton === stage);
+          });
+          setFeedback(stageFeedback, stageMessages[stage], "shown");
+        });
+      });
+
+      const errorFeedback = document.getElementById("error-feedback");
+      const errorMessages = {
+        semicolon: "<strong>编译阶段错误。</strong>普通语句缺少<code>;</code>，编译器无法可靠判断语句边界。",
+        quote: "<strong>编译阶段错误。</strong>字符串必须由成对双引号包住；没有起始双引号，代码记号就不完整。",
+        newline: "<strong>不一定编译失败。</strong>删除<code>\\n</code>可能仍能运行，但输出不会在这一行结束，行为格式已经改变。"
+      };
+      document.querySelectorAll("[data-error-choice]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          setFeedback(errorFeedback, errorMessages[button.dataset.errorChoice], button.dataset.errorChoice === "newline" ? "shown" : "bad");
+        });
+      });
+
+      const practiceInput = document.getElementById("practice-input");
+      const practiceOutput = document.getElementById("practice-output");
+      const practiceFeedback = document.getElementById("practice-feedback");
+      const practiceString = document.getElementById("practice-string");
+
+      function previewPractice() {
+        const value = practiceInput.value;
+        if (!value.trim()) {
+          practiceOutput.textContent = "（没有输出文字）";
+          setFeedback(practiceFeedback, "<strong>请先输入文字。</strong>空字符串不会显示可见内容，但程序结构仍然存在。", "bad");
+          practiceString.textContent = "";
+          return;
+        }
+        practiceString.textContent = value;
+        practiceOutput.textContent = value + "\n";
+        setFeedback(practiceFeedback, "<strong>预演完成。</strong>你只改变了字符串内容；真正提交C程序时，仍需在VS Code中保存、编译和运行。", "ok");
+      }
+
+      function resetPractice() {
+        practiceInput.value = "Hello World";
+        practiceString.textContent = "Hello World";
+        practiceOutput.textContent = "Hello World\n";
+        resetFeedback(practiceFeedback, "这是浏览器中的输出预演，不是真实C编译。");
+      }
+
+      document.querySelector("[data-preview-practice]").addEventListener("click", previewPractice);
+      document.querySelector("[data-reset-practice]").addEventListener("click", resetPractice);
+      practiceInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") previewPractice();
+      });
+
+      const reviewFeedback = document.getElementById("review-feedback");
+      const reviewMessages = [
+        "答案要点：从<code>main</code>开始执行。",
+        "答案要点：<code>stdio.h</code>提供标准输入输出工具的声明。",
+        "答案要点：<code>printf</code>输出双引号中的字符串。",
+        "答案要点：<code>\\n</code>表示换行。",
+        "答案要点：分号标记普通语句结束。",
+        "答案要点：<code>return 0;</code>表示程序正常结束。",
+        "答案要点：先用GCC编译，再运行生成的可执行文件。"
+      ];
+      document.querySelectorAll("[data-review-item]").forEach(function (button, index) {
+        button.addEventListener("click", function () {
+          const done = button.classList.toggle("done");
+          button.setAttribute("aria-pressed", String(done));
+          setFeedback(reviewFeedback, (done ? "<strong>已标记。</strong> " : "<strong>再想一次。</strong> ") + reviewMessages[index], "shown");
+        });
+        button.setAttribute("aria-pressed", "false");
+      });
+
+      renderSlide();
+    }());
+  </script>
+</body>
+</html>
+
