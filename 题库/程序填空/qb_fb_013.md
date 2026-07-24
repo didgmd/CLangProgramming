@@ -13,26 +13,68 @@ legacy_features: 无
 
 ## 题目
 
-补全函数内 `1.0/i` 累加和主函数中的函数调用。
+补全函数，计算从 `1/m` 到 `1/n` 的调和级数部分和。
+
+无输入；输出：`1+1/2+...+1/10` 的值。
+
+```c
+#include <stdio.h>
+double part(int m, int n)
+{
+    double
+    /*〔1〕*/
+    ;
+    for(int i = m;
+    /*〔2〕*/
+    ; i++)
+    /*〔3〕*/
+    ;
+    return sum;
+}
+int main(void)
+{
+    printf("%.6f\n",
+    /*〔4〕*/
+    );
+    return 0;
+}
+```
 
 ## 常见失分点
 
-不要只填出能编译的表达式；还要验证边界和最终输出。
+
+本题围绕“调和级数分组求和”补全函数、浮点运算相关语句。各空代回后应共同检查初始化、循环边界、有效下标或指针范围以及最终输出。
 
 <details>
 <summary>参考答案与解析</summary>
 
-**各空答案：** `s+=1.0/i`；`sum+=f(i)`
+### 各空答案
 
-代回后应检查初始化、循环边界和字符串结束符。
+1. `〔1〕`：`sum=0.0`
+2. `〔2〕`：`i<=n`
+3. `〔3〕`：`sum+=1.0/i`
+4. `〔4〕`：`part(1,10)`
+
+### 关键说明
+
+将各空代回后，程序的声明、初始化、循环边界和输出应形成完整逻辑。验证数据：结果应保留6位小数。
 
 ### 完整参考程序
 
 <!-- reference-c:start -->
 ```c
 #include <stdio.h>
-static double f(int n){double s=0;for(int i=1;i<=n;i++)s+=1.0/i;return s;}
-int main(void){double sum=0;for(int i=1;i<=3;i++)sum+=f(i);printf("%.6f\n",sum);return 0;}
+double part(int m, int n)
+{
+    double sum = 0.0;
+    for(int i = m; i <= n; i++) sum += 1.0 / i;
+    return sum;
+}
+int main(void)
+{
+    printf("%.6f\n", part(1, 10));
+    return 0;
+}
 ```
 <!-- reference-c:end -->
 

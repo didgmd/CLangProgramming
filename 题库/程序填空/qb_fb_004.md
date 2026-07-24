@@ -13,26 +13,67 @@ legacy_features: 无
 
 ## 题目
 
-补全起始指针、复制循环和末尾结束符。
+输入字符串和下标 `m`，把源串从下标 `m` 开始的后缀复制到目标数组。
+
+输入：一个无空格字符串和合法下标 `m`；输出：复制得到的后缀。
+
+```c
+#include <stdio.h>
+int main(void)
+{
+    char s [100], d [100];
+    int m;
+    if(scanf("%99s%d", s, & m) != 2) return 1;
+    int
+    /*〔1〕*/
+    , j = 0;
+    while(
+    /*〔2〕*/
+    )
+    /*〔3〕*/
+    ;
+    /*〔4〕*/
+    ;
+    puts(d);
+    return 0;
+}
+```
 
 ## 常见失分点
 
-不要只填出能编译的表达式；还要验证边界和最终输出。
+
+本题围绕“复制指定位置后的字符串”补全字符指针、字符串复制相关语句。各空代回后应共同检查初始化、循环边界、有效下标或指针范围以及最终输出。
 
 <details>
 <summary>参考答案与解析</summary>
 
-**各空答案：** `p=source+start`；逐字符复制；`*target='\0'`
+### 各空答案
 
-代回后应检查初始化、循环边界和字符串结束符。
+1. `〔1〕`：`i=m`
+2. `〔2〕`：`s[i]!='\0'`
+3. `〔3〕`：`d[j++]=s[i++]`
+4. `〔4〕`：`d[j]='\0'`
+
+### 关键说明
+
+将各空代回后，程序的声明、初始化、循环边界和输出应形成完整逻辑。验证数据：输入 `abcdef 2` 应输出 `cdef`。
 
 ### 完整参考程序
 
 <!-- reference-c:start -->
 ```c
 #include <stdio.h>
-static void copy(const char *from,char *to){while((*to++=*from++)!='\0'){} }
-int main(void){char a[]="programming",b[32];copy(a,b);puts(b);return 0;}
+int main(void)
+{
+    char s [100], d [100];
+    int m;
+    if(scanf("%99s%d", s, & m) != 2) return 1;
+    int i = m, j = 0;
+    while(s [i] != '\0') d [j++] = s [i++];
+    d [j] = '\0';
+    puts(d);
+    return 0;
+}
 ```
 <!-- reference-c:end -->
 

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import shutil
 import subprocess
@@ -14,6 +15,7 @@ from pathlib import Path
 sys.dont_write_bytecode = True
 
 from generate_question_index import INDEX_PATH, render_index
+from question_quality import QualityError, validate_category
 from question_common import (
     CATEGORY_CODES,
     QUESTIONS_ROOT,
@@ -44,6 +46,18 @@ SOURCE_MARKERS = (
 )
 
 BEHAVIOR_FIXTURES: dict[str, list[tuple[str, str]]] = {
+    "QB-FB-001": [("AbC12#\n", "2\n")],
+    "QB-FB-009": [("1 2 3 4 5 6 7 8\n", "4.50\n")],
+    "QB-FB-010": [("-1 -2 3 0 -4 5 0 -6 7 -8\n", "3 15\n")],
+    "QB-FB-011": [("2\n", "prime\n"), ("1\n", "not prime\n")],
+    "QB-FB-014": [("-2048\n", "-2048\n"), ("12x\n", "invalid\n")],
+    "QB-FB-015": [("-1 2 -3 4 0 6 -7 8 9 10\n", "3 -11\n")],
+    "QB-FB-016": [("abc\n", "abccba\n")],
+    "QB-FB-017": [("g Q\n", "G q\n")],
+    "QB-FB-018": [("abcdefghijk\n", "abcdefghi\n")],
+    "QB-FB-020": [("", "2 4 6 8\n")],
+    "QB-FB-021": [("", "10\n")],
+    "QB-FB-022": [("", "3 6 9\n")],
     "QB-PG-002": [("1 2 3 4 5 6 7 8 9 10\n", "10.000000\n")],
     "QB-PG-003": [("1900\n", "common\n"), ("2000\n", "leap\n")],
     "QB-PG-005": [("2024 2 29\n", "60\n"), ("2023 2 29\n", "invalid\n")],
@@ -121,6 +135,8 @@ def validate_source_boundary() -> None:
 
 
 def validate_question(question: Question) -> None:
+    if "\x00" in question.text or "\ufffd" in question.text:
+        raise ValidationError(f"Invalid text character in {question.question_id}")
     if not question.chapters or not all(item.isdigit() for item in question.chapters):
         raise ValidationError(f"Invalid chapters for {question.question_id}")
     if not question.concepts:
@@ -147,7 +163,36 @@ def validate_question(question: Question) -> None:
         raise ValidationError(f"{question.question_id} lacks a complete reference program")
     if question.reference_code and question.compile_mode == "none":
         raise ValidationError(f"{question.question_id} has code but compile mode is none")
+    validate_category(question.question_id, question.category, question.text)
 
+
+
+def validate_migration_handoff(questions: dict[str, Question]) -> None:
+    path = ROOT / "migration" / "examples-migration.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    entries = data.get("entries", [])
+    if (
+        data.get("source_count") != 334
+        or data.get("coverage_count") != 334
+        or len(entries) != 334
+    ):
+        raise ValidationError("Routine migration coverage is not 334/334")
+    received = [
+        entry for entry in entries
+        if entry.get("action") == "question_bank_received"
+    ]
+    if len(received) != 39:
+        raise ValidationError("Question-bank handoff coverage is not 39/39")
+    missing = sorted({
+        question_id
+        for entry in received
+        for question_id in entry.get("question_ids", [])
+        if question_id not in questions
+    })
+    if missing:
+        raise ValidationError(
+            "Handoff points to unknown question IDs: " + ", ".join(missing)
+        )
 
 def validate_routine_links(questions: dict[str, Question]) -> None:
     routine_ids: set[str] = set()
@@ -237,6 +282,8 @@ def main() -> int:
             validate_question(question)
         validate_routine_links(questions)
         if not args.question_id:
+            validate_migration_handoff(questions)
+        if not args.question_id:
             current = INDEX_PATH.read_text(encoding="utf-8") if INDEX_PATH.is_file() else ""
             if current != render_index(questions):
                 raise ValidationError(
@@ -252,7 +299,7 @@ def main() -> int:
             f"{compiled} embedded reference programs, {behaviors} behavior cases"
         )
         return 0
-    except (OSError, QuestionError, ValidationError, subprocess.TimeoutExpired) as exc:
+    except (OSError, QualityError, QuestionError, ValidationError, subprocess.TimeoutExpired) as exc:
         print(f"QUESTION VALIDATION FAILED: {exc}", file=sys.stderr)
         return 1
 

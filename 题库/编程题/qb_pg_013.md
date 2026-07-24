@@ -13,28 +13,71 @@ legacy_features: 无
 
 ## 题目
 
+
+
 输入10个浮点数，调用排序子函数按升序输出。
+
+### 输入格式
+
+10个实数。
+
+### 输出格式
+
+升序输出排序后的实数。
+
+### 数据范围与边界
+
+输入恰含10个实数。
+
+### 样例输入
+
+```text
+3 1 2 4 5 6 7 8 9 0
+```
+
+### 样例输出
+
+```text
+0.00 1.00 2.00 3.00 4.00 5.00 6.00 7.00 8.00 9.00
+```
 
 ## 常见失分点
 
-避免只写核心循环而遗漏输入检查、初始化、边界和输出格式。
+
+
+围绕“浮点数组子函数排序”检查输入合法性、临界值、数组或循环边界，并严格匹配题目规定的输出格式。
 
 <details>
 <summary>参考答案与解析</summary>
 
-**解题思路：** 先明确输入、边界和输出，再把处理过程拆成可检查的步骤。
+**解题思路：** 在子函数中完成数组排序，主函数负责输入输出。
 
-**评分建议：** 输入与边界 2 分，核心算法 5 分，输出 2 分，代码规范 1 分。
+**评分建议：** 输入与边界处理2分，核心算法5分，正确输出2分，代码规范1分。
 
-**测试建议：** 至少覆盖正常值、边界值和一个容易出错的输入。
+**正常与边界测试：** 逆序数据；含相等元素的数据。
 
 ### 完整参考程序
 
 <!-- reference-c:start -->
 ```c
 #include <stdio.h>
-static void sort(double a[],int n){for(int j=0;j<n-1;j++)for(int i=0;i<n-1-j;i++)if(a[i]>a[i+1]){double t=a[i];a[i]=a[i+1];a[i+1]=t;}}
-int main(void){double a[10];for(int i=0;i<10;i++)if(scanf("%lf",&a[i])!=1)return 1;sort(a,10);for(int i=0;i<10;i++)printf("%.2f%c",a[i],i==9?'\n':' ');return 0;}
+static void sort(double a [], int n)
+{
+    for(int j = 0; j < n - 1; j++) for(int i = 0; i < n - 1 - j; i++) if(a [i] > a [i + 1])
+    {
+        double t = a [i];
+        a [i] = a [i + 1];
+        a [i + 1] = t;
+    }
+}
+int main(void)
+{
+    double a [10];
+    for(int i = 0; i < 10; i++) if(scanf("%lf", & a [i]) != 1) return 1;
+    sort(a, 10);
+    for(int i = 0; i < 10; i++) printf("%.2f%c", a [i], i == 9 ? '\n' : ' ');
+    return 0;
+}
 ```
 <!-- reference-c:end -->
 

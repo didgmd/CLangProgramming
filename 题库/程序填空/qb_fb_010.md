@@ -13,25 +13,68 @@ legacy_features: 无
 
 ## 题目
 
-补全数组元素地址、正数条件和求和语句。
+输入10个整数，统计正数的个数并计算正数之和。
+
+输入：10个整数；输出：正数个数与正数之和。
+
+```c
+#include <stdio.h>
+int main(void)
+{
+    int a [10], count = 0, sum = 0;
+    for(int i = 0; i < 10; i++) if(scanf("%d",
+    /*〔1〕*/
+    ) != 1) return 1;
+    for(int i = 0; i < 10; i++) if(
+    /*〔2〕*/
+    )
+    {
+        /*〔3〕*/
+        ;
+        /*〔4〕*/
+        ;
+    }
+    printf("%d %d\n", count, sum);
+    return 0;
+}
+```
 
 ## 常见失分点
 
-不要只填出能编译的表达式；还要验证边界和最终输出。
+
+本题围绕“统计正数”补全条件、数组相关语句。各空代回后应共同检查初始化、循环边界、有效下标或指针范围以及最终输出。
 
 <details>
 <summary>参考答案与解析</summary>
 
-**各空答案：** `&a[i]`；`a[i]>0`；`sum+=a[i]`
+### 各空答案
 
-代回后应检查初始化、循环边界和字符串结束符。
+1. `〔1〕`：`a+i`
+2. `〔2〕`：`a[i]>0`
+3. `〔3〕`：`count++`
+4. `〔4〕`：`sum+=a[i]`
+
+### 关键说明
+
+将各空代回后，程序的声明、初始化、循环边界和输出应形成完整逻辑。验证数据：全为非正数时应输出 `0 0`。
 
 ### 完整参考程序
 
 <!-- reference-c:start -->
 ```c
 #include <stdio.h>
-int main(void){int a[7]={12,9,16,5,7,2,1};for(int k=0;k<7/2;k++){int t=a[k];a[k]=a[6-k];a[6-k]=t;}for(int k=0;k<7;k++)printf("%d%c",a[k],k==6?'\n':' ');return 0;}
+int main(void)
+{
+    int a [10], count = 0, sum = 0;
+    for(int i = 0; i < 10; i++) if(scanf("%d", a + i) != 1) return 1;
+    for(int i = 0; i < 10; i++) if(a [i] > 0)
+    {
+        count++;
+        sum += a [i];
+    }
+    printf("%d %d\n", count, sum);
+    return 0;
+}
 ```
 <!-- reference-c:end -->
 

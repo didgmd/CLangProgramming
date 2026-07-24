@@ -13,28 +13,80 @@ legacy_features: 无
 
 ## 题目
 
+
+
 输入5名学生学号和成绩，按成绩降序选择排序。
+
+### 输入格式
+
+若干学生记录，每条含学号、姓名和成绩。
+
+### 输出格式
+
+按成绩升序输出全部记录。
+
+### 数据范围与边界
+
+记录数不得超过数组容量；交换整个结构体。
+
+### 样例输入
+
+```text
+3
+1 Li 82
+2 Wang 75
+3 Zhao 90
+```
+
+### 样例输出
+
+```text
+2 Wang 75
+1 Li 82
+3 Zhao 90
+```
 
 ## 常见失分点
 
-避免只写核心循环而遗漏输入检查、初始化、边界和输出格式。
+
+
+围绕“结构体选择排序”检查输入合法性、临界值、数组或循环边界，并严格匹配题目规定的输出格式。
 
 <details>
 <summary>参考答案与解析</summary>
 
-**解题思路：** 先明确输入、边界和输出，再把处理过程拆成可检查的步骤。
+**解题思路：** 每轮选择剩余记录中的最低成绩并交换完整记录。
 
-**评分建议：** 输入与边界 2 分，核心算法 5 分，输出 2 分，代码规范 1 分。
+**评分建议：** 输入与边界处理2分，核心算法5分，正确输出2分，代码规范1分。
 
-**测试建议：** 至少覆盖正常值、边界值和一个容易出错的输入。
+**正常与边界测试：** 成绩逆序；含相同成绩。
 
 ### 完整参考程序
 
 <!-- reference-c:start -->
 ```c
 #include <stdio.h>
-struct Student{int id;double score;};
-int main(void){struct Student a[5];for(int i=0;i<5;i++)if(scanf("%d%lf",&a[i].id,&a[i].score)!=2)return 1;for(int i=0;i<4;i++){int k=i;for(int j=i+1;j<5;j++)if(a[j].score>a[k].score)k=j;struct Student t=a[i];a[i]=a[k];a[k]=t;}for(int i=0;i<5;i++)printf("%d %.1f\n",a[i].id,a[i].score);return 0;}
+struct Student
+{
+    int id;
+    double score;
+}
+;
+int main(void)
+{
+    struct Student a [5];
+    for(int i = 0; i < 5; i++) if(scanf("%d%lf", & a [i].id, & a [i].score) != 2) return 1;
+    for(int i = 0; i < 4; i++)
+    {
+        int k = i;
+        for(int j = i + 1; j < 5; j++) if(a [j].score > a [k].score) k = j;
+        struct Student t = a [i];
+        a [i] = a [k];
+        a [k] = t;
+    }
+    for(int i = 0; i < 5; i++) printf("%d %.1f\n", a [i].id, a [i].score);
+    return 0;
+}
 ```
 <!-- reference-c:end -->
 
