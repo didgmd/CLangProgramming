@@ -1,4 +1,4 @@
-name: routines
+name: teaching-content
 
 on:
   push:
@@ -17,6 +17,8 @@ jobs:
           msystem: MINGW64
           update: true
           install: mingw-w64-x86_64-gcc
-      - name: Validate index, migration, MinGW builds, and behavior
+      - name: Validate routines and question bank
         shell: pwsh
-        run: python tools/validate_routines.py --gcc C:\msys64\mingw64\bin\gcc.exe
+        run: |
+          python tools/validate_routines.py --gcc C:\msys64\mingw64\bin\gcc.exe
+          python tools/validate_questions.py --gcc C:\msys64\mingw64\bin\gcc.exe

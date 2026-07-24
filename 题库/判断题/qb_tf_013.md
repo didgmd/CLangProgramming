@@ -1,0 +1,31 @@
+<!-- question-meta
+id: QB-TF-013
+category: 判断题
+chapters: 8
+concepts: 数组名、指针
+difficulty: 基础
+minutes: 2
+related_routines: 无
+compile_mode: none
+legacy_features: 无
+-->
+# 数组名与指针变量
+
+## 题目
+
+判断下列说法是否正确：
+
+> 字符指针变量可以在合法范围内自增，而字符数组名不能作为自增运算的操作数。
+
+## 常见失分点
+
+判断题要关注“只能”“必须”“所有”等绝对化措辞。
+
+<details>
+<summary>参考答案与解析</summary>
+
+**答案：正确。**
+
+指针变量可修改；数组名不是可修改左值。
+
+</details>

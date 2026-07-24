@@ -2,10 +2,21 @@
 /C程序设计 (第五版)_9787302481447.pdf
 /C程序设计 (第五版) 学习辅导_9787302480877.pdf
 
+# Local exam-paper sources. The normalized Markdown question bank is published instead.
+/C语言程序设计（2023-2024-1）A卷（补考）.pdf
+/C语言程序设计（2023-2024-1）B卷（正考）.pdf
+/C语言程序设计（2024-2025-1）A卷（正考）.pdf
+/C语言程序设计（2024-2025-1）B卷（补考）.pdf
+/C语言程序设计（2025-2026-1-R）A卷.doc
+/C语言程序设计（2025-2026-1-R）B卷.doc
+/C语言程序设计2025级试题A.doc
+/C语言程序设计2025级试题B.doc
+
 # Python caches and accidental compiled outputs.
 /__pycache__/
 **/__pycache__/
 *.pyc
 *.exe
 *.obj
-*.o/.routine-validation-tmp/
+*.o
+/.routine-validation-tmp/

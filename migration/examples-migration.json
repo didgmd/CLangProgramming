@@ -11,7 +11,8 @@
     "canonical_project_step",
     "merged_duplicate",
     "question_bank_pending",
-    "discarded_after_review"
+    "discarded_after_review",
+    "question_bank_received"
   ],
   "entries": [
     {
@@ -553,10 +554,13 @@
       ],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "包含未定义求值顺序，适合作为代码诊断题",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-SC-063"
+      ]
     },
     {
       "source_path": "2023-2024-1/03_Sequential/07_ex3_3.c",
@@ -2701,10 +2705,13 @@
       ],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "正确/错误对照或反例，等待题库调试题接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-SC-064"
+      ]
     },
     {
       "source_path": "2023-2024-1/11_Pointer/06_ex_8_05.c",
@@ -2841,10 +2848,13 @@
       ],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "正确/错误对照或反例，等待题库调试题接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-SC-065"
+      ]
     },
     {
       "source_path": "2023-2024-1/11_Pointer/12_ex_8_07_2(正确).c",
@@ -2861,10 +2871,13 @@
       ],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "正确/错误对照或反例，等待题库调试题接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-TF-013"
+      ]
     },
     {
       "source_path": "2023-2024-1/11_Pointer/13_ex_8_08_1.c",
@@ -2929,10 +2942,13 @@
       ],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "正确/错误对照或反例，等待题库调试题接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-TF-014"
+      ]
     },
     {
       "source_path": "2023-2024-1/11_Pointer/16_ex_8_09_2(错误).c",
@@ -2949,10 +2965,13 @@
       ],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "正确/错误对照或反例，等待题库调试题接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-FB-022"
+      ]
     },
     {
       "source_path": "2023-2024-1/11_Pointer/17_ex_8_10_1.c",
@@ -3329,10 +3348,13 @@
       ],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "正确/错误对照或反例，等待题库调试题接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-SC-063"
+      ]
     },
     {
       "source_path": "2023-2024-1/11_Pointer/33_ex_8_21_2(错误).c",
@@ -3349,10 +3371,13 @@
       ],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "正确/错误对照或反例，等待题库调试题接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-SC-064"
+      ]
     },
     {
       "source_path": "2023-2024-1/12_Lab4/Maze01.c",
@@ -4290,10 +4315,16 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "评分或学生作答样例，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-SC-065",
+        "QB-FB-021",
+        "QB-TR-031",
+        "QB-PG-040"
+      ]
     },
     {
       "source_path": "2023-2024-1/16_Assessment/PascalTriangle10.c",
@@ -4307,10 +4338,16 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "评分或学生作答样例，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-SC-065",
+        "QB-FB-021",
+        "QB-TR-031",
+        "QB-PG-040"
+      ]
     },
     {
       "source_path": "2023-2024-1/16_Assessment/PascalTriangle11.c",
@@ -4324,10 +4361,16 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "评分或学生作答样例，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-SC-065",
+        "QB-FB-021",
+        "QB-TR-031",
+        "QB-PG-040"
+      ]
     },
     {
       "source_path": "2023-2024-1/16_Assessment/PascalTriangle12_Correct.c",
@@ -4341,10 +4384,16 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "评分或学生作答样例，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-SC-065",
+        "QB-FB-021",
+        "QB-TR-031",
+        "QB-PG-040"
+      ]
     },
     {
       "source_path": "2023-2024-1/16_Assessment/PascalTriangle2_Correct.c",
@@ -4358,10 +4407,16 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "评分或学生作答样例，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-SC-065",
+        "QB-FB-021",
+        "QB-TR-031",
+        "QB-PG-040"
+      ]
     },
     {
       "source_path": "2023-2024-1/16_Assessment/PascalTriangle3_Correct.c",
@@ -4375,10 +4430,16 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "评分或学生作答样例，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-SC-065",
+        "QB-FB-021",
+        "QB-TR-031",
+        "QB-PG-040"
+      ]
     },
     {
       "source_path": "2023-2024-1/16_Assessment/PascalTriangle4.c",
@@ -4392,10 +4453,16 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "评分或学生作答样例，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-SC-065",
+        "QB-FB-021",
+        "QB-TR-031",
+        "QB-PG-040"
+      ]
     },
     {
       "source_path": "2023-2024-1/16_Assessment/PascalTriangle5.c",
@@ -4409,10 +4476,16 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "评分或学生作答样例，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-SC-065",
+        "QB-FB-021",
+        "QB-TR-031",
+        "QB-PG-040"
+      ]
     },
     {
       "source_path": "2023-2024-1/16_Assessment/PascalTriangle6_Correct.c",
@@ -4426,10 +4499,16 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "评分或学生作答样例，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-SC-065",
+        "QB-FB-021",
+        "QB-TR-031",
+        "QB-PG-040"
+      ]
     },
     {
       "source_path": "2023-2024-1/16_Assessment/PascalTriangle7.c",
@@ -4443,10 +4522,16 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "评分或学生作答样例，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-SC-065",
+        "QB-FB-021",
+        "QB-TR-031",
+        "QB-PG-040"
+      ]
     },
     {
       "source_path": "2023-2024-1/16_Assessment/PascalTriangle8.c",
@@ -4460,10 +4545,16 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "评分或学生作答样例，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-SC-065",
+        "QB-FB-021",
+        "QB-TR-031",
+        "QB-PG-040"
+      ]
     },
     {
       "source_path": "2023-2024-1/16_Assessment/PascalTriangle9.c",
@@ -4477,10 +4568,16 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "评分或学生作答样例，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-SC-065",
+        "QB-FB-021",
+        "QB-TR-031",
+        "QB-PG-040"
+      ]
     },
     {
       "source_path": "2023-2024-1/16_Assessment/PascalTriangle_Standard.c",
@@ -4494,10 +4591,16 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "评分或学生作答样例，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-SC-065",
+        "QB-FB-021",
+        "QB-TR-031",
+        "QB-PG-040"
+      ]
     },
     {
       "source_path": "2024-2025-1/20240920/1.1.c",
@@ -6941,10 +7044,13 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "未初始化指针反例，等待题库调试题接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-TF-013"
+      ]
     },
     {
       "source_path": "2024-2025-1/20241112_1115/In-Class.c",
@@ -7414,10 +7520,13 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "以题目描述为入口的算法解答，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-PG-023"
+      ]
     },
     {
       "source_path": "2024-2025-1/Examples/10.c",
@@ -7431,10 +7540,13 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "以题目描述为入口的算法解答，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-PG-024"
+      ]
     },
     {
       "source_path": "2024-2025-1/Examples/11.c",
@@ -7448,10 +7560,13 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "以题目描述为入口的算法解答，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-PG-025"
+      ]
     },
     {
       "source_path": "2024-2025-1/Examples/12.1.c",
@@ -7465,10 +7580,13 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "以题目描述为入口的算法解答，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-PG-026"
+      ]
     },
     {
       "source_path": "2024-2025-1/Examples/12.2.c",
@@ -7482,10 +7600,13 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "以题目描述为入口的算法解答，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-PG-027"
+      ]
     },
     {
       "source_path": "2024-2025-1/Examples/13.1.c",
@@ -7499,10 +7620,13 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "以题目描述为入口的算法解答，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-PG-028"
+      ]
     },
     {
       "source_path": "2024-2025-1/Examples/13.2.c",
@@ -7516,10 +7640,13 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "以题目描述为入口的算法解答，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-PG-029"
+      ]
     },
     {
       "source_path": "2024-2025-1/Examples/14.c",
@@ -7533,10 +7660,13 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "以题目描述为入口的算法解答，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-PG-030"
+      ]
     },
     {
       "source_path": "2024-2025-1/Examples/15.c",
@@ -7550,10 +7680,13 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "以题目描述为入口的算法解答，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-PG-031"
+      ]
     },
     {
       "source_path": "2024-2025-1/Examples/16.1.c",
@@ -7567,10 +7700,13 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "以题目描述为入口的算法解答，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-PG-032"
+      ]
     },
     {
       "source_path": "2024-2025-1/Examples/16.2.c",
@@ -7584,10 +7720,13 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "以题目描述为入口的算法解答，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-PG-033"
+      ]
     },
     {
       "source_path": "2024-2025-1/Examples/17.c",
@@ -7601,10 +7740,13 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "以题目描述为入口的算法解答，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-PG-034"
+      ]
     },
     {
       "source_path": "2024-2025-1/Examples/18.c",
@@ -7618,10 +7760,13 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "以题目描述为入口的算法解答，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-PG-035"
+      ]
     },
     {
       "source_path": "2024-2025-1/Examples/2.c",
@@ -7635,10 +7780,13 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "以题目描述为入口的算法解答，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-PG-036"
+      ]
     },
     {
       "source_path": "2024-2025-1/Examples/3.c",
@@ -7652,10 +7800,13 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "以题目描述为入口的算法解答，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-PG-037"
+      ]
     },
     {
       "source_path": "2024-2025-1/Examples/4.c",
@@ -7669,10 +7820,13 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "以题目描述为入口的算法解答，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-PG-038"
+      ]
     },
     {
       "source_path": "2024-2025-1/Examples/7.c",
@@ -7686,10 +7840,13 @@
       "knowledge_points": [],
       "question_like": true,
       "near_duplicate_group": null,
-      "action": "question_bank_pending",
-      "reason": "以题目描述为入口的算法解答，等待题库板块接收",
+      "action": "question_bank_received",
+      "reason": "已重构为按题型组织的学生刷题内容",
       "final_id": null,
-      "destination": null
+      "destination": null,
+      "question_ids": [
+        "QB-PG-039"
+      ]
     }
   ]
 }

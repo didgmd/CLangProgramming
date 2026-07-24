@@ -28,6 +28,7 @@ ALLOWED_ACTIONS = {
     "canonical_project_step",
     "merged_duplicate",
     "question_bank_pending",
+    "question_bank_received",
     "discarded_after_review",
 }
 FEATURE_PATTERNS = {
@@ -208,6 +209,15 @@ def validate_migration(routines: dict[str, Routine]) -> dict[str, object]:
     if migration.get("source_count") != 334 or migration.get("coverage_count") != 334 or len(entries) != 334:
         raise ValidationError("Migration manifest must preserve 334/334 coverage")
 
+    question_ids = set()
+    question_root = ROOT / "题库"
+    if question_root.is_dir():
+        for question_path in question_root.rglob("*.md"):
+            text = question_path.read_text(encoding="utf-8")
+            match = re.search(r"^id: (QB-[A-Z]{2}-\d{3})$", text, re.MULTILINE)
+            if match:
+                question_ids.add(match.group(1))
+
     source_paths: set[str] = set()
     for entry in entries:
         source_name = entry.get("source_path")
@@ -228,6 +238,15 @@ def validate_migration(routines: dict[str, Routine]) -> dict[str, object]:
             destination = entry.get("destination")
             if not isinstance(destination, str) or not destination.startswith("例程/"):
                 raise ValidationError(f"Migration destination is not under 例程/: {source_name}")
+        elif action == "question_bank_received":
+            if entry.get("final_id") is not None or entry.get("destination") is not None:
+                raise ValidationError(f"Question-bank item has routine destination: {source_name}")
+            received = entry.get("question_ids")
+            if not isinstance(received, list) or not received:
+                raise ValidationError(f"Missing received question IDs for {source_name}")
+            unknown = [item for item in received if item not in question_ids]
+            if unknown:
+                raise ValidationError(f"Unknown question IDs for {source_name}: {', '.join(unknown)}")
         elif entry.get("final_id") is not None or entry.get("destination") is not None:
             raise ValidationError(f"Excluded migration item has a destination: {source_name}")
 
