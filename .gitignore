@@ -12,6 +12,9 @@
 /C语言程序设计2025级试题A.doc
 /C语言程序设计2025级试题B.doc
 
+# Local syllabus source. The normalized course schedule is published under 课件/.
+/C语言程序设计 - 教学大纲.doc
+
 # Python caches and accidental compiled outputs.
 /__pycache__/
 **/__pycache__/
