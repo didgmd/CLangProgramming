@@ -1,0 +1,11 @@
+# Local textbook references. These files are intentionally never published.
+/C程序设计 (第五版)_9787302481447.pdf
+/C程序设计 (第五版) 学习辅导_9787302480877.pdf
+
+# Python caches and accidental compiled outputs.
+/__pycache__/
+**/__pycache__/
+*.pyc
+*.exe
+*.obj
+*.o/.routine-validation-tmp/

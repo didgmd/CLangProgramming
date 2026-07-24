@@ -1,0 +1,3 @@
+# The repository's Python maintenance tools use only the Python standard library.
+# No third-party Python packages are required.
+

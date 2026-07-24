@@ -1,0 +1,22 @@
+name: routines
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  mingw:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: mingw-w64-x86_64-gcc
+      - name: Validate index, migration, MinGW builds, and behavior
+        shell: pwsh
+        run: python tools/validate_routines.py --gcc C:\msys64\mingw64\bin\gcc.exe
