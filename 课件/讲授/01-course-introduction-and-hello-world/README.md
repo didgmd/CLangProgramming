@@ -1,6 +1,6 @@
 # CW-L01 课程介绍、编译流程、Hello World
 
-- 状态：`planned`
+- 状态：`in_progress`
 - 教材章节：第1章
 - 课时：2课时，共90分钟
 - 先修课次：无
@@ -20,10 +20,11 @@
 
 本课不讲：不展开变量、输入、表达式和控制结构的系统语法。
 
-## 未来交付物
+## 课程引入与交付物
 
-- `index.html`：Hello World交互式课件。
-- `course-introduction.pptx`：gpt-image-2图像式课程引入。
-- `image-intro-prompts.md`：页面清单与提示词。
+- [课程引入讨论稿](课程引入讨论.md)：记录AI时代学习C语言的教学论证、PPT叙事和图像生成约束。
+- [course-introduction.pptx](course-introduction.pptx)：8页、16:9的gpt-image-2课程引入PPTX，已完成。
+- [image-intro-prompts.md](image-intro-prompts.md)：8页视觉提示词和嵌入说明，已完成。
+- `index.html`：Hello World交互式课件，待制作。
 
-正式制作前必须再次核对稳定ID、题面和例程源码；正式HTML需符合[课件制作规范](../../制作规范.md)。
+正式HTML制作前必须再次核对稳定ID、题面和例程源码；PPTX与HTML均需符合[课件制作规范](../../制作规范.md)。
