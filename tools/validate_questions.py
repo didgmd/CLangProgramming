@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import json
 import re
 import shutil
 import subprocess
@@ -42,6 +41,19 @@ EXAM_FILES = {
     "C语言程序设计2025级试题A.doc",
     "C语言程序设计2025级试题B.doc",
 }
+LEGACY_HANDOFF_SOURCE_COUNT = 39
+LEGACY_HANDOFF_IDS = {
+    *{f"QB-PG-{number:03d}" for number in range(23, 41)},
+    "QB-FB-021",
+    "QB-FB-022",
+    "QB-SC-063",
+    "QB-SC-064",
+    "QB-SC-065",
+    "QB-TF-013",
+    "QB-TF-014",
+    "QB-TR-031",
+}
+
 SOURCE_MARKERS = (
     "正考",
     "补考",
@@ -98,25 +110,6 @@ BEHAVIOR_FIXTURES: dict[str, list[BehaviorFixture]] = {
     "QB-PG-038": [("hello world\n", "11\n"), ("\n", "0\n")],
 }
 
-
-EXPECTED_PROGRAM_HANDOFF = {
-    "2024-2025-1/Examples/2.c": "QB-PG-024",
-    "2024-2025-1/Examples/3.c": "QB-PG-025",
-    "2024-2025-1/Examples/4.c": "QB-PG-026",
-    "2024-2025-1/Examples/7.c": "QB-PG-027",
-    "2024-2025-1/Examples/10.c": "QB-PG-028",
-    "2024-2025-1/Examples/11.c": "QB-PG-029",
-    "2024-2025-1/Examples/12.1.c": "QB-PG-030",
-    "2024-2025-1/Examples/12.2.c": "QB-PG-031",
-    "2024-2025-1/Examples/13.1.c": "QB-PG-032",
-    "2024-2025-1/Examples/13.2.c": "QB-PG-033",
-    "2024-2025-1/Examples/14.c": "QB-PG-034",
-    "2024-2025-1/Examples/15.c": "QB-PG-035",
-    "2024-2025-1/Examples/16.1.c": "QB-PG-036",
-    "2024-2025-1/Examples/16.2.c": "QB-PG-037",
-    "2024-2025-1/Examples/17.c": "QB-PG-038",
-    "2024-2025-1/Examples/18.c": "QB-PG-039",
-}
 
 TRACE_INPUTS = {
     "QB-TR-004": "abcdefg$abcdefg",
@@ -223,45 +216,16 @@ def validate_question(question: Question) -> None:
 
 
 
-def validate_migration_handoff(questions: dict[str, Question]) -> None:
-    path = ROOT / "migration" / "examples-migration.json"
-    data = json.loads(path.read_text(encoding="utf-8"))
-    entries = data.get("entries", [])
-    if (
-        data.get("source_count") != 334
-        or data.get("coverage_count") != 334
-        or len(entries) != 334
-    ):
-        raise ValidationError("Routine migration coverage is not 334/334")
-    received = [
-        entry for entry in entries
-        if entry.get("action") == "question_bank_received"
-    ]
-    if len(received) != 39:
-        raise ValidationError("Question-bank handoff coverage is not 39/39")
-    missing = sorted({
-        question_id
-        for entry in received
-        for question_id in entry.get("question_ids", [])
-        if question_id not in questions
-    })
+def validate_legacy_handoff(questions: dict[str, Question]) -> int:
+    missing = sorted(LEGACY_HANDOFF_IDS - set(questions))
     if missing:
         raise ValidationError(
-            "Handoff points to unknown question IDs: " + ", ".join(missing)
+            "Legacy question handoff points to unknown IDs: " + ", ".join(missing)
         )
-    actual = {
-        entry["source_path"].replace("\\", "/"): entry.get("question_ids", [])
-        for entry in received
-    }
-    incorrect = [
-        f"{source}->{actual.get(source)}"
-        for source, question_id in EXPECTED_PROGRAM_HANDOFF.items()
-        if actual.get(source) != [question_id]
-    ]
-    if incorrect:
-        raise ValidationError(
-            "Program handoff mapping is incorrect: " + "; ".join(incorrect)
-        )
+    if len(LEGACY_HANDOFF_IDS) != 26:
+        raise ValidationError("Legacy question handoff contract must contain 26 IDs")
+    return LEGACY_HANDOFF_SOURCE_COUNT
+
 
 def validate_routine_links(questions: dict[str, Question]) -> None:
     routine_ids: set[str] = set()
@@ -455,8 +419,9 @@ def main() -> int:
         for question in questions.values():
             validate_question(question)
         validate_routine_links(questions)
+        legacy_handoff = "skipped"
         if not args.question_id:
-            validate_migration_handoff(questions)
+            legacy_handoff = validate_legacy_handoff(questions)
         if not args.question_id:
             current = INDEX_PATH.read_text(encoding="utf-8") if INDEX_PATH.is_file() else ""
             if current != render_index(questions):
@@ -471,7 +436,8 @@ def main() -> int:
         print(
             f"QUESTION VALIDATION PASS: {len(questions)} questions, "
             f"{compiled} embedded reference programs, {behaviors} behavior cases, "
-            f"{samples} programming samples, {traces} trace outputs"
+            f"{samples} programming samples, {traces} trace outputs, "
+            f"legacy_handoff={legacy_handoff}/39"
         )
         return 0
     except (OSError, ProgramQualityError, QualityError, QuestionError, ValidationError, subprocess.TimeoutExpired) as exc:

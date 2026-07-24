@@ -97,6 +97,8 @@ def render_index(routines: dict[str, Routine] | None = None) -> str:
         f"当前共 {len(routines)} 个例程：{strict_count} 个 `c11-strict`，"
         f"{textbook_count} 个 `gnu99-textbook`。",
         "",
+        "源码头中的 `来源` 字段保留历史 provenance；旧学期路径不再是工作区目录，需通过 Git 历史恢复原始文件。",
+        "",
         "## 最短使用路径",
         "",
         "```powershell",

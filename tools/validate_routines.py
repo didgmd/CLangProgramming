@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-"""Validate routine metadata, migration coverage, MinGW builds, and behavior."""
+"""Validate routine metadata, repository boundaries, MinGW builds, and behavior."""
 
 from __future__ import annotations
 
 import argparse
-import hashlib
-import json
 import re
 import shutil
 import subprocess
@@ -18,18 +16,10 @@ from generate_routine_index import INDEX_PATH, render_index
 from routine_common import MetadataError, ROOT, ROUTINES_ROOT, Routine, scan_routines
 
 
-MIGRATION_PATH = ROOT / "migration" / "examples-migration.json"
-PDF_NAMES = {
+LOCAL_REFERENCE_NAMES = {
     "C程序设计 (第五版)_9787302481447.pdf",
     "C程序设计 (第五版) 学习辅导_9787302480877.pdf",
-}
-ALLOWED_ACTIONS = {
-    "canonical_example",
-    "canonical_project_step",
-    "merged_duplicate",
-    "question_bank_pending",
-    "question_bank_received",
-    "discarded_after_review",
+    "C语言程序设计 - 教学大纲.doc",
 }
 FEATURE_PATTERNS = {
     "gets": r"\bgets\s*\(",
@@ -80,13 +70,6 @@ def run(
     )
 
 
-def load_json(path: Path) -> dict[str, object]:
-    try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
-        raise ValidationError(f"Cannot read {path.relative_to(ROOT)}: {exc}") from exc
-
-
 def detect_features(text: str) -> set[str]:
     return {name for name, pattern in FEATURE_PATTERNS.items() if re.search(pattern, text)}
 
@@ -131,21 +114,29 @@ def validate_layout() -> None:
             + ", ".join(str(path.relative_to(ROOT)) for path in residue_files[:20])
         )
 
-def validate_pdf_boundary() -> None:
+def validate_reference_boundary() -> None:
     git = shutil.which("git")
     if not git:
-        raise ValidationError("git is required for the PDF boundary check")
-    tracked = run([git, "ls-files", "--", "*.pdf"], cwd=ROOT)
+        raise ValidationError("git is required for the local reference boundary check")
+    tracked = run([git, "ls-files", "--", "*.pdf", "*.doc"], cwd=ROOT)
     if tracked.returncode != 0:
-        raise ValidationError(f"Cannot inspect tracked PDFs: {tracked.stderr.strip()}")
-    tracked_names = {Path(line).name for line in tracked.stdout.splitlines() if line.strip()}
-    forbidden = tracked_names & PDF_NAMES
+        raise ValidationError(
+            f"Cannot inspect tracked reference files: {tracked.stderr.strip()}"
+        )
+    tracked_names = {
+        Path(line).name for line in tracked.stdout.splitlines() if line.strip()
+    }
+    forbidden = tracked_names & LOCAL_REFERENCE_NAMES
     if forbidden:
-        raise ValidationError("Local textbook PDF is tracked: " + ", ".join(sorted(forbidden)))
-    for name in PDF_NAMES:
+        raise ValidationError(
+            "Local reference file is tracked: " + ", ".join(sorted(forbidden))
+        )
+    for name in LOCAL_REFERENCE_NAMES:
         ignored = run([git, "check-ignore", "-q", "--", name], cwd=ROOT)
         if ignored.returncode != 0:
-            raise ValidationError(f"Textbook PDF is not protected by .gitignore: {name}")
+            raise ValidationError(
+                f"Local reference file is not protected by .gitignore: {name}"
+            )
 
 
 def validate_index(routines: dict[str, Routine]) -> None:
@@ -201,63 +192,19 @@ def validate_routine_structure(
             raise ValidationError(f"MinGW API routine has wrong mode: {routine.routine_id}")
 
 
-def validate_migration(routines: dict[str, Routine]) -> dict[str, object]:
-    migration = load_json(MIGRATION_PATH)
-    entries = migration.get("entries")
-    if not isinstance(entries, list):
-        raise ValidationError("migration.entries must be an array")
-    if migration.get("source_count") != 334 or migration.get("coverage_count") != 334 or len(entries) != 334:
-        raise ValidationError("Migration manifest must preserve 334/334 coverage")
-
-    question_ids = set()
-    question_root = ROOT / "题库"
-    if question_root.is_dir():
-        for question_path in question_root.rglob("*.md"):
-            text = question_path.read_text(encoding="utf-8")
-            match = re.search(r"^id: (QB-[A-Z]{2}-\d{3})$", text, re.MULTILINE)
-            if match:
-                question_ids.add(match.group(1))
-
-    source_paths: set[str] = set()
-    for entry in entries:
-        source_name = entry.get("source_path")
-        if not isinstance(source_name, str) or source_name in source_paths:
-            raise ValidationError(f"Invalid or duplicate migration source: {source_name}")
-        source_paths.add(source_name)
-        source = ROOT / source_name
-        if not source.is_file():
-            raise ValidationError(f"Original source is missing: {source_name}")
-        if hashlib.sha256(source.read_bytes()).hexdigest() != entry.get("sha256"):
-            raise ValidationError(f"Original source changed after migration: {source_name}")
-        action = entry.get("action")
-        if action not in ALLOWED_ACTIONS:
-            raise ValidationError(f"Invalid migration action for {source_name}: {action}")
-        if action in {"canonical_example", "canonical_project_step", "merged_duplicate"}:
-            if entry.get("final_id") not in routines:
-                raise ValidationError(f"Missing migration final ID for {source_name}")
-            destination = entry.get("destination")
-            if not isinstance(destination, str) or not destination.startswith("例程/"):
-                raise ValidationError(f"Migration destination is not under 例程/: {source_name}")
-        elif action == "question_bank_received":
-            if entry.get("final_id") is not None or entry.get("destination") is not None:
-                raise ValidationError(f"Question-bank item has routine destination: {source_name}")
-            received = entry.get("question_ids")
-            if not isinstance(received, list) or not received:
-                raise ValidationError(f"Missing received question IDs for {source_name}")
-            unknown = [item for item in received if item not in question_ids]
-            if unknown:
-                raise ValidationError(f"Unknown question IDs for {source_name}: {', '.join(unknown)}")
-        elif entry.get("final_id") is not None or entry.get("destination") is not None:
-            raise ValidationError(f"Excluded migration item has a destination: {source_name}")
-
-    actual_sources = {
-        path.relative_to(ROOT).as_posix()
-        for root_name in ("2023-2024-1", "2024-2025-1")
-        for path in (ROOT / root_name).rglob("*.c")
-    }
-    if actual_sources != source_paths:
-        raise ValidationError("Migration manifest does not exactly cover both semester trees")
-    return migration
+def validate_retired_sources_absent() -> None:
+    retired = [
+        ROOT / "2023-2024-1",
+        ROOT / "2024-2025-1",
+        ROOT / "migration",
+        ROOT / "tools" / "migrate_examples.py",
+        ROOT / "tools" / "source_fixes.py",
+    ]
+    existing = [str(path.relative_to(ROOT)) for path in retired if path.exists()]
+    if existing:
+        raise ValidationError(
+            "Retired migration sources remain: " + ", ".join(sorted(existing))
+        )
 
 
 def validate_mingw(gcc_argument: str) -> tuple[str, str]:
@@ -406,8 +353,8 @@ def main() -> int:
         validate_layout()
         routines, texts = scan_routines()
         validate_routine_structure(routines, texts)
-        migration = validate_migration(routines)
-        validate_pdf_boundary()
+        validate_retired_sources_absent()
+        validate_reference_boundary()
         validate_index(routines)
         if args.routine_id and args.routine_id not in routines:
             raise ValidationError(f"Unknown routine ID: {args.routine_id}")
@@ -415,7 +362,7 @@ def main() -> int:
         compiled, tested = compile_and_test(routines, gcc, args.routine_id)
         scope = args.routine_id or "all"
         print(
-            f"PASS: routines={len(routines)}, migration={migration['coverage_count']}/334, "
+            f"PASS: routines={len(routines)}, historical_sources=git-history, "
             f"compiler=MinGW GCC {version}, scope={scope}, compiled={compiled}, behaviors={tested}"
         )
         return 0
