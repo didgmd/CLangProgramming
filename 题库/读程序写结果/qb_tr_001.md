@@ -21,8 +21,10 @@ legacy_features: 无
 int main(void)
 {
     int a = 1, b = 3, c = 5;
-    if(c = a + b) printf("yes");
-    else printf("no");
+    if (c = a + b)
+        printf("yes");
+    else
+        printf("no");
     return 0;
 }
 ```

@@ -21,20 +21,15 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    for(int n = 100;
-    /*〔1〕*/
-    ; n++)
+    for (int n = 100; /*〔1〕*/ ; n++)
     {
         int prime = 1;
-        for(int i = 2;
-        /*〔2〕*/
-        ; i++) if(
-        /*〔3〕*/
-        )
-        {
-            prime = 0;
-            break;
-        }
+        for (int i = 2; /*〔2〕*/ ; i++)
+            if ( /*〔3〕*/ )
+            {
+                prime = 0;
+                break;
+            }
         /*〔4〕*/
         printf("%d ", n);
     }
@@ -69,15 +64,21 @@ int main(void)
 #include <stdio.h>
 int main(void)
 {
-    for(int n = 100; n <= 200; n++)
+    for (int n = 100; n <= 200; n++)
     {
         int prime = 1;
-        for(int i = 2; i * i <= n; i++) if(n % i == 0)
+        for (int i = 2; i * i <= n; i++)
         {
-            prime = 0;
-            break;
+            if (n % i == 0)
+            {
+                prime = 0;
+                break;
+            }
         }
-        if(prime) printf("%d ", n);
+        if (prime)
+        {
+            printf("%d ", n);
+        }
     }
     putchar('\n');
     return 0;

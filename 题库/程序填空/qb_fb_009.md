@@ -21,18 +21,14 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    double a [8],
-    /*〔1〕*/
-    ;
-    for(int i = 0; i < 8; i++)
+    double a[8], /*〔1〕*/;
+    for (int i = 0; i < 8; i++)
     {
-        if(scanf("%lf", & a [i]) != 1) return 1;
-        /*〔2〕*/
-        ;
+        if (scanf("%lf", &a[i]) != 1)
+        return 1;
+        /*〔2〕*/;
     }
-    printf("%.2f\n",
-    /*〔3〕*/
-    );
+    printf("%.2f\n", /*〔3〕*/);
     return 0;
 }
 ```
@@ -62,11 +58,14 @@ int main(void)
 #include <stdio.h>
 int main(void)
 {
-    double a [8], sum = 0.0;
-    for(int i = 0; i < 8; i++)
+    double a[8], sum = 0.0;
+    for (int i = 0; i < 8; i++)
     {
-        if(scanf("%lf", & a [i]) != 1) return 1;
-        sum += a [i];
+        if (scanf("%lf", &a[i]) != 1)
+        {
+            return 1;
+        }
+        sum += a[i];
     }
     printf("%.2f\n", sum / 8.0);
     return 0;

@@ -21,25 +21,15 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    int a [7] =
+    int a[7] = {12, 9, 16, 5, 7, 2, 1};
+    for (int k = 0; /*〔1〕*/ ; k++)
     {
-        12, 9, 16, 5, 7, 2, 1
+        int t = /*〔2〕*/;
+        a[k] = /*〔3〕*/;
+        /*〔4〕*/;
     }
-    ;
-    for(int k = 0;
-    /*〔1〕*/
-    ; k++)
-    {
-        int t =
-        /*〔2〕*/
-        ;
-        a [k] =
-        /*〔3〕*/
-        ;
-        /*〔4〕*/
-        ;
-    }
-    for(int k = 0; k < 7; k++) printf("%d%c", a [k], k == 6 ? '\n' : ' ');
+    for (int k = 0; k < 7; k++)
+    printf("%d%c", a[k], k == 6 ? '\n' : ' ');
     return 0;
 }
 ```
@@ -70,18 +60,17 @@ int main(void)
 #include <stdio.h>
 int main(void)
 {
-    int a [7] =
+    int a[7] = {12, 9, 16, 5, 7, 2, 1};
+    for (int k = 0; k < 7 / 2; k++)
     {
-        12, 9, 16, 5, 7, 2, 1
+        int t = a[k];
+        a[k] = a[6 - k];
+        a[6 - k] = t;
     }
-    ;
-    for(int k = 0; k < 7 / 2; k++)
+    for (int k = 0; k < 7; k++)
     {
-        int t = a [k];
-        a [k] = a [6 - k];
-        a [6 - k] = t;
+        printf("%d%c", a[k], k == 6 ? '\n' : ' ');
     }
-    for(int k = 0; k < 7; k++) printf("%d%c", a [k], k == 6 ? '\n' : ' ');
     return 0;
 }
 ```

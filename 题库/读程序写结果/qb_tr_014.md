@@ -20,8 +20,10 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    char s [] = "hello";
-    for(int i = 0; s [i]; i++) if(i % 2 == 0) s [i] -= 32;
+    char s[] = "hello";
+    for (int i = 0; s[i]; i++)
+        if (i % 2 == 0)
+            s[i] -= 32;
     puts(s);
     return 0;
 }

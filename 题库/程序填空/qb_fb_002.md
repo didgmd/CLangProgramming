@@ -21,23 +21,14 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    int a [7] [7] =
+    int a[7][7] = {0};
+    for (int i = 0; i < 7; i++)
     {
-        0
-    }
-    ;
-    for(int i = 0; i < 7; i++)
-    {
-        /*〔1〕*/
-        ;
-        for(int j = 1;
-        /*〔2〕*/
-        ; j++) a [i] [j] =
-        /*〔3〕*/
-        ;
-        for(int j = 0;
-        /*〔4〕*/
-        ; j++) printf("%d%c", a [i] [j], j == i ? '\n' : ' ');
+        /*〔1〕*/;
+        for (int j = 1; /*〔2〕*/ ; j++)
+            a[i][j] = /*〔3〕*/;
+        for (int j = 0; /*〔4〕*/ ; j++)
+            printf("%d%c", a[i][j], j == i ? '\n' : ' ');
     }
     return 0;
 }
@@ -69,16 +60,18 @@ int main(void)
 #include <stdio.h>
 int main(void)
 {
-    int a [7] [7] =
+    int a[7][7] = {0};
+    for (int i = 0; i < 7; i++)
     {
-        0
-    }
-    ;
-    for(int i = 0; i < 7; i++)
-    {
-        a [i] [0] = a [i] [i] = 1;
-        for(int j = 1; j < i; j++) a [i] [j] = a [i - 1] [j - 1] + a [i - 1] [j];
-        for(int j = 0; j <= i; j++) printf("%d%c", a [i] [j], j == i ? '\n' : ' ');
+        a[i][0] = a[i][i] = 1;
+        for (int j = 1; j < i; j++)
+        {
+            a[i][j] = a[i - 1][j - 1] + a[i - 1][j];
+        }
+        for (int j = 0; j <= i; j++)
+        {
+            printf("%d%c", a[i][j], j == i ? '\n' : ' ');
+        }
     }
     return 0;
 }

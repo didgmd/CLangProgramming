@@ -21,19 +21,13 @@ legacy_features: 无
 #include <stdio.h>
 void copy(char * d, const char * s)
 {
-    while((
-    /*〔1〕*/
-    =
-    /*〔2〕*/
-    ) !=
-    /*〔3〕*/
-    )
+    while (( /*〔1〕*/ = /*〔2〕*/ ) != /*〔3〕*/ )
     {
     }
 }
 int main(void)
 {
-    char d [100];
+    char d[100];
     copy(d, "pointer copy");
     puts(d);
     return 0;
@@ -65,13 +59,13 @@ int main(void)
 #include <stdio.h>
 void copy(char * d, const char * s)
 {
-    while((* d++ = * s++) != '\0')
+    while ((* d++ = * s++) != '\0')
     {
     }
 }
 int main(void)
 {
-    char d [100];
+    char d[100];
     copy(d, "pointer copy");
     puts(d);
     return 0;

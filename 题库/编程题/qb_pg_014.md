@@ -64,13 +64,13 @@ legacy_features: 无
 int main(void)
 {
     int n;
-    if(scanf("%d", & n) != 1 || n < 1000 || n > 9999)
+    if (scanf("%d", &n) != 1 || n < 1000 || n > 9999)
     {
         puts("invalid");
         return 0;
     }
     int sum = 0;
-    for(int x = n; x; x /= 10)
+    for (int x = n; x; x /= 10)
     {
         int d = x % 10;
         sum += d * d * d;

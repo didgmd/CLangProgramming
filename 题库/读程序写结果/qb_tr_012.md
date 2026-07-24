@@ -26,12 +26,8 @@ int main(void)
         double score;
         const char * name;
     }
-    s =
-    {
-        1, 89.5, "Wang"
-    }
-    , * p = & s;
-    printf("%c,%s\n", * p->name, & p->name [2]);
+    s = {1, 89.5, "Wang"}, * p = &s;
+    printf("%c,%s\n", * p->name, &p->name[2]);
     return 0;
 }
 ```

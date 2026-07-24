@@ -65,17 +65,41 @@ legacy_features: 无
 int main(void)
 {
     double a, b, c;
-    if(scanf("%lf%lf%lf", & a, & b, & c) != 3) return 1;
-    if(fabs(a) < 1e-12)
+    if (scanf("%lf%lf%lf", &a, &b, &c) != 3)
     {
-        if(fabs(b) < 1e-12) puts(fabs(c) < 1e-12 ? "any" : "none");
-        else printf("%.6f\n", - c / b);
+        return 1;
+    }
+    if (fabs(a) < 1e-12)
+    {
+        if (fabs(b) < 1e-12)
+        {
+            puts(fabs(c) < 1e-12 ? "any" : "none");
+        }
+        else
+        {
+            printf("%.6f\n", -c / b);
+        }
         return 0;
     }
     double d = b * b - 4 * a * c;
-    if(d > 1e-12) printf("%.6f %.6f\n", (- b + sqrt(d)) / (2 * a), (- b - sqrt(d)) / (2 * a));
-    else if(fabs(d) <= 1e-12) printf("%.6f\n", - b / (2 * a));
-    else printf("%.6f+%.6fi %.6f-%.6fi\n", - b / (2 * a), sqrt(- d) / fabs(2 * a), - b / (2 * a), sqrt(- d) / fabs(2 * a));
+    if (d > 1e-12)
+    {
+        printf("%.6f %.6f\n", (-b + sqrt(d)) / (2 * a), (-b - sqrt(d)) / (2 * a));
+    }
+    else if (fabs(d) <= 1e-12)
+    {
+        printf("%.6f\n", -b / (2 * a));
+    }
+    else
+    {
+        printf(
+            "%.6f+%.6fi %.6f-%.6fi\n",
+            -b / (2 * a),
+            sqrt(-d) / fabs(2 * a),
+            -b / (2 * a),
+            sqrt(-d) / fabs(2 * a)
+        );
+    }
     return 0;
 }
 ```

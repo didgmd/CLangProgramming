@@ -22,19 +22,16 @@ legacy_features: 无
 #include <string.h>
 int main(void)
 {
-    char s [50], d [100];
-    if(scanf("%49s", s) != 1) return 1;
+    char s[50], d[100];
+    if (scanf("%49s", s) != 1)
+    return 1;
     int n = (int)
-    /*〔1〕*/
-    ;
-    for(int i = 0; i < n; i++)
-    /*〔2〕*/
-    ;
-    for(int i = 0; i < n; i++) d [n + i] =
-    /*〔3〕*/
-    ;
-    /*〔4〕*/
-    ;
+    /*〔1〕*/;
+    for (int i = 0; i < n; i++)
+    /*〔2〕*/;
+    for (int i = 0; i < n; i++)
+    d[n + i] = /*〔3〕*/;
+    /*〔4〕*/;
     puts(d);
     return 0;
 }
@@ -67,12 +64,21 @@ int main(void)
 #include <string.h>
 int main(void)
 {
-    char s [50], d [100];
-    if(scanf("%49s", s) != 1) return 1;
+    char s[50], d[100];
+    if (scanf("%49s", s) != 1)
+    {
+        return 1;
+    }
     int n = (int) strlen(s);
-    for(int i = 0; i < n; i++) d [i] = s [i];
-    for(int i = 0; i < n; i++) d [n + i] = s [n - 1 - i];
-    d [2 * n] = '\0';
+    for (int i = 0; i < n; i++)
+    {
+        d[i] = s[i];
+    }
+    for (int i = 0; i < n; i++)
+    {
+        d[n + i] = s[n - 1 - i];
+    }
+    d[2 * n] = '\0';
     puts(d);
     return 0;
 }

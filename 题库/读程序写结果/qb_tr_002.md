@@ -21,8 +21,11 @@ legacy_features: 无
 int main(void)
 {
     int a = 2, b = 3, c = 1;
-    if(a > b) if(a > c) printf("%d\n", a);
-    else printf("%d\n", b);
+    if (a > b)
+        if (a > c)
+            printf("%d\n", a);
+        else
+            printf("%d\n", b);
     printf("over!\n");
     return 0;
 }

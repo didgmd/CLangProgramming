@@ -20,9 +20,11 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    int a [10], k = 0;
-    for(int i = 0; i < 10; i++) a [i] = i;
-    for(int i = 1; i < 4; i++) k += a [i] + i;
+    int a[10], k = 0;
+    for (int i = 0; i < 10; i++)
+        a[i] = i;
+    for (int i = 1; i < 4; i++)
+        k += a[i] + i;
     printf("%d\n", k);
     return 0;
 }

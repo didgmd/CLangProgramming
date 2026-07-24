@@ -21,8 +21,11 @@ legacy_features: 无
 int main(void)
 {
     int a = 1, b = 0, c = 0;
-    if(a < b) if(b < 0) c = 0;
-    else c++;
+    if (a < b)
+        if (b < 0)
+            c = 0;
+        else
+            c++;
     printf("%d\n", c);
     return 0;
 }

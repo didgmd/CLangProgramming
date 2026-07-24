@@ -21,17 +21,14 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    int a [4] =
-    {
-        2, 4, 6, 8
-    }
-    ;
+    int a[4] = {2, 4, 6, 8};
     int *
-    /*〔1〕*/
-    ;
-    while(p < a + 4) p++;
+    /*〔1〕*/;
+    while (p < a + 4)
+    p++;
     p = a;
-    for(int i = 0; i < 4; i++) printf("%d%c", p [i], i == 3 ? '\n' : ' ');
+    for (int i = 0; i < 4; i++)
+    printf("%d%c", p[i], i == 3 ? '\n' : ' ');
     return 0;
 }
 ```
@@ -59,15 +56,17 @@ int main(void)
 #include <stdio.h>
 int main(void)
 {
-    int a [4] =
-    {
-        2, 4, 6, 8
-    }
-    ;
+    int a[4] = {2, 4, 6, 8};
     int * p = a;
-    while(p < a + 4) p++;
+    while (p < a + 4)
+    {
+        p++;
+    }
     p = a;
-    for(int i = 0; i < 4; i++) printf("%d%c", p [i], i == 3 ? '\n' : ' ');
+    for (int i = 0; i < 4; i++)
+    {
+        printf("%d%c", p[i], i == 3 ? '\n' : ' ');
+    }
     return 0;
 }
 ```

@@ -20,22 +20,11 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    int a [3] [3] =
-    {
-        {
-            3, 4, 5
-        }
-        ,
-        {
-            7, 8, 9
-        }
-        ,
-        {
-            10, 11, 12
-        }
-    }
-    , s = 0;
-    for(int i = 0; i < 3; i++) for(int j = 0; j < 3; j++) if(i != j) s += a [i] [j];
+    int a[3][3] = {{3, 4, 5}, {7, 8, 9}, {10, 11, 12}}, s = 0;
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
+            if (i != j)
+                s += a[i][j];
     printf("%d\n", s);
     return 0;
 }

@@ -63,18 +63,24 @@ C language practice
 #include <stdio.h>
 int main(void)
 {
-    char s [256];
-    if(! fgets(s, sizeof s, stdin)) return 1;
-    int count = 0, in = 0;
-    for(int i = 0; s [i]; i++)
+    char s[256];
+    if (!fgets(s, sizeof s, stdin))
     {
-        int blank = s [i] == ' ' || s [i] == '\t' || s [i] == '\n';
-        if(! blank && ! in)
+        return 1;
+    }
+    int count = 0, in = 0;
+    for (int i = 0; s[i]; i++)
+    {
+        int blank = s[i] == ' ' || s[i] == '\t' || s[i] == '\n';
+        if (!blank && ! in)
         {
             count++;
             in = 1;
         }
-        else if(blank) in = 0;
+        else if (blank)
+        {
+            in = 0;
+        }
     }
     printf("%d\n", count);
     return 0;

@@ -20,9 +20,10 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    char s [] = "00124008";
+    char s[] = "00124008";
     long n = 0;
-    for(int i = 0; s [i]; i++) n = n * 10 + s [i] - '0';
+    for (int i = 0; s[i]; i++)
+        n = n * 10 + s[i] - '0';
     printf("%ld\n", n);
     return 0;
 }

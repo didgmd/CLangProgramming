@@ -20,23 +20,16 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    int a [2] [4] =
-    {
+    int a[2][4] = {{1, 2, -3, 4}, {5, 0, 7, 8}}, s = 0;
+    for (int i = 0; i < 2; i++)
+        for (int j = 0; j < 4; j++)
         {
-            1, 2, - 3, 4
+            if (a[i][j] < 0)
+                continue;
+            if (a[i][j] == 0)
+                break;
+            s += a[i][j];
         }
-        ,
-        {
-            5, 0, 7, 8
-        }
-    }
-    , s = 0;
-    for(int i = 0; i < 2; i++) for(int j = 0; j < 4; j++)
-    {
-        if(a [i] [j] < 0) continue;
-        if(a [i] [j] == 0) break;
-        s += a [i] [j];
-    }
     printf("%d\n", s);
     return 0;
 }

@@ -21,19 +21,14 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    char s [100], d [100];
+    char s[100], d[100];
     int m;
-    if(scanf("%99s%d", s, & m) != 2) return 1;
-    int
-    /*〔1〕*/
-    , j = 0;
-    while(
-    /*〔2〕*/
-    )
-    /*〔3〕*/
-    ;
-    /*〔4〕*/
-    ;
+    if (scanf("%99s%d", s, &m) != 2)
+    return 1;
+    int /*〔1〕*/, j = 0;
+    while ( /*〔2〕*/ )
+    /*〔3〕*/;
+    /*〔4〕*/;
     puts(d);
     return 0;
 }
@@ -65,12 +60,18 @@ int main(void)
 #include <stdio.h>
 int main(void)
 {
-    char s [100], d [100];
+    char s[100], d[100];
     int m;
-    if(scanf("%99s%d", s, & m) != 2) return 1;
+    if (scanf("%99s%d", s, &m) != 2)
+    {
+        return 1;
+    }
     int i = m, j = 0;
-    while(s [i] != '\0') d [j++] = s [i++];
-    d [j] = '\0';
+    while (s[i] != '\0')
+    {
+        d[j++] = s[i++];
+    }
+    d[j] = '\0';
     puts(d);
     return 0;
 }

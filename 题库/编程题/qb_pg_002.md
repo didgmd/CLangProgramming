@@ -63,10 +63,22 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    double a [10];
-    for(int i = 0; i < 10; i++) if(scanf("%lf", & a [i]) != 1) return 1;
-    double m = a [0];
-    for(int i = 1; i < 10; i++) if(a [i] > m) m = a [i];
+    double a[10];
+    for (int i = 0; i < 10; i++)
+    {
+        if (scanf("%lf", &a[i]) != 1)
+        {
+            return 1;
+        }
+    }
+    double m = a[0];
+    for (int i = 1; i < 10; i++)
+    {
+        if (a[i] > m)
+        {
+            m = a[i];
+        }
+    }
     printf("%.6f\n", m);
     return 0;
 }

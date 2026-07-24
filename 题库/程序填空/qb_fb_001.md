@@ -22,15 +22,10 @@ legacy_features: 无
 int main(void)
 {
     int ch, count = 0;
-    while((ch =
-    /*〔1〕*/
-    ) != '#' && ch != EOF)
+    while ((ch = /*〔1〕*/ ) != '#' && ch != EOF)
     {
-        if(
-        /*〔2〕*/
-        )
-        /*〔3〕*/
-        ;
+        if ( /*〔2〕*/ )
+        /*〔3〕*/;
     }
     printf("%d\n", count);
     return 0;
@@ -63,9 +58,12 @@ int main(void)
 int main(void)
 {
     int ch, count = 0;
-    while((ch = getchar()) != '#' && ch != EOF)
+    while ((ch = getchar()) != '#' && ch != EOF)
     {
-        if(ch >= 'A' && ch <= 'Z') count++;
+        if (ch >= 'A' && ch <= 'Z')
+        {
+            count++;
+        }
     }
     printf("%d\n", count);
     return 0;

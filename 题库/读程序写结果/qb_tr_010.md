@@ -20,14 +20,16 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    int a [6];
-    a [0] = 5;
-    for(int j = 1; j < 6; j++)
+    int a[6];
+    a[0] = 5;
+    for (int j = 1; j < 6; j++)
     {
-        a [j] = j * j + 5;
-        if(j > 2) a [j] = 2 * a [j] - a [j - 1];
+        a[j] = j * j + 5;
+        if (j > 2)
+            a[j] = 2 * a[j] - a[j - 1];
     }
-    for(int j = 0; j < 6; j++) printf("%d%c", a [j], j == 5 ? '\n' : ' ');
+    for (int j = 0; j < 6; j++)
+        printf("%d%c", a[j], j == 5 ? '\n' : ' ');
     return 0;
 }
 ```

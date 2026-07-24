@@ -64,15 +64,24 @@ hello world
 static int length(const char * s)
 {
     const char * p = s;
-    while(* p) p++;
+    while (* p)
+    {
+        p++;
+    }
     return(int) (p - s);
 }
 int main(void)
 {
-    char s [128];
-    if(! fgets(s, sizeof s, stdin)) return 1;
+    char s[128];
+    if (!fgets(s, sizeof s, stdin))
+    {
+        return 1;
+    }
     int n = length(s);
-    if(n > 0 && s [n - 1] == '\n') n--;
+    if (n > 0 && s[n - 1] == '\n')
+    {
+        n--;
+    }
     printf("%d\n", n);
     return 0;
 }

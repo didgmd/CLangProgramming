@@ -21,17 +21,13 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    int a [3] =
-    {
-        3, 6, 9
-    }
-    ;
+    int a[3] = {3, 6, 9};
     int *
-    /*〔1〕*/
-    ;
-    while(p < a + 3) p++;
+    /*〔1〕*/;
+    while (p < a + 3)
+    p++;
     p = a;
-    while(p < a + 3)
+    while (p < a + 3)
     {
         printf("%d%c", * p, p == a + 2 ? '\n' : ' ');
         p++;
@@ -63,15 +59,14 @@ int main(void)
 #include <stdio.h>
 int main(void)
 {
-    int a [3] =
-    {
-        3, 6, 9
-    }
-    ;
+    int a[3] = {3, 6, 9};
     int * p = a;
-    while(p < a + 3) p++;
+    while (p < a + 3)
+    {
+        p++;
+    }
     p = a;
-    while(p < a + 3)
+    while (p < a + 3)
     {
         printf("%d%c", * p, p == a + 2 ? '\n' : ' ');
         p++;

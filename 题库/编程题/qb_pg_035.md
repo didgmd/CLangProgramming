@@ -63,15 +63,30 @@ Ab 3!
 #include <stdio.h>
 int main(void)
 {
-    char s [256];
-    if(! fgets(s, sizeof s, stdin)) return 1;
-    int a = 0, d = 0, sp = 0, o = 0;
-    for(int i = 0; s [i] && s [i] != '\n'; i++)
+    char s[256];
+    if (!fgets(s, sizeof s, stdin))
     {
-        if((s [i] >= 'a' && s [i] <= 'z') || (s [i] >= 'A' && s [i] <= 'Z')) a++;
-        else if(s [i] >= '0' && s [i] <= '9') d++;
-        else if(s [i] == ' ') sp++;
-        else o++;
+        return 1;
+    }
+    int a = 0, d = 0, sp = 0, o = 0;
+    for (int i = 0; s[i] && s[i] != '\n'; i++)
+    {
+        if ((s[i] >= 'a' && s[i] <= 'z') || (s[i] >= 'A' && s[i] <= 'Z'))
+        {
+            a++;
+        }
+        else if (s[i] >= '0' && s[i] <= '9')
+        {
+            d++;
+        }
+        else if (s[i] == ' ')
+        {
+            sp++;
+        }
+        else
+        {
+            o++;
+        }
     }
     printf("%d %d %d %d\n", a, d, sp, o);
     return 0;

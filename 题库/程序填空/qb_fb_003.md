@@ -19,28 +19,26 @@ legacy_features: 无
 
 ```c
 #include <stdio.h>
-void bubble(int a [], int n)
+void bubble(int a[], int n)
 {
-    for(int i = 0;
-    /*〔1〕*/
-    ; i++) for(int j = 0;
-    /*〔2〕*/
-    ; j++) if(
-    /*〔3〕*/
-    )
-    {
-        int t = a [j];
-        a [j] = a [j + 1];
-        a [j + 1] = t;
-    }
+    for (int i = 0; /*〔1〕*/ ; i++)
+        for (int j = 0; /*〔2〕*/ ; j++)
+            if ( /*〔3〕*/ )
+            {
+                int t = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = t;
+            }
 }
 int main(void)
 {
-    int a [10];
-    for(int i = 0; i < 10; i++) if(scanf("%d", & a [i]) != 1) return 1;
-    /*〔4〕*/
-    ;
-    for(int i = 0; i < 10; i++) printf("%d%c", a [i], i == 9 ? '\n' : ' ');
+    int a[10];
+    for (int i = 0; i < 10; i++)
+    if (scanf("%d", &a[i]) != 1)
+    return 1;
+    /*〔4〕*/;
+    for (int i = 0; i < 10; i++)
+    printf("%d%c", a[i], i == 9 ? '\n' : ' ');
     return 0;
 }
 ```
@@ -69,21 +67,36 @@ int main(void)
 <!-- reference-c:start -->
 ```c
 #include <stdio.h>
-void bubble(int a [], int n)
+void bubble(int a[], int n)
 {
-    for(int i = 0; i < n - 1; i++) for(int j = 0; j < n - 1 - i; j++) if(a [j] > a [j + 1])
+    for (int i = 0; i < n - 1; i++)
     {
-        int t = a [j];
-        a [j] = a [j + 1];
-        a [j + 1] = t;
+        for (int j = 0; j < n - 1 - i; j++)
+        {
+            if (a[j] > a[j + 1])
+            {
+                int t = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = t;
+            }
+        }
     }
 }
 int main(void)
 {
-    int a [10];
-    for(int i = 0; i < 10; i++) if(scanf("%d", & a [i]) != 1) return 1;
+    int a[10];
+    for (int i = 0; i < 10; i++)
+    {
+        if (scanf("%d", &a[i]) != 1)
+        {
+            return 1;
+        }
+    }
     bubble(a, 10);
-    for(int i = 0; i < 10; i++) printf("%d%c", a [i], i == 9 ? '\n' : ' ');
+    for (int i = 0; i < 10; i++)
+    {
+        printf("%d%c", a[i], i == 9 ? '\n' : ' ');
+    }
     return 0;
 }
 ```

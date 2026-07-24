@@ -21,18 +21,13 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    char dst [100] = "C language ", src [] = "practice";
+    char dst[100] = "C language ", src[] = "practice";
     int i = 0, j = 0;
-    while(
-    /*〔1〕*/
-    ) i++;
-    while(
-    /*〔2〕*/
-    )
-    /*〔3〕*/
-    ;
-    /*〔4〕*/
-    ;
+    while ( /*〔1〕*/ )
+        i++;
+    while ( /*〔2〕*/ )
+    /*〔3〕*/;
+    /*〔4〕*/;
     puts(dst);
     return 0;
 }
@@ -64,11 +59,17 @@ int main(void)
 #include <stdio.h>
 int main(void)
 {
-    char dst [100] = "C language ", src [] = "practice";
+    char dst[100] = "C language ", src[] = "practice";
     int i = 0, j = 0;
-    while(dst [i] != '\0') i++;
-    while(src [j] != '\0') dst [i++] = src [j++];
-    dst [i] = '\0';
+    while (dst[i] != '\0')
+    {
+        i++;
+    }
+    while (src[j] != '\0')
+    {
+        dst[i++] = src[j++];
+    }
+    dst[i] = '\0';
     puts(dst);
     return 0;
 }

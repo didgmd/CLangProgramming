@@ -21,8 +21,10 @@ legacy_features: 无
 int main(void)
 {
     int a = 0, b = 5;
-    if(a != 0 && b / a > 1) puts("yes");
-    else puts("no");
+    if (a != 0 && b / a > 1)
+        puts("yes");
+    else
+        puts("no");
     return 0;
 }
 ```

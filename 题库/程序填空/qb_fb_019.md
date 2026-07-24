@@ -21,18 +21,12 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    FILE * fp =
-    /*〔1〕*/
-    ;
-    if(
-    /*〔2〕*/
-    ) return 1;
+    FILE * fp = /*〔1〕*/;
+    if ( /*〔2〕*/ )
+        return 1;
     int ch;
-    while(
-    /*〔3〕*/
-    )
-    /*〔4〕*/
-    ;
+    while ( /*〔3〕*/ )
+    /*〔4〕*/;
     fclose(fp);
     return 0;
 }
@@ -48,7 +42,7 @@ int main(void)
 
 ### 各空答案
 
-1. `〔1〕`：`tmpfile()`
+1. `〔1〕`：`fopen("qb_fb_019.tmp", "w")`
 2. `〔2〕`：`fp==NULL`
 3. `〔3〕`：`(ch=getchar())!='#'&&ch!=EOF`
 4. `〔4〕`：`fputc(ch,fp)`
@@ -64,10 +58,16 @@ int main(void)
 #include <stdio.h>
 int main(void)
 {
-    FILE * fp = tmpfile();
-    if(fp == NULL) return 1;
+    FILE * fp = fopen("qb_fb_019.tmp", "w");
+    if (fp == NULL)
+    {
+        return 1;
+    }
     int ch;
-    while((ch = getchar()) != '#' && ch != EOF) fputc(ch, fp);
+    while ((ch = getchar()) != '#' && ch != EOF)
+    {
+        fputc(ch, fp);
+    }
     fclose(fp);
     return 0;
 }

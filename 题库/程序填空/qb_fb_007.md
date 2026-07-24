@@ -22,20 +22,18 @@ legacy_features: 无
 int main(void)
 {
     int ch, letters = 0, digits = 0, spaces = 0, others = 0;
-    while((ch = getchar()) != '\n' && ch != EOF)
+    while ((ch = getchar()) != '\n' && ch != EOF)
     {
-        if(
-        /*〔1〕*/
-        ) letters++;
-        else if(
-        /*〔2〕*/
-        ) digits++;
-        else if(
-        /*〔3〕*/
-        ) spaces++;
+        if ( /*〔1〕*/ )
+            letters++;
         else
-        /*〔4〕*/
-        ;
+        if ( /*〔2〕*/ )
+            digits++;
+        else
+        if ( /*〔3〕*/ )
+            spaces++;
+        else
+        /*〔4〕*/;
     }
     printf("%d %d %d %d\n", letters, digits, spaces, others);
     return 0;
@@ -69,12 +67,24 @@ int main(void)
 int main(void)
 {
     int ch, letters = 0, digits = 0, spaces = 0, others = 0;
-    while((ch = getchar()) != '\n' && ch != EOF)
+    while ((ch = getchar()) != '\n' && ch != EOF)
     {
-        if((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z')) letters++;
-        else if(ch >= '0' && ch <= '9') digits++;
-        else if(ch == ' ') spaces++;
-        else others++;
+        if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'))
+        {
+            letters++;
+        }
+        else if (ch >= '0' && ch <= '9')
+        {
+            digits++;
+        }
+        else if (ch == ' ')
+        {
+            spaces++;
+        }
+        else
+        {
+            others++;
+        }
     }
     printf("%d %d %d %d\n", letters, digits, spaces, others);
     return 0;

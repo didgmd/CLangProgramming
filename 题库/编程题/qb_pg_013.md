@@ -61,21 +61,36 @@ legacy_features: 无
 <!-- reference-c:start -->
 ```c
 #include <stdio.h>
-static void sort(double a [], int n)
+static void sort(double a[], int n)
 {
-    for(int j = 0; j < n - 1; j++) for(int i = 0; i < n - 1 - j; i++) if(a [i] > a [i + 1])
+    for (int j = 0; j < n - 1; j++)
     {
-        double t = a [i];
-        a [i] = a [i + 1];
-        a [i + 1] = t;
+        for (int i = 0; i < n - 1 - j; i++)
+        {
+            if (a[i] > a[i + 1])
+            {
+                double t = a[i];
+                a[i] = a[i + 1];
+                a[i + 1] = t;
+            }
+        }
     }
 }
 int main(void)
 {
-    double a [10];
-    for(int i = 0; i < 10; i++) if(scanf("%lf", & a [i]) != 1) return 1;
+    double a[10];
+    for (int i = 0; i < 10; i++)
+    {
+        if (scanf("%lf", &a[i]) != 1)
+        {
+            return 1;
+        }
+    }
     sort(a, 10);
-    for(int i = 0; i < 10; i++) printf("%.2f%c", a [i], i == 9 ? '\n' : ' ');
+    for (int i = 0; i < 10; i++)
+    {
+        printf("%.2f%c", a[i], i == 9 ? '\n' : ' ');
+    }
     return 0;
 }
 ```

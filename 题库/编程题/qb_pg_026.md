@@ -23,7 +23,7 @@ legacy_features: 无
 
 ### 输出格式
 
-合法时输出对应整数，否则输出 `invalid`。
+合法且未溢出时输出对应整数；含非法字符时输出 `invalid`；超出 `int` 范围时输出 `overflow`。
 
 ### 数据范围与边界
 
@@ -54,7 +54,7 @@ legacy_features: 无
 
 **评分建议：** 输入与边界处理2分，核心算法5分，正确输出2分，代码规范1分。
 
-**正常与边界测试：** `-2048`；`12x`。
+**正常与边界测试：** `-2048`（正常负数）、`12x`（非法字符）、`2147483648`（正溢出）。
 
 ### 完整参考程序
 
@@ -65,25 +65,31 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    char s [64];
-    if(scanf("%63s", s) != 1) return 1;
+    char s[64];
+    if (scanf("%63s", s) != 1)
+    {
+        return 1;
+    }
     int i = 0, sign = 1;
-    if(s [i] == '+' || s [i] == '-') sign = s [i++] == '-' ? - 1 : 1;
-    if(! s [i])
+    if (s[i] == '+' || s[i] == '-')
+    {
+        sign = s[i++] == '-' ? -1 : 1;
+    }
+    if (!s[i])
     {
         puts("invalid");
         return 0;
     }
     long long n = 0;
-    for(; s [i]; i++)
+    for (; s[i]; i++)
     {
-        if(s [i] < '0' || s [i] > '9')
+        if (s[i] < '0' || s[i] > '9')
         {
             puts("invalid");
             return 0;
         }
-        n = n * 10 + s [i] - '0';
-        if((sign == 1 && n > INT_MAX) || (sign == - 1 && - n < INT_MIN))
+        n = n * 10 + s[i] - '0';
+        if ((sign == 1 && n > INT_MAX) || (sign == -1 && - n < INT_MIN))
         {
             puts("overflow");
             return 0;

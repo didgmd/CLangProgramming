@@ -20,8 +20,9 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    char s [] = "ABCD";
-    for(char * p = s; * p; p++) printf("%s ", p);
+    char s[] = "ABCD";
+    for (char * p = s; * p; p++)
+        printf("%s ", p);
     return 0;
 }
 ```

@@ -10,12 +10,18 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 
 sys.dont_write_bytecode = True
 
 from generate_question_index import INDEX_PATH, render_index
 from question_quality import QualityError, validate_category
+from question_program_quality import (
+    ProgramQualityError,
+    code_blocks,
+    validate_program_quality,
+)
 from question_common import (
     CATEGORY_CODES,
     QUESTIONS_ROOT,
@@ -45,7 +51,30 @@ SOURCE_MARKERS = (
     "试卷来源",
 )
 
-BEHAVIOR_FIXTURES: dict[str, list[tuple[str, str]]] = {
+@dataclass(frozen=True)
+class BehaviorCase:
+    """A deterministic run with an explicit process and work-directory contract."""
+
+    stdin: str
+    stdout: str
+    exit_code: int = 0
+    workdir: str | None = None
+
+
+BehaviorFixture = BehaviorCase | tuple[str, str]
+
+
+BEHAVIOR_FIXTURES: dict[str, list[BehaviorFixture]] = {
+    "QB-FB-002": [("", "1\n1 1\n1 2 1\n1 3 3 1\n1 4 6 4 1\n1 5 10 10 5 1\n1 6 15 20 15 6 1\n")],
+    "QB-FB-003": [("10 9 8 7 6 5 4 3 2 1\n", "1 2 3 4 5 6 7 8 9 10\n")],
+    "QB-FB-004": [("abcdef 2\n", "cdef\n")],
+    "QB-FB-005": [("", "1 2 7 5 16 9 12\n")],
+    "QB-FB-006": [("", "C language practice\n")],
+    "QB-FB-007": [("Ab 3!\n", "2 1 1 1\n")],
+    "QB-FB-008": [("", "pointer copy\n")],
+    "QB-FB-012": [("", "101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179 181 191 193 197 199 \n")],
+    "QB-FB-013": [("", "2.928968\n")],
+    "QB-FB-019": [BehaviorCase("abc#\n", "", workdir="QB-FB-019")],
     "QB-FB-001": [("AbC12#\n", "2\n")],
     "QB-FB-009": [("1 2 3 4 5 6 7 8\n", "4.50\n")],
     "QB-FB-010": [("-1 -2 3 0 -4 5 0 -6 7 -8\n", "3 15\n")],
@@ -67,6 +96,30 @@ BEHAVIOR_FIXTURES: dict[str, list[tuple[str, str]]] = {
     "QB-PG-018": [("0\n", "1\n"), ("21\n", "invalid\n")],
     "QB-PG-021": [("1 2 3 4 5 6 7 8 9\n", "1 4 7\n2 5 8\n3 6 9\n")],
     "QB-PG-038": [("hello world\n", "11\n"), ("\n", "0\n")],
+}
+
+
+EXPECTED_PROGRAM_HANDOFF = {
+    "2024-2025-1/Examples/2.c": "QB-PG-024",
+    "2024-2025-1/Examples/3.c": "QB-PG-025",
+    "2024-2025-1/Examples/4.c": "QB-PG-026",
+    "2024-2025-1/Examples/7.c": "QB-PG-027",
+    "2024-2025-1/Examples/10.c": "QB-PG-028",
+    "2024-2025-1/Examples/11.c": "QB-PG-029",
+    "2024-2025-1/Examples/12.1.c": "QB-PG-030",
+    "2024-2025-1/Examples/12.2.c": "QB-PG-031",
+    "2024-2025-1/Examples/13.1.c": "QB-PG-032",
+    "2024-2025-1/Examples/13.2.c": "QB-PG-033",
+    "2024-2025-1/Examples/14.c": "QB-PG-034",
+    "2024-2025-1/Examples/15.c": "QB-PG-035",
+    "2024-2025-1/Examples/16.1.c": "QB-PG-036",
+    "2024-2025-1/Examples/16.2.c": "QB-PG-037",
+    "2024-2025-1/Examples/17.c": "QB-PG-038",
+    "2024-2025-1/Examples/18.c": "QB-PG-039",
+}
+
+TRACE_INPUTS = {
+    "QB-TR-004": "abcdefg$abcdefg",
 }
 
 
@@ -164,6 +217,9 @@ def validate_question(question: Question) -> None:
     if question.reference_code and question.compile_mode == "none":
         raise ValidationError(f"{question.question_id} has code but compile mode is none")
     validate_category(question.question_id, question.category, question.text)
+    validate_program_quality(
+        question.question_id, question.category, question.text
+    )
 
 
 
@@ -192,6 +248,19 @@ def validate_migration_handoff(questions: dict[str, Question]) -> None:
     if missing:
         raise ValidationError(
             "Handoff points to unknown question IDs: " + ", ".join(missing)
+        )
+    actual = {
+        entry["source_path"].replace("\\", "/"): entry.get("question_ids", [])
+        for entry in received
+    }
+    incorrect = [
+        f"{source}->{actual.get(source)}"
+        for source, question_id in EXPECTED_PROGRAM_HANDOFF.items()
+        if actual.get(source) != [question_id]
+    ]
+    if incorrect:
+        raise ValidationError(
+            "Program handoff mapping is incorrect: " + "; ".join(incorrect)
         )
 
 def validate_routine_links(questions: dict[str, Question]) -> None:
@@ -224,45 +293,150 @@ def validate_compiler(gcc: str) -> None:
         raise ValidationError("MinGW-w64 GCC 8.1 or newer is required")
 
 
-def compile_answers(questions: dict[str, Question], gcc: str) -> tuple[int, int]:
+
+def fenced_text(text: str, heading: str) -> str:
+    match = re.search(
+        rf"(?s){re.escape(heading)}\s*\n+```text\n(.*?)\n```",
+        text,
+    )
+    if not match:
+        raise ValidationError(f"Missing fenced text under {heading}")
+    value = match.group(1).replace("\r\n", "\n")
+    return "" if value == "（无输入）" else value
+
+
+def trace_expected(text: str) -> str:
+    match = re.search(
+        r"(?s)\*\*输出：\*\*\s*```text\n(.*?)\n```",
+        text,
+    )
+    if not match:
+        raise ValidationError("Trace question lacks exact expected output")
+    return match.group(1).replace("\r\n", "\n")
+
+
+def run_case(
+    question_id: str,
+    executable: Path,
+    cwd: Path,
+    stdin_text: str,
+    expected_stdout: str,
+    normalize_final_newline: bool = False,
+    expected_exit_code: int = 0,
+) -> None:
+    behavior = run([str(executable)], cwd=cwd, input_text=stdin_text)
+    actual = behavior.stdout.replace("\r\n", "\n")
+    comparable_actual = actual.removesuffix("\n") if normalize_final_newline else actual
+    comparable_expected = (
+        expected_stdout.removesuffix("\n")
+        if normalize_final_newline
+        else expected_stdout
+    )
+    if (
+        behavior.returncode != expected_exit_code
+        or comparable_actual != comparable_expected
+    ):
+        raise ValidationError(
+            f"Behavior failed for {question_id}: "
+            f"expected {expected_stdout!r}, got {actual!r}; "
+            f"exit={behavior.returncode}; stderr={behavior.stderr.strip()!r}"
+        )
+
+def compile_answers(
+    questions: dict[str, Question],
+    gcc: str,
+) -> tuple[int, int, int, int]:
     compiled = 0
     behaviors = 0
+    samples = 0
+    traces = 0
     temp_path: Path | None = None
     with tempfile.TemporaryDirectory(prefix="clp-question-validation-") as directory:
         temp_path = Path(directory)
         for question in questions.values():
-            if not question.reference_code:
-                continue
-            source = temp_path / f"{question.question_id}.c"
             executable = temp_path / f"{question.question_id}.exe"
-            source.write_text(question.reference_code, encoding="utf-8", newline="\n")
-            flags = (
-                ["-std=c11", "-Wall", "-Wextra", "-Wpedantic", "-Werror"]
-                if question.compile_mode == "c11-strict"
-                else ["-std=gnu99", "-Wall", "-Wextra"]
-            )
-            result = run([gcc, *flags, str(source), "-o", str(executable), "-lm"])
-            if result.returncode != 0:
-                raise ValidationError(
-                    f"Reference program failed for {question.question_id}:\n"
-                    f"{result.stderr.strip()}"
+            if question.reference_code:
+                source = temp_path / f"{question.question_id}.c"
+                source.write_text(question.reference_code, encoding="utf-8", newline="\n")
+                flags = (
+                    ["-std=c11", "-Wall", "-Wextra", "-Wpedantic", "-Werror"]
+                    if question.compile_mode == "c11-strict"
+                    else ["-std=gnu99", "-Wall", "-Wextra"]
                 )
-            compiled += 1
-            for stdin_text, expected_stdout in BEHAVIOR_FIXTURES.get(
-                question.question_id, []
-            ):
-                behavior = run([str(executable)], cwd=temp_path, input_text=stdin_text)
-                actual = behavior.stdout.replace("\r\n", "\n")
-                if behavior.returncode != 0 or actual != expected_stdout:
+                result = run([gcc, *flags, str(source), "-o", str(executable), "-lm"])
+                if result.returncode != 0:
                     raise ValidationError(
-                        f"Behavior failed for {question.question_id}: "
-                        f"expected {expected_stdout!r}, got {actual!r}; "
-                        f"stderr={behavior.stderr.strip()!r}"
+                        f"Reference program failed for {question.question_id}:\n"
+                        f"{result.stderr.strip()}"
                     )
-                behaviors += 1
+                compiled += 1
+                for fixture in BEHAVIOR_FIXTURES.get(question.question_id, []):
+                    case = (
+                        fixture
+                        if isinstance(fixture, BehaviorCase)
+                        else BehaviorCase(*fixture)
+                    )
+                    case_cwd = temp_path
+                    if case.workdir is not None:
+                        case_cwd = temp_path / case.workdir
+                        case_cwd.mkdir(exist_ok=True)
+                    run_case(
+                        question.question_id,
+                        executable,
+                        case_cwd,
+                        case.stdin,
+                        case.stdout,
+                        expected_exit_code=case.exit_code,
+                    )
+                    behaviors += 1
+                if question.category == "编程题":
+                    stdin_text = fenced_text(question.text, "### 样例输入")
+                    expected_stdout = fenced_text(question.text, "### 样例输出") + "\n"
+                    run_case(
+                        question.question_id,
+                        executable,
+                        temp_path,
+                        stdin_text + ("\n" if stdin_text else ""),
+                        expected_stdout,
+                    )
+                    samples += 1
+            if question.category == "读程序写结果":
+                blocks = code_blocks(question.text)
+                code = next(code for role, code in blocks if role == "question")
+                source = temp_path / f"{question.question_id}.c"
+                source.write_text(code, encoding="utf-8", newline="\n")
+                result = run([
+                    gcc,
+                    "-std=c11",
+                    "-Wall",
+                    "-Wextra",
+                    "-Wpedantic",
+                    "-Werror",
+                    "-Wno-parentheses",
+                    "-D__USE_MINGW_ANSI_STDIO=1",
+                    str(source),
+                    "-o",
+                    str(executable),
+                    "-lm",
+                ])
+                if result.returncode != 0:
+                    raise ValidationError(
+                        f"Trace program failed for {question.question_id}:\n"
+                        f"{result.stderr.strip()}"
+                    )
+                stdin_text = TRACE_INPUTS.get(question.question_id, "")
+                run_case(
+                    question.question_id,
+                    executable,
+                    temp_path,
+                    stdin_text,
+                    trace_expected(question.text),
+                    normalize_final_newline=True,
+                )
+                traces += 1
     if temp_path is not None and temp_path.exists():
         raise ValidationError(f"Temporary directory was not removed: {temp_path}")
-    return compiled, behaviors
+    return compiled, behaviors, samples, traces
 
 
 def main() -> int:
@@ -293,13 +467,14 @@ def main() -> int:
         if not gcc:
             raise ValidationError("gcc was not found")
         validate_compiler(gcc)
-        compiled, behaviors = compile_answers(questions, gcc)
+        compiled, behaviors, samples, traces = compile_answers(questions, gcc)
         print(
             f"QUESTION VALIDATION PASS: {len(questions)} questions, "
-            f"{compiled} embedded reference programs, {behaviors} behavior cases"
+            f"{compiled} embedded reference programs, {behaviors} behavior cases, "
+            f"{samples} programming samples, {traces} trace outputs"
         )
         return 0
-    except (OSError, QualityError, QuestionError, ValidationError, subprocess.TimeoutExpired) as exc:
+    except (OSError, ProgramQualityError, QualityError, QuestionError, ValidationError, subprocess.TimeoutExpired) as exc:
         print(f"QUESTION VALIDATION FAILED: {exc}", file=sys.stderr)
         return 1
 

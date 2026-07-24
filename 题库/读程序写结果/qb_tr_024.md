@@ -20,13 +20,15 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    int a [4];
-    for(int i = 0; i < 4; i++)
+    int a[4];
+    for (int i = 0; i < 4; i++)
     {
-        a [i] = (i + 2) * (i + 3);
-        if(i > 1) a [i] += a [i - 2];
+        a[i] = (i + 2) * (i + 3);
+        if (i > 1)
+            a[i] += a[i - 2];
     }
-    for(int i = 0; i < 4; i++) printf("%d,", a [i]);
+    for (int i = 0; i < 4; i++)
+        printf("%d,", a[i]);
     return 0;
 }
 ```

@@ -20,16 +20,15 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    int a [5] =
-    {
-        4, 2, 5, 1, 3
-    }
-    , k = 0;
-    for(int j = 1; j < 5; j++) if(a [j] < a [k]) k = j;
-    int t = a [0];
-    a [0] = a [k];
-    a [k] = t;
-    for(int i = 0; i < 5; i++) printf("%d ", a [i]);
+    int a[5] = {4, 2, 5, 1, 3}, k = 0;
+    for (int j = 1; j < 5; j++)
+        if (a[j] < a[k])
+            k = j;
+    int t = a[0];
+    a[0] = a[k];
+    a[k] = t;
+    for (int i = 0; i < 5; i++)
+        printf("%d ", a[i]);
     return 0;
 }
 ```

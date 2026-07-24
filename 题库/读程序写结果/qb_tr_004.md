@@ -21,13 +21,14 @@ legacy_features: 无
 int main(void)
 {
     int c;
-    while((c = getchar()) != '$' && c != EOF) putchar(c);
+    while ((c = getchar()) != '$' && c != EOF)
+        putchar(c);
     printf("End!\n");
     return 0;
 }
 ```
 
-本题程序不读取外部输入。请写出程序运行后的精确输出。
+程序的标准输入为 `abcdefg$abcdefg`。请写出程序运行后的精确输出。
 
 ## 常见失分点
 

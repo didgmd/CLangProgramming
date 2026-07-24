@@ -69,7 +69,7 @@ static unsigned long long fac(unsigned n)
 int main(void)
 {
     int n;
-    if(scanf("%d", & n) != 1 || n < 0 || n > 20)
+    if (scanf("%d", &n) != 1 || n < 0 || n > 20)
     {
         puts("invalid");
         return 0;

@@ -21,9 +21,11 @@ legacy_features: 无
 #include <string.h>
 int main(void)
 {
-    char ch [] = "abc", x [3] [4];
-    for(int i = 0; i < 3; i++) strcpy(x [i], ch);
-    for(int i = 0; i < 3; i++) printf("%s", & x [i] [i]);
+    char ch[] = "abc", x[3][4];
+    for (int i = 0; i < 3; i++)
+        strcpy(x[i], ch);
+    for (int i = 0; i < 3; i++)
+        printf("%s", &x[i][i]);
     putchar('\n');
     return 0;
 }

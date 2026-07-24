@@ -63,17 +63,32 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    int a [10];
-    for(int i = 0; i < 10; i++) if(scanf("%d", & a [i]) != 1) return 1;
-    for(int i = 0; i < 9; i++)
+    int a[10];
+    for (int i = 0; i < 10; i++)
+    {
+        if (scanf("%d", &a[i]) != 1)
+        {
+            return 1;
+        }
+    }
+    for (int i = 0; i < 9; i++)
     {
         int k = i;
-        for(int j = i + 1; j < 10; j++) if(a [j] < a [k]) k = j;
-        int t = a [i];
-        a [i] = a [k];
-        a [k] = t;
+        for (int j = i + 1; j < 10; j++)
+        {
+            if (a[j] < a[k])
+            {
+                k = j;
+            }
+        }
+        int t = a[i];
+        a[i] = a[k];
+        a[k] = t;
     }
-    for(int i = 0; i < 10; i++) printf("%d%c", a [i], i == 9 ? '\n' : ' ');
+    for (int i = 0; i < 10; i++)
+    {
+        printf("%d%c", a[i], i == 9 ? '\n' : ' ');
+    }
     return 0;
 }
 ```

@@ -20,19 +20,14 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    int a [4] [4] =
+    int a[4][4] = {{0}};
+    for (int i = 0; i < 4; i++)
     {
-        {
-            0
-        }
+        a[i][0] = a[i][i] = 1;
+        for (int j = 1; j < i; j++)
+            a[i][j] = a[i - 1][j - 1] + a[i - 1][j];
     }
-    ;
-    for(int i = 0; i < 4; i++)
-    {
-        a [i] [0] = a [i] [i] = 1;
-        for(int j = 1; j < i; j++) a [i] [j] = a [i - 1] [j - 1] + a [i - 1] [j];
-    }
-    printf("%d %d %d %d\n", a [3] [0], a [3] [1], a [3] [2], a [3] [3]);
+    printf("%d %d %d %d\n", a[3][0], a[3][1], a[3][2], a[3][3]);
     return 0;
 }
 ```

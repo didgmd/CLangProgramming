@@ -20,9 +20,9 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    for(int i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++)
     {
-        switch(i)
+        switch (i)
         {
             case 0 : printf("%d", i);
             break;

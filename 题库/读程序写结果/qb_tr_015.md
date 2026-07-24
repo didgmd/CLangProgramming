@@ -20,22 +20,11 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    int a [3] [3] =
-    {
-        {
-            1, 2, 3
-        }
-        ,
-        {
-            4, 5, 6
-        }
-        ,
-        {
-            7, 8, 9
-        }
-    }
-    , sum = 0;
-    for(int i = 1; i <= 3; i++) for(int j = 1; j <= 3; j++) if(i % 2 == 0) sum += a [i - 1] [j - 1];
+    int a[3][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}, sum = 0;
+    for (int i = 1; i <= 3; i++)
+        for (int j = 1; j <= 3; j++)
+            if (i % 2 == 0)
+                sum += a[i - 1][j - 1];
     printf("%d\n", sum);
     return 0;
 }

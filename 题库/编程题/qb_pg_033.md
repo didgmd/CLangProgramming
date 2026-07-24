@@ -63,14 +63,17 @@ C language
 #include <stdio.h>
 static void copy_string(const char * a, char * b)
 {
-    while((* b++ = * a++) != '\0')
+    while ((* b++ = * a++) != '\0')
     {
     }
 }
 int main(void)
 {
-    char a [80], b [80];
-    if(! fgets(a, sizeof a, stdin)) return 1;
+    char a[80], b[80];
+    if (!fgets(a, sizeof a, stdin))
+    {
+        return 1;
+    }
     copy_string(a, b);
     printf("%s", b);
     return 0;

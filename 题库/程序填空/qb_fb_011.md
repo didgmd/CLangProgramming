@@ -22,17 +22,13 @@ legacy_features: 无
 int main(void)
 {
     int n, prime = 1;
-    if(scanf("%d", & n) != 1) return 1;
-    if(
-    /*〔1〕*/
-    )
-    /*〔4〕*/
-    ;
-    for(int i = 2;
-    /*〔2〕*/
-    ; i++) if(
-    /*〔3〕*/
-    ) prime = 0;
+    if (scanf("%d", &n) != 1)
+    return 1;
+    if ( /*〔1〕*/ )
+    /*〔4〕*/;
+    for (int i = 2; /*〔2〕*/ ; i++)
+        if ( /*〔3〕*/ )
+            prime = 0;
     puts(prime ? "prime" : "not prime");
     return 0;
 }
@@ -65,9 +61,21 @@ int main(void)
 int main(void)
 {
     int n, prime = 1;
-    if(scanf("%d", & n) != 1) return 1;
-    if(n < 2) prime = 0;
-    for(int i = 2; i * i <= n && prime; i++) if(n % i == 0) prime = 0;
+    if (scanf("%d", &n) != 1)
+    {
+        return 1;
+    }
+    if (n < 2)
+    {
+        prime = 0;
+    }
+    for (int i = 2; i * i <= n && prime; i++)
+    {
+        if (n % i == 0)
+        {
+            prime = 0;
+        }
+    }
     puts(prime ? "prime" : "not prime");
     return 0;
 }

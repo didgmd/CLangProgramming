@@ -21,22 +21,15 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    int
-    /*〔1〕*/
-    ,
-    /*〔2〕*/
-    ;
-    for(int i = 0, x; i < 10; i++)
+    int /*〔1〕*/, /*〔2〕*/;
+    for (int i = 0, x; i < 10; i++)
     {
-        if(scanf("%d", & x) != 1) return 1;
-        if(
-        /*〔3〕*/
-        )
+        if (scanf("%d", &x) != 1)
+        return 1;
+        if ( /*〔3〕*/ )
         {
-            /*〔4〕*/
-            ;
-            /*〔5〕*/
-            ;
+            /*〔4〕*/;
+            /*〔5〕*/;
         }
     }
     printf("%d %d\n", count, sum);
@@ -72,10 +65,13 @@ int main(void)
 int main(void)
 {
     int count = 0, sum = 0;
-    for(int i = 0, x; i < 10; i++)
+    for (int i = 0, x; i < 10; i++)
     {
-        if(scanf("%d", & x) != 1) return 1;
-        if(x < 0)
+        if (scanf("%d", &x) != 1)
+        {
+            return 1;
+        }
+        if (x < 0)
         {
             count++;
             sum += x;

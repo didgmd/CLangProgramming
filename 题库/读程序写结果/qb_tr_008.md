@@ -20,10 +20,12 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    char s [] = "-12345";
+    char s[] = "-12345";
     int k = 0, sign = 1, m = 0;
-    if(s [k] == '+' || s [k] == '-') sign = s [k++] == '+' ? 1 : - 1;
-    for(; s [k] >= '0' && s [k] <= '9'; k++) m = m * 10 + s [k] - '0';
+    if (s[k] == '+' || s[k] == '-')
+        sign = s[k++] == '+' ? 1 : -1;
+    for (; s[k] >= '0' && s[k] <= '9'; k++)
+        m = m * 10 + s[k] - '0';
     printf("Result=%d\n", sign * m);
     return 0;
 }

@@ -21,8 +21,10 @@ legacy_features: 无
 int main(void)
 {
     int a = 10, b = 4, c = 3;
-    if(a < b) a = b;
-    if(a < c) a = c;
+    if (a < b)
+        a = b;
+    if (a < c)
+        a = c;
     printf("%d,%d,%d\n", a, b, c);
     return 0;
 }

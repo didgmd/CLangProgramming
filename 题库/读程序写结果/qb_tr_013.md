@@ -21,8 +21,10 @@ legacy_features: 无
 int main(void)
 {
     int x = 2, y = 3, z = 4;
-    if(x < y && y < z) x += z;
-    else y -= x;
+    if (x < y && y < z)
+        x += z;
+    else
+        y -= x;
     printf("%d\n", x + y);
     return 0;
 }

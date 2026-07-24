@@ -64,17 +64,23 @@ legacy_features: 无
 int main(void)
 {
     unsigned n;
-    if(scanf("%u", & n) != 1) return 1;
+    if (scanf("%u", &n) != 1)
+    {
+        return 1;
+    }
     unsigned lo = 0, hi = n < 65535 ? n : 65535, ans = 0;
-    while(lo <= hi)
+    while (lo <= hi)
     {
         unsigned mid = lo + (hi - lo) / 2;
-        if(mid == 0 || mid <= n / mid)
+        if (mid == 0 || mid <= n / mid)
         {
             ans = mid;
             lo = mid + 1;
         }
-        else hi = mid - 1;
+        else
+        {
+            hi = mid - 1;
+        }
     }
     printf("%u\n", ans);
     return 0;

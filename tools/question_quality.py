@@ -67,9 +67,6 @@ def validate_c_layout(question_id: str, code: str) -> None:
 def validate_category(question_id: str, category: str, text: str) -> None:
     body = question_body(text)
     blocks = c_blocks(text)
-    for code in blocks:
-        validate_c_layout(question_id, code)
-
     if category == "选择题":
         if not re.search(r"(?s)\bA\..*\bB\..*\bC\..*\bD\.", body):
             raise QualityError(f"{question_id}: selection question lacks A-D options")

@@ -21,29 +21,24 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    char s [32];
-    if(scanf("%31s", s) != 1) return 1;
-    int i = 0,
-    /*〔1〕*/
-    , n = 0;
-    if(
-    /*〔2〕*/
-    )
+    char s[32];
+    if (scanf("%31s", s) != 1)
+    return 1;
+    int i = 0, /*〔1〕*/, n = 0;
+    if ( /*〔2〕*/ )
     {
-        if(s [i] == '-')
-        /*〔3〕*/
-        ;
+        if (s[i] == '-')
+        /*〔3〕*/;
         i++;
     }
-    for(; s [i] != '\0'; i++)
+    for (; s[i] != '\0'; i++)
     {
-        if(s [i] < '0' || s [i] > '9')
+        if (s[i] < '0' || s[i] > '9')
         {
             puts("invalid");
             return 0;
         }
-        /*〔4〕*/
-        ;
+        /*〔4〕*/;
     }
     printf("%d\n", sign * n);
     return 0;
@@ -76,22 +71,28 @@ int main(void)
 #include <stdio.h>
 int main(void)
 {
-    char s [32];
-    if(scanf("%31s", s) != 1) return 1;
-    int i = 0, sign = 1, n = 0;
-    if(s [i] == '-' || s [i] == '+')
+    char s[32];
+    if (scanf("%31s", s) != 1)
     {
-        if(s [i] == '-') sign = - 1;
+        return 1;
+    }
+    int i = 0, sign = 1, n = 0;
+    if (s[i] == '-' || s[i] == '+')
+    {
+        if (s[i] == '-')
+        {
+            sign = -1;
+        }
         i++;
     }
-    for(; s [i] != '\0'; i++)
+    for (; s[i] != '\0'; i++)
     {
-        if(s [i] < '0' || s [i] > '9')
+        if (s[i] < '0' || s[i] > '9')
         {
             puts("invalid");
             return 0;
         }
-        n = n * 10 + s [i] - '0';
+        n = n * 10 + s[i] - '0';
     }
     printf("%d\n", sign * n);
     return 0;

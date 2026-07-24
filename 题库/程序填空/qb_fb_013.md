@@ -21,21 +21,14 @@ legacy_features: 无
 #include <stdio.h>
 double part(int m, int n)
 {
-    double
-    /*〔1〕*/
-    ;
-    for(int i = m;
-    /*〔2〕*/
-    ; i++)
-    /*〔3〕*/
-    ;
+    double /*〔1〕*/;
+    for (int i = m; /*〔2〕*/ ; i++)
+    /*〔3〕*/;
     return sum;
 }
 int main(void)
 {
-    printf("%.6f\n",
-    /*〔4〕*/
-    );
+    printf("%.6f\n", /*〔4〕*/);
     return 0;
 }
 ```
@@ -67,7 +60,10 @@ int main(void)
 double part(int m, int n)
 {
     double sum = 0.0;
-    for(int i = m; i <= n; i++) sum += 1.0 / i;
+    for (int i = m; i <= n; i++)
+    {
+        sum += 1.0 / i;
+    }
     return sum;
 }
 int main(void)

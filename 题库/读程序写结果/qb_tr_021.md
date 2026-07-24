@@ -20,11 +20,13 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    char s [] = "Ah2MA";
-    for(int i = 0; s [i]; i++)
+    char s[] = "Ah2MA";
+    for (int i = 0; s[i]; i++)
     {
-        if(s [i] == 'a') s [i] = 'A';
-        else if(s [i] == 'A') s [i] = 'a';
+        if (s[i] == 'a')
+            s[i] = 'A';
+        else if (s[i] == 'A')
+            s[i] = 'a';
     }
     puts(s);
     return 0;

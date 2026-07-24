@@ -21,24 +21,14 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    int a [6] [6] =
+    int a[6][6] = {0};
+    for (int i = 0; i < 6; i++)
     {
-        0
+        /*〔1〕*/;
+        for (int /*〔2〕*/; /*〔3〕*/ ; j++)
+            a[i][j] = /*〔4〕*/;
     }
-    ;
-    for(int i = 0; i < 6; i++)
-    {
-        /*〔1〕*/
-        ;
-        for(int
-        /*〔2〕*/
-        ;
-        /*〔3〕*/
-        ; j++) a [i] [j] =
-        /*〔4〕*/
-        ;
-    }
-    printf("%d\n", a [5] [2]);
+    printf("%d\n", a[5][2]);
     return 0;
 }
 ```
@@ -69,17 +59,16 @@ int main(void)
 #include <stdio.h>
 int main(void)
 {
-    int a [6] [6] =
+    int a[6][6] = {0};
+    for (int i = 0; i < 6; i++)
     {
-        0
+        a[i][0] = a[i][i] = 1;
+        for (int j = 1; j < i; j++)
+        {
+            a[i][j] = a[i - 1][j - 1] + a[i - 1][j];
+        }
     }
-    ;
-    for(int i = 0; i < 6; i++)
-    {
-        a [i] [0] = a [i] [i] = 1;
-        for(int j = 1; j < i; j++) a [i] [j] = a [i - 1] [j - 1] + a [i - 1] [j];
-    }
-    printf("%d\n", a [5] [2]);
+    printf("%d\n", a[5][2]);
     return 0;
 }
 ```

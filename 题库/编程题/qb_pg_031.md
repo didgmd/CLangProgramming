@@ -15,35 +15,39 @@ legacy_features: 无
 
 
 
-输入5名学生学号和成绩，按成绩降序选择排序。
+
+输入5名学生的学号和成绩，使用选择排序按成绩降序排列。
 
 ### 输入格式
 
-若干学生记录，每条含学号、姓名和成绩。
+输入5组记录，每组包含一个整数型学号和一个实数成绩。
 
 ### 输出格式
 
-按成绩升序输出全部记录。
+按成绩从高到低输出5行，每行为 `学号 成绩`，成绩保留1位小数。
 
 ### 数据范围与边界
 
-记录数不得超过数组容量；交换整个结构体。
+固定处理5条记录；交换时必须移动完整结构体。
 
 ### 样例输入
 
 ```text
-3
-1 Li 82
-2 Wang 75
-3 Zhao 90
+1 82
+2 75
+3 90
+4 68
+5 88
 ```
 
 ### 样例输出
 
 ```text
-2 Wang 75
-1 Li 82
-3 Zhao 90
+3 90.0
+5 88.0
+1 82.0
+2 75.0
+4 68.0
 ```
 
 ## 常见失分点
@@ -59,7 +63,7 @@ legacy_features: 无
 
 **评分建议：** 输入与边界处理2分，核心算法5分，正确输出2分，代码规范1分。
 
-**正常与边界测试：** 成绩逆序；含相同成绩。
+**正常与边界测试：** 使用已降序数据和含相同成绩的数据检查完整记录交换。
 
 ### 完整参考程序
 
@@ -70,21 +74,35 @@ struct Student
 {
     int id;
     double score;
-}
-;
+};
 int main(void)
 {
-    struct Student a [5];
-    for(int i = 0; i < 5; i++) if(scanf("%d%lf", & a [i].id, & a [i].score) != 2) return 1;
-    for(int i = 0; i < 4; i++)
+    struct Student a[5];
+    for (int i = 0; i < 5; i++)
+    {
+        if (scanf("%d%lf", &a[i].id, &a[i].score) != 2)
+        {
+            return 1;
+        }
+    }
+    for (int i = 0; i < 4; i++)
     {
         int k = i;
-        for(int j = i + 1; j < 5; j++) if(a [j].score > a [k].score) k = j;
-        struct Student t = a [i];
-        a [i] = a [k];
-        a [k] = t;
+        for (int j = i + 1; j < 5; j++)
+        {
+            if (a[j].score > a[k].score)
+            {
+                k = j;
+            }
+        }
+        struct Student t = a[i];
+        a[i] = a[k];
+        a[k] = t;
     }
-    for(int i = 0; i < 5; i++) printf("%d %.1f\n", a [i].id, a [i].score);
+    for (int i = 0; i < 5; i++)
+    {
+        printf("%d %.1f\n", a[i].id, a[i].score);
+    }
     return 0;
 }
 ```

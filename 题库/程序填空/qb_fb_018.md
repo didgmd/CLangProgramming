@@ -21,10 +21,9 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    char word [10];
-    if(scanf(
-    /*〔1〕*/
-    , word) != 1) return 1;
+    char word[10];
+    if (scanf( /*〔1〕*/, word) != 1)
+        return 1;
     puts(word);
     return 0;
 }
@@ -53,8 +52,11 @@ int main(void)
 #include <stdio.h>
 int main(void)
 {
-    char word [10];
-    if(scanf("%9s", word) != 1) return 1;
+    char word[10];
+    if (scanf("%9s", word) != 1)
+    {
+        return 1;
+    }
     puts(word);
     return 0;
 }

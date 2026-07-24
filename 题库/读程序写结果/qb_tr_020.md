@@ -21,7 +21,8 @@ legacy_features: 无
 int main(void)
 {
     int i = 10, j = 0;
-    while(-- i) j++;
+    while (--i)
+        j++;
     printf("%d,%d\n", i, j);
     return 0;
 }

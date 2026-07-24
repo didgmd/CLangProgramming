@@ -68,19 +68,22 @@ legacy_features: 无
 int main(void)
 {
     int n;
-    if(scanf("%d", & n) != 1 || n < 1 || n > 20) return 1;
-    long long a [20] [20] =
+    if (scanf("%d", &n) != 1 || n < 1 || n > 20)
     {
-        {
-            0
-        }
+        return 1;
     }
-    ;
-    for(int i = 0; i < n; i++)
+    long long a[20][20] = {{0}};
+    for (int i = 0; i < n; i++)
     {
-        a [i] [0] = a [i] [i] = 1;
-        for(int j = 1; j < i; j++) a [i] [j] = a [i - 1] [j - 1] + a [i - 1] [j];
-        for(int j = 0; j <= i; j++) printf("%lld%c", a [i] [j], j == i ? '\n' : ' ');
+        a[i][0] = a[i][i] = 1;
+        for (int j = 1; j < i; j++)
+        {
+            a[i][j] = a[i - 1][j - 1] + a[i - 1][j];
+        }
+        for (int j = 0; j <= i; j++)
+        {
+            printf("%lld%c", a[i][j], j == i ? '\n' : ' ');
+        }
     }
     return 0;
 }

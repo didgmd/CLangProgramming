@@ -64,9 +64,18 @@ prime
 int main(void)
 {
     int n;
-    if(scanf("%d", & n) != 1) return 1;
+    if (scanf("%d", &n) != 1)
+    {
+        return 1;
+    }
     int p = n >= 2;
-    for(int i = 2; i <= n / i && p; i++) if(n % i == 0) p = 0;
+    for (int i = 2; i <= n / i && p; i++)
+    {
+        if (n % i == 0)
+        {
+            p = 0;
+        }
+    }
     puts(p ? "prime" : "not prime");
     return 0;
 }

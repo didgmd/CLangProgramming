@@ -21,19 +21,13 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    /*〔3〕*/
-    ;
-    if(scanf(" %c %c", & a, & b) != 2) return 1;
-    if(a >=
-    /*〔4〕*/
-    && a <= 'z') a = (char) (
-    /*〔1〕*/
-    );
-    if(b >=
-    /*〔5〕*/
-    && b <= 'Z') b = (char) (
-    /*〔2〕*/
-    );
+    /*〔3〕*/;
+    if (scanf(" %c %c", &a, &b) != 2)
+    return 1;
+    if (a >= /*〔4〕*/ && a <= 'z')
+        a = (char) ( /*〔1〕*/);
+    if (b >= /*〔5〕*/ && b <= 'Z')
+        b = (char) ( /*〔2〕*/);
     printf("%c %c\n", a, b);
     return 0;
 }
@@ -67,9 +61,18 @@ int main(void)
 int main(void)
 {
     char a, b;
-    if(scanf(" %c %c", & a, & b) != 2) return 1;
-    if(a >= 'a' && a <= 'z') a = (char) (a - 'a' + 'A');
-    if(b >= 'A' && b <= 'Z') b = (char) (b - 'A' + 'a');
+    if (scanf(" %c %c", &a, &b) != 2)
+    {
+        return 1;
+    }
+    if (a >= 'a' && a <= 'z')
+    {
+        a = (char) (a - 'a' + 'A');
+    }
+    if (b >= 'A' && b <= 'Z')
+    {
+        b = (char) (b - 'A' + 'a');
+    }
     printf("%c %c\n", a, b);
     return 0;
 }

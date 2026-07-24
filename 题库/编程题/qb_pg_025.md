@@ -64,20 +64,25 @@ legacy_features: 无
 int main(void)
 {
     int y, m, d;
-    if(scanf("%d%d%d", & y, & m, & d) != 3) return 1;
-    int days [] =
+    if (scanf("%d%d%d", &y, &m, &d) != 3)
     {
-        0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+        return 1;
     }
-    ;
-    if(y % 400 == 0 || (y % 4 == 0 && y % 100 != 0)) days [2] = 29;
-    if(m < 1 || m > 12 || d < 1 || d > days [m])
+    int days[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    if (y % 400 == 0 || (y % 4 == 0 && y % 100 != 0))
+    {
+        days[2] = 29;
+    }
+    if (m < 1 || m > 12 || d < 1 || d > days[m])
     {
         puts("invalid");
         return 0;
     }
     int sum = d;
-    for(int i = 1; i < m; i++) sum += days [i];
+    for (int i = 1; i < m; i++)
+    {
+        sum += days[i];
+    }
     printf("%d\n", sum);
     return 0;
 }
