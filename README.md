@@ -109,3 +109,9 @@ conda run -n base python tools/generate_question_index.py --check
 ## GitHub Actions CI
 
 [GitHub Actions 工作流](.github/workflows/routines.yml) 在 Windows `windows-latest` 上使用 `msys2/setup-msys2` 的动态安装路径定位 MinGW GCC，再分别运行例程和题库校验器。CI 不依赖本地教材、试卷或其他被忽略参考资料；失败时仅将验证日志作为 7 天的 Actions 诊断产物保存，不写入仓库。CI 使用较新 MinGW-w64 GCC 做向前兼容复验，本地最低基线仍为 GCC 8.1。
+
+## 教学诊断与告警策略
+
+- `EX-C06-012` 明确保留无 `\0` 字符数组与 `%s` 的风险演示；其已确认的 GCC 教学诊断只按例程 ID 精确允许，其他新告警仍会导致校验失败。
+- MSVC 兼容 pragma 的 GCC 忽略提示仅在源码声明 `msvc-warning-pragma` 且诊断文本精确匹配时允许，不通过全局 `-w` 或删除 `-Werror` 放宽质量门槛。
+- GitHub Actions 保持启用；遇到新的编译器诊断时优先修复源码或补充有证据的例程级规则。

@@ -43,6 +43,14 @@ BEHAVIOR_CASES = {
     "EX-C09-001": ("", "NO.:10101\nname:Li Lin\nsex:M\naddress:123 Beijing Road\n"),
 }
 MAIN_PATTERN = re.compile(r"\b(?:int|void)\s+main\s*\(")
+MSVC_PRAGMA_WARNING_PATTERN = re.compile(r"ignoring\s+['\"]?#pragma\s+warning", re.IGNORECASE)
+EXPECTED_DIAGNOSTICS = {
+    "EX-C06-012": re.compile(
+        r"warning:.*(?:unterminated-string-initialization|initializer-string.*truncates NUL terminator)",
+        re.IGNORECASE,
+    ),
+}
+EXPECTED_DIAGNOSTIC_FLAGS = {"EX-C06-012": ["-Wno-error"]}
 
 
 class ValidationError(RuntimeError):
@@ -225,13 +233,18 @@ def validate_mingw(gcc_argument: str) -> tuple[str, str]:
     return str(Path(gcc).resolve()), version
 
 
-def unexpected_warnings(stderr: str, features: set[str]) -> list[str]:
+def unexpected_warnings(
+    stderr: str, routine_id: str, features: set[str]
+) -> list[str]:
     unexpected = []
     for line in stderr.splitlines():
         lower = line.lower()
         if "warning:" not in lower:
             continue
-        if "ignoring #pragma warning" in lower and "msvc-warning-pragma" in features:
+        expected_diagnostic = EXPECTED_DIAGNOSTICS.get(routine_id)
+        if expected_diagnostic is not None and expected_diagnostic.search(line):
+            continue
+        if MSVC_PRAGMA_WARNING_PATTERN.search(line) and "msvc-warning-pragma" in features:
             continue
         if "gets" in lower and "gets" in features and (
             "dangerous" in lower or "deprecated" in lower or "warning" in lower
@@ -289,6 +302,7 @@ def compile_and_test(
                 flags = ["-std=c11", "-Wall", "-Wextra", "-Wpedantic", "-Werror"]
             else:
                 flags = ["-std=gnu99", "-Wall", "-Wextra"]
+            flags.extend(EXPECTED_DIAGNOSTIC_FLAGS.get(routine.routine_id, []))
             command = [
                 gcc,
                 *flags,
@@ -304,7 +318,9 @@ def compile_and_test(
                     f"{routine.routine_id} compile failed:\n{completed.stderr.strip()}"
                 )
                 continue
-            warnings = unexpected_warnings(completed.stderr, set(routine.legacy_features))
+            warnings = unexpected_warnings(
+                completed.stderr, routine.routine_id, set(routine.legacy_features)
+            )
             if warnings:
                 failures.append(
                     f"{routine.routine_id} has unexpected warnings:\n" + "\n".join(warnings)

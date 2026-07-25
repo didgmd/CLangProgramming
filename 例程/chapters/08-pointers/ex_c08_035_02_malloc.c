@@ -14,14 +14,21 @@
 
 int main()
 {
-	int* a = (int*)malloc(sizeof(int));
+	int *a = malloc(sizeof *a);
 	int b = 10;
-	a = &b;
+
+	if (a == NULL)
+	{
+		return 1;
+	}
+
+	*a = b;
 
 	printf("%d\n", *a);
-	printf("%p\n", (void *)(a));
+	printf("%p\n", (void *)a);
 
 	free(a);
+	a = NULL;
 
 	return 0;
 }
