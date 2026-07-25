@@ -105,3 +105,7 @@ conda run -n base python tools/generate_question_index.py --check
 - 正式最低基线：MinGW-w64 GCC 8.1。
 - CI：Windows 上较新 MinGW-w64 GCC 的向前兼容复验。
 - Python：`conda run -n base`，依赖声明见根目录 `requirements.txt`。
+
+## GitHub Actions CI
+
+[GitHub Actions 工作流](.github/workflows/routines.yml) 在 Windows `windows-latest` 上使用 `msys2/setup-msys2` 的动态安装路径定位 MinGW GCC，再分别运行例程和题库校验器。CI 不依赖本地教材、试卷或其他被忽略参考资料；失败时仅将验证日志作为 7 天的 Actions 诊断产物保存，不写入仓库。CI 使用较新 MinGW-w64 GCC 做向前兼容复验，本地最低基线仍为 GCC 8.1。

@@ -4,21 +4,84 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: teaching-content-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   mingw:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
       - uses: msys2/setup-msys2@v2
+        id: msys2
         with:
           msystem: MINGW64
           update: true
           install: mingw-w64-x86_64-gcc
-      - name: Validate routines and question bank
+      - name: Locate MinGW GCC
+        id: toolchain
+        shell: pwsh
+        env:
+          MSYS2_LOCATION: ${{ steps.msys2.outputs.msys2-location }}
+        run: |
+          if (-not $env:MSYS2_LOCATION) {
+            throw "setup-msys2 did not expose msys2-location"
+          }
+          $gcc = Join-Path $env:MSYS2_LOCATION "mingw64\bin\gcc.exe"
+          if (-not (Test-Path -LiteralPath $gcc -PathType Leaf)) {
+            throw "MinGW GCC was not found at $gcc"
+          }
+          $target = (& $gcc -dumpmachine | Out-String).Trim()
+          if ($LASTEXITCODE -ne 0 -or $target -notmatch "mingw") {
+            throw "Compiler is not MinGW-w64 GCC: $target"
+          }
+          $versionText = (& $gcc -dumpfullversion -dumpversion | Out-String).Trim()
+          if ($LASTEXITCODE -ne 0 -or $versionText -notmatch '^\d+(\.\d+){1,2}$') {
+            throw "Unable to determine GCC version: $versionText"
+          }
+          $version = [version]$versionText
+          $minimumVersion = [version]'8.1'
+          if ($version -lt $minimumVersion) {
+            throw "MinGW-w64 GCC $versionText is below the required 8.1 baseline"
+          }
+          Write-Host "MSYS2 location: $env:MSYS2_LOCATION"
+          Write-Host "GCC path: $gcc"
+          Write-Host "GCC version: $version"
+          Write-Host "GCC target: $target"
+          "CLP_GCC=$gcc" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Validate routines
         shell: pwsh
         run: |
-          python tools/validate_routines.py --gcc C:\msys64\mingw64\bin\gcc.exe
-          python tools/validate_questions.py --gcc C:\msys64\mingw64\bin\gcc.exe
+          $log = Join-Path $env:RUNNER_TEMP "routines-validation.log"
+          $output = & python tools/validate_routines.py --gcc $env:CLP_GCC 2>&1
+          $code = $LASTEXITCODE
+          $output | Tee-Object -FilePath $log
+          if ($code -ne 0) {
+            exit $code
+          }
+      - name: Validate question bank
+        if: always()
+        shell: pwsh
+        run: |
+          $log = Join-Path $env:RUNNER_TEMP "questions-validation.log"
+          $output = & python tools/validate_questions.py --gcc $env:CLP_GCC 2>&1
+          $code = $LASTEXITCODE
+          $output | Tee-Object -FilePath $log
+          if ($code -ne 0) {
+            exit $code
+          }
+      - name: Upload validation diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: teaching-content-diagnostics
+          path: ${{ runner.temp }}/*-validation.log
+          if-no-files-found: ignore
+          retention-days: 7
