@@ -24,9 +24,13 @@
 ## 课程引入与交付物
 
 - [课程引入讨论稿](课程引入讨论.md)：记录AI时代学习C语言的教学论证、PPT叙事和图像生成约束。
-- [course-introduction.pptx](course-introduction.pptx)：8页、16:9的gpt-image-2课程引入PPTX，已完成。
+- [course-introduction.pptx](course-introduction.pptx)：8页、16:9的gpt-image-2课程引入PPTX，已整合视频访谈观点，并完成认知卸载/认知投降区分、AI协作防护动作和学习契约强化；页面与嵌入视觉素材保持原样。
 - [image-intro-prompts.md](image-intro-prompts.md)：8页视觉提示词和嵌入说明，已完成。
 - [`index.html`](index.html)：12页、离线运行的Hello World交互式课件，已完成。
+
+本轮PPTX优化仅更新页面文字和演讲者备注；P6不再显示术语资格说明，P7加入“先想、先解释、先测试”三个动作，P8明确“先想再问”和“先独立尝试”。图片不重新生成、不替换、不重新裁切。HTML课件及其交互内容不受影响。
+
+本轮新增的视频观点全部采用演讲者备注中的中文转述，来源和时间段写入PPTX备注；不下载视频、不保存完整字幕，也不在学生可见页面增加来源标签。
 
 `EX-C01-001`仍是本课唯一权威例程，保持输出`This is a C program.`不变；课件中的`Hello World`仅是学生修改字符串的课堂练习变体，不新增例程ID。课件包含输出预测、逐行执行、错误诊断和GCC流程说明，但不在浏览器中真实编译C。页面主体可离线运行；P12的W3Schools链接仅为联网时的可选扩展，不属于课程运行依赖。
 
