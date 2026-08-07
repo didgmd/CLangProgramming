@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Kevin@SUT">
+  <meta name="copyright" content="Kevin@SUT">
+  <title>CW-L03 顺序程序设计：数位分解与海伦公式</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #132238;
+      --muted: #587086;
+      --blue: #176b87;
+      --cyan: #2ba7b8;
+      --orange: #df7b32;
+      --green: #17785b;
+      --paper: #f7fbfd;
+      --soft: #eaf5f7;
+      --warm: #fff4df;
+      --line: #c8d7df;
+      --code: #071722;
+      --code-text: #dff8ee;
+      --danger: #9b2c2c;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(135deg, #f9fcfd 0%, #e8f4f7 100%);
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+    }
+
+    button, input { font: inherit; }
+    code, pre { font-family: Consolas, "Cascadia Mono", monospace; }
+
+    .topbar {
+      height: 68px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 26px;
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--blue), #2d5bd1);
+      color: white;
+      font-weight: 800;
+      font-size: 22px;
+    }
+
+    .top-title { font-size: 20px; font-weight: 800; }
+    .top-subtitle { color: var(--muted); font-size: 13px; margin-top: 2px; }
+    .progress-wrap { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .progress-track { width: 325px; height: 8px; border-radius: 9px; background: #d9e3e8; overflow: hidden; }
+    .progress-bar { height: 100%; width: 4%; background: linear-gradient(90deg, var(--cyan), #315fe0); transition: width .2s ease; }
+    .progress-text { min-width: 60px; font-weight: 800; color: #425567; }
+
+    main { height: calc(100vh - 68px); }
+    .deck { width: 100%; height: 100%; position: relative; }
+    .slide { position: absolute; inset: 0; display: none; padding: 24px 48px 74px; }
+    .slide.active { display: block; }
+    .slide-inner { height: 100%; max-width: 1180px; margin: 0 auto; }
+
+    .eyebrow { color: var(--blue); font-weight: 800; letter-spacing: .04em; margin-bottom: 5px; }
+    h1, h2 { margin: 0 0 13px; line-height: 1.14; }
+    h1 { font-size: clamp(38px, 4vw, 56px); }
+    h2 { font-size: clamp(31px, 3.25vw, 46px); }
+    h3 { margin: 0 0 8px; font-size: 21px; }
+    p { margin: 7px 0; font-size: 19px; line-height: 1.48; }
+    .small { font-size: 16px; color: var(--muted); }
+    .lead { font-size: 24px; max-width: 970px; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .panel, .rule-card, .state, .question-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .92);
+      padding: 15px;
+      box-shadow: 0 7px 22px rgba(24, 58, 79, .06);
+    }
+    .panel.soft, .rule-card.soft { background: var(--soft); }
+    .panel.warm, .rule-card.warm { background: var(--warm); border-color: #ead29d; }
+    .rule-card strong, .state strong { color: var(--blue); display: block; margin-bottom: 5px; }
+
+    .formula {
+      padding: 15px 20px;
+      border: 2px solid #9bcbd2;
+      border-radius: 16px;
+      background: white;
+      text-align: center;
+      font-family: Cambria, "Times New Roman", serif;
+      font-size: 33px;
+      font-style: italic;
+      box-shadow: 0 7px 22px rgba(24, 58, 79, .07);
+    }
+    .fraction { display: inline-flex; flex-direction: column; vertical-align: middle; line-height: 1.05; }
+    .fraction span:first-child { border-bottom: 2px solid currentColor; padding: 0 8px 3px; }
+    .fraction span:last-child { padding-top: 3px; }
+    .radical { font-style: normal; font-size: 38px; }
+
+    .code-panel { border-radius: 16px; overflow: hidden; background: var(--code); border: 1px solid #163849; }
+    .code-head { display: flex; justify-content: space-between; padding: 9px 14px; color: #9fd7df; background: #0d2735; font-size: 14px; }
+    .code-block, .error-code {
+      margin: 0;
+      padding: 14px 16px;
+      color: var(--code-text);
+      font-size: 18px;
+      line-height: 1.42;
+      white-space: pre-wrap;
+    }
+    .error-code { color: #7b2424; background: #fff6f4; border: 1px solid #efcbc4; border-radius: 12px; }
+    .code-line { display: block; padding: 1px 7px; border-radius: 7px; }
+    .code-line.is-active,
+    .code-line.active-code-line { background: #20576a; outline: 2px solid #56c6d5; }
+    .compact-program .code-block { padding: 8px 14px; font-size: 16px; line-height: 1.16; }
+    .compact-program .code-line { padding: 0 6px; }
+    .kw { color: #8ed6ff; }
+    .type { color: #ffd580; }
+    .str { color: #a8e6a3; }
+    .num { color: #ffbe8a; }
+
+    .button-row { display: flex; flex-wrap: wrap; gap: 9px; margin: 11px 0; }
+    button, .link-button {
+      min-height: 42px;
+      padding: 8px 15px;
+      border: 1px solid #9db3bf;
+      border-radius: 12px;
+      background: white;
+      color: var(--ink);
+      font-weight: 750;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    button:hover, button:focus-visible, .link-button:hover, .link-button:focus-visible { outline: 3px solid rgba(43, 167, 184, .28); border-color: var(--cyan); }
+    button.primary { background: var(--blue); border-color: var(--blue); color: white; }
+    button.ghost { background: #eef5f7; color: var(--blue); }
+    button.choice { flex: 1 1 170px; text-align: left; }
+    button.selected { background: #dff4eb; border-color: #56a989; color: #155b46; }
+
+    .feedback {
+      min-height: 48px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      background: #eef3f5;
+      color: #364d5e;
+      font-size: 17px;
+      line-height: 1.4;
+    }
+    .feedback.ok { background: #dff4eb; color: #155b46; border: 1px solid #8bc8b1; }
+    .feedback.warn { background: #fff0df; color: #85470f; border: 1px solid #e3b77e; }
+
+    .terminal {
+      padding: 12px 15px;
+      border-radius: 14px;
+      background: #06151e;
+      color: #b9f2d3;
+      font: 17px/1.45 Consolas, monospace;
+      white-space: pre-line;
+      min-height: 68px;
+    }
+
+    .state-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; margin: 10px 0; }
+    .state { padding: 10px; text-align: center; }
+    .state code { font-size: 20px; }
+    .digit-box { text-align: center; font-size: 42px; font-weight: 900; color: var(--blue); }
+    .digit-label { text-align: center; color: var(--muted); margin-top: 5px; }
+
+    .question-card .question-id { color: var(--blue); font-size: 14px; font-weight: 800; }
+    .question-card .prompt { font-size: 20px; font-weight: 700; margin: 7px 0 10px; }
+    .question-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .question-options button { text-align: left; }
+
+    .notice { margin-top: 11px; padding: 10px 14px; border-left: 5px solid var(--orange); background: #fff8e9; border-radius: 10px; font-size: 17px; line-height: 1.42; }
+    .review-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .review-item { text-align: left; background: white; }
+
+    .nav { position: fixed; left: 26px; bottom: 10px; z-index: 5; display: flex; align-items: center; gap: 10px; }
+    .slide-number { font-weight: 800; color: #4a6071; }
+    .footer { position: fixed; right: 26px; bottom: 14px; z-index: 5; color: #4c6272; font-size: 14px; font-weight: 700; }
+
+    @media (max-width: 850px) {
+      .top-subtitle, .progress-track { display: none; }
+      .slide { padding: 18px 20px 74px; overflow-y: auto; }
+      .grid-2, .grid-3, .grid-4, .state-grid { grid-template-columns: 1fr; }
+      .question-options, .review-list { grid-template-columns: 1fr; }
+      h1 { font-size: 36px; }
+      h2 { font-size: 31px; }
+      p { font-size: 17px; }
+    }
+  </style>
+</head>
+<body
+  data-courseware="c-freshman-interactive-html"
+  data-layout="slide-page"
+  data-course-id="CW-L03"
+  data-chapter="3"
+  data-routines="EX-C03-004"
+  data-questions="QB-PG-014,QB-SC-008,QB-SC-059"
+  data-lesson-variants="four-digit-cube-sum-sequential,heron-triangle-area-input"
+  data-attribution="Kevin@SUT">
+  <header class="topbar" aria-label="课件导航">
+    <div class="brand">C;</div>
+    <div>
+      <div class="top-title">CW-L03 · 顺序程序设计</div>
+      <div class="top-subtitle">数位分解 · 表达式 · 海伦公式</div>
+    </div>
+    <div class="progress-wrap">
+      <span id="progress-text" class="progress-text">1 / 25</span>
+      <div class="progress-track" aria-label="课件进度"><div id="progress-bar" class="progress-bar"></div></div>
+    </div>
+  </header>
+
+  <main>
+    <div class="deck" data-deck>
+      <section class="slide active" data-slide="1" data-section="objectives">
+        <div class="slide-inner">
+          <div class="eyebrow">第3章 · 顺序程序设计</div>
+          <h1>数位分解与海伦公式</h1>
+          <p class="lead">一条语句接一条语句，把整数拆开，把数学公式转换为可以运行的C程序。</p>
+          <div class="grid-3" style="margin-top:22px">
+            <div class="rule-card"><strong>整数运算</strong><p>使用 <code>/</code> 和 <code>%</code> 提取各个数位。</p></div>
+            <div class="rule-card"><strong>浮点输入</strong><p>使用 <code>double</code> 和 <code>%lf</code> 保存三条边。</p></div>
+            <div class="rule-card"><strong>公式计算</strong><p>用 <code>sqrt()</code> 实现海伦公式。</p></div>
+          </div>
+          <div class="notice">完成本课后，应能独立写出两个只含声明、输入、计算和输出的顺序程序。</div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="2" data-section="digits-task">
+        <div class="slide-inner">
+          <div class="eyebrow">QB-PG-014 · 完整题目</div>
+          <h2>四位数各位立方和</h2>
+          <div class="grid-2">
+            <article class="question-card" data-programming-question-id="QB-PG-014">
+              <div class="question-id">编程题</div>
+              <p class="prompt">输入四位正整数，求各位数字立方和。</p>
+              <div class="grid-2">
+                <div class="rule-card"><strong>输入格式</strong><p>一个四位正整数。</p></div>
+                <div class="rule-card"><strong>输出格式</strong><p>输出四个数位的立方和。</p></div>
+              </div>
+              <p class="small">数据范围：1000至9999。</p>
+            </article>
+            <div class="panel soft">
+              <h3>样例</h3>
+              <div class="terminal">输入：1234
+输出：100</div>
+              <p><code>1³ + 2³ + 3³ + 4³ = 100</code></p>
+            </div>
+          </div>
+          <div class="notice">输入约束：程序接收一个符合范围要求的四位正整数。</div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="3" data-section="concept" data-topic="place-value">
+        <div class="slide-inner">
+          <div class="eyebrow">十进制数位</div>
+          <h2><code>1234</code>由四个数位组成</h2>
+          <div class="grid-4" style="margin-top:28px">
+            <div class="panel"><div class="digit-box">1</div><div class="digit-label">千位 · 1000</div></div>
+            <div class="panel"><div class="digit-box">2</div><div class="digit-label">百位 · 200</div></div>
+            <div class="panel"><div class="digit-box">3</div><div class="digit-label">十位 · 30</div></div>
+            <div class="panel"><div class="digit-box">4</div><div class="digit-label">个位 · 4</div></div>
+          </div>
+          <div class="formula" style="margin-top:24px">1234 = 1 × 1000 + 2 × 100 + 3 × 10 + 4</div>
+          <div class="notice">程序的任务不是把数字当作字符串切开，而是利用整数运算得到每个数位。</div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="4" data-section="integer-division">
+        <div class="slide-inner">
+          <div class="eyebrow">整数除法</div>
+          <h2><code>/</code>可以去掉右侧低位</h2>
+          <div class="grid-3">
+            <div class="rule-card"><strong><code>1234 / 10</code></strong><p class="digit-box">123</p><p>去掉个位。</p></div>
+            <div class="rule-card"><strong><code>1234 / 100</code></strong><p class="digit-box">12</p><p>去掉个位和十位。</p></div>
+            <div class="rule-card"><strong><code>1234 / 1000</code></strong><p class="digit-box">1</p><p>只留下千位。</p></div>
+          </div>
+          <div class="definition panel soft" style="margin-top:15px"><p><strong>规则：</strong>两个整数相除，结果仍是整数，小数部分直接舍去。</p></div>
+          <div class="button-row" data-interaction="ask-wait-reveal">
+            <button data-division-answer="12"><code>9876 / 100</code> 等于？</button>
+          </div>
+          <div id="division-feedback" class="feedback" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="5" data-section="remainder">
+        <div class="slide-inner">
+          <div class="eyebrow">取余运算</div>
+          <h2><code>%</code>可以保留右侧低位</h2>
+          <div class="grid-3">
+            <div class="rule-card"><strong><code>1234 % 10</code></strong><p class="digit-box">4</p><p>保留个位。</p></div>
+            <div class="rule-card"><strong><code>1234 % 100</code></strong><p class="digit-box">34</p><p>保留后两位。</p></div>
+            <div class="rule-card"><strong><code>1234 % 1000</code></strong><p class="digit-box">234</p><p>保留后三位。</p></div>
+          </div>
+          <div class="formula" style="margin-top:20px">1234 = 123 × 10 + 4</div>
+          <div class="notice"><code>%</code>计算整数除法的余数，两个操作数必须是整数类型。</div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="6" data-section="quiz" data-topic="remainder-question">
+        <div class="slide-inner">
+          <div class="eyebrow">QB-SC-008 · 运算符</div>
+          <h2>取余运算数</h2>
+          <article class="question-card" data-question-id="QB-SC-008" data-interaction="ask-wait-reveal">
+            <p class="question-text prompt">要求两个运算数必须为整数的运算符是（ ）。</p>
+            <div class="question-options">
+              <button data-question-option="A" data-correct="true" data-feedback="正确。取余运算符%的两个操作数必须是整数类型。">A. %</button>
+              <button data-question-option="B" data-correct="false" data-feedback="不正确。除法运算符/可以用于整数，也可以用于浮点数。">B. /</button>
+              <button data-question-option="C" data-correct="false" data-feedback="不正确。关系运算符&lt;可以比较整数或浮点数。">C. &lt;</button>
+              <button data-question-option="D" data-correct="false" data-feedback="不正确。逻辑非!只需要一个操作数。">D. !</button>
+            </div>
+            <div class="question-feedback feedback" aria-live="polite"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="7" data-section="digit-expressions">
+        <div class="slide-inner">
+          <div class="eyebrow">表达式组合</div>
+          <h2>四个数位分别怎样得到？</h2>
+          <div class="grid-2">
+            <div class="rule-card"><strong>千位</strong><p><code>thousands = n / 1000;</code></p><p class="small">去掉右侧三位。</p></div>
+            <div class="rule-card"><strong>百位</strong><p><code>hundreds = n / 100 % 10;</code></p><p class="small">先去掉两位，再保留个位。</p></div>
+            <div class="rule-card"><strong>十位</strong><p><code>tens = n / 10 % 10;</code></p><p class="small">先去掉一位，再保留个位。</p></div>
+            <div class="rule-card"><strong>个位</strong><p><code>ones = n % 10;</code></p><p class="small">直接取得除10的余数。</p></div>
+          </div>
+          <div class="notice"><code>/</code>和<code>%</code>优先级相同，按从左到右的顺序计算。</div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="8" data-section="interaction" data-topic="digit-simulator">
+        <div class="slide-inner">
+          <div class="eyebrow">数位状态</div>
+          <h2>更换整数，观察四个数位</h2>
+          <div class="button-row" data-interaction="ask-wait-reveal">
+            <button class="choice" data-digit-input="1234">1234</button>
+            <button class="choice" data-digit-input="1000">1000</button>
+            <button class="choice" data-digit-input="9999">9999</button>
+          </div>
+          <div class="state-grid">
+            <div class="state"><strong>千位</strong><code id="digit-thousands">—</code></div>
+            <div class="state"><strong>百位</strong><code id="digit-hundreds">—</code></div>
+            <div class="state"><strong>十位</strong><code id="digit-tens">—</code></div>
+            <div class="state"><strong>个位</strong><code id="digit-ones">—</code></div>
+          </div>
+          <div id="digit-simulator-feedback" class="feedback" aria-live="polite">请选择一个四位整数。</div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="9" data-section="cube-sum">
+        <div class="slide-inner">
+          <div class="eyebrow">立方和</div>
+          <h2>C语言用连续乘法表示立方</h2>
+          <div class="grid-2">
+            <div class="panel soft">
+              <h3>正确表达式</h3>
+              <div class="formula">d × d × d</div>
+              <pre class="code-block" style="background:var(--code)"><span class="code-line">d * d * d</span></pre>
+            </div>
+            <div class="panel warm">
+              <h3>故意错误</h3>
+              <pre class="error-code">d ^ 3</pre>
+              <p><code>^</code>是按位异或运算符，不是乘方符号。</p>
+            </div>
+          </div>
+          <div class="notice">C语言没有直接写成立方的运算符；本题使用三次乘法最清楚。</div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="10" data-section="digit-stepper">
+        <div class="slide-inner">
+          <div class="eyebrow">逐步执行</div>
+          <h2><code>1234</code>如何变成<code>100</code>？</h2>
+          <div class="grid-2">
+            <div class="code-panel"><div class="code-head"><span>核心语句</span><span id="digit-step-label">第1步</span></div><pre class="code-block"><span class="code-line" data-code-line data-digit-step="1">scanf("%d", &amp;n);</span><span class="code-line" data-code-line data-digit-step="2">thousands = n / 1000;</span><span class="code-line" data-code-line data-digit-step="3">hundreds = n / 100 % 10;</span><span class="code-line" data-code-line data-digit-step="4">tens = n / 10 % 10;</span><span class="code-line" data-code-line data-digit-step="5">ones = n % 10;</span><span class="code-line" data-code-line data-digit-step="6">sum = thousands * thousands * thousands;</span><span class="code-line" data-code-line data-digit-step="7">sum = sum + hundreds * hundreds * hundreds;</span><span class="code-line" data-code-line data-digit-step="8">sum = sum + tens * tens * tens;</span><span class="code-line" data-code-line data-digit-step="9">sum = sum + ones * ones * ones;</span><span class="code-line" data-code-line data-digit-step="10">printf("%d\n", sum);</span></pre></div>
+            <div class="panel soft">
+              <div class="state-grid" style="grid-template-columns:1fr 1fr"><div class="state"><strong>当前数位</strong><code id="digit-current">—</code></div><div class="state"><strong>sum</strong><code id="digit-sum">—</code></div></div>
+              <div id="digit-step-explanation" class="feedback"></div>
+              <div id="digit-terminal" class="terminal">屏幕尚无输出</div>
+              <div class="button-row"><button class="primary" data-digit-next>下一步</button><button class="ghost" data-digit-reset>重置</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="11" data-section="digits-program">
+        <div class="slide-inner">
+          <div class="eyebrow">完整参考程序</div>
+          <h2>四位数各位立方和</h2>
+          <div class="code-panel compact-program"><div class="code-head"><span>digits.c</span><span>输入约束：1000至9999</span></div><pre class="code-block"><span class="code-line"><span class="kw">#include</span> &lt;stdio.h&gt;</span><span class="code-line"><span class="type">int</span> main()</span><span class="code-line">{</span><span class="code-line">    <span class="type">int</span> n;</span><span class="code-line">    <span class="type">int</span> thousands, hundreds, tens, ones;</span><span class="code-line">    <span class="type">int</span> sum;</span><span class="code-line">    scanf(<span class="str">"%d"</span>, &amp;n);</span><span class="code-line">    thousands = n / <span class="num">1000</span>;</span><span class="code-line">    hundreds = n / <span class="num">100</span> % <span class="num">10</span>;</span><span class="code-line">    tens = n / <span class="num">10</span> % <span class="num">10</span>;</span><span class="code-line">    ones = n % <span class="num">10</span>;</span><span class="code-line">    sum = thousands * thousands * thousands;</span><span class="code-line">    sum = sum + hundreds * hundreds * hundreds;</span><span class="code-line">    sum = sum + tens * tens * tens;</span><span class="code-line">    sum = sum + ones * ones * ones;</span><span class="code-line">    printf(<span class="str">"%d\n"</span>, sum);</span><span class="code-line">    <span class="kw">return</span> <span class="num">0</span>;</span><span class="code-line">}</span></pre></div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="12" data-section="digits-errors">
+        <div class="slide-inner">
+          <div class="eyebrow">错误诊断</div>
+          <h2>三个容易混淆的表达式</h2>
+          <div class="grid-3" data-interaction="ask-wait-reveal">
+            <div class="panel warm"><h3>误用乘方</h3><pre class="error-code">sum = d ^ 3;</pre><button data-digit-error="power">查看原因</button></div>
+            <div class="panel warm"><h3>遗漏取余</h3><pre class="error-code">tens = n / 10;</pre><button data-digit-error="mod">查看原因</button></div>
+            <div class="panel warm"><h3>除数写错</h3><pre class="error-code">hundreds = n / 10 % 10;</pre><button data-digit-error="place">查看原因</button></div>
+          </div>
+          <div id="digit-error-feedback" class="feedback" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="13" data-section="digits-tests">
+        <div class="slide-inner">
+          <div class="eyebrow">程序测试</div>
+          <h2>使用不同数位组合检查程序</h2>
+          <div class="button-row" data-interaction="ask-wait-reveal">
+            <button class="choice" data-digit-test="1234" data-expected-output="100">1234</button>
+            <button class="choice" data-digit-test="1000" data-expected-output="1">1000</button>
+            <button class="choice" data-digit-test="9999" data-expected-output="2916">9999</button>
+          </div>
+          <div id="digit-test-output" class="terminal">请选择一个测试数据</div>
+          <div class="grid-3" style="margin-top:12px">
+            <div class="rule-card"><strong>整数除法</strong><p>去掉右侧低位。</p></div>
+            <div class="rule-card"><strong>取余</strong><p>保留右侧低位。</p></div>
+            <div class="rule-card"><strong>顺序执行</strong><p>先提取数位，再计算立方和。</p></div>
+          </div>
+          <div class="terminal" style="margin-top:12px">gcc digits.c -o digits.exe
+.\digits.exe</div>
+          <div class="button-row"><a class="link-button" href="../../../题库/编程题/qb_pg_014.md">QB-PG-014</a></div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="14" data-section="exercise" data-topic="heron-task">
+        <div class="slide-inner">
+          <div class="eyebrow">教材例3.4 · 海伦公式</div>
+          <h2>已知三边，求三角形面积</h2>
+          <p>已知能够组成三角形的三条边 <em>a</em>、<em>b</em>、<em>c</em>。先计算半周长 <em>s</em>，再使用海伦公式计算面积 <em>S</em>。</p>
+          <div class="grid-2" style="margin-top:15px">
+            <div class="formula" data-formula="s=(a+b+c)/2">s = <span class="fraction"><span>a + b + c</span><span>2</span></span></div>
+            <div class="formula" data-formula="S=sqrt(s(s-a)(s-b)(s-c))">S = <span class="radical">√</span><span style="text-decoration:overline">s(s − a)(s − b)(s − c)</span></div>
+          </div>
+          <div class="grid-2" style="margin-top:15px">
+            <div class="rule-card"><strong>样例输入</strong><p><code>3 4 5</code></p></div>
+            <div class="rule-card"><strong>样例输出</strong><p><code>6.00</code></p></div>
+          </div>
+          <div class="notice">输入约束：三个正数能够组成有效三角形。本程序不负责判断边长是否合法。</div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="15" data-section="heron-symbols">
+        <div class="slide-inner">
+          <div class="eyebrow">公式中的量</div>
+          <h2>每个符号都对应一个变量</h2>
+          <div class="grid-4" data-interaction="ask-wait-reveal">
+            <button class="rule-card" data-symbol="a-b-c"><strong><em>a, b, c</em></strong><p>三条边</p></button>
+            <button class="rule-card" data-symbol="s"><strong><em>s</em></strong><p>半周长</p></button>
+            <button class="rule-card" data-symbol="S"><strong><em>S</em></strong><p>三角形面积</p></button>
+            <button class="rule-card" data-symbol="sqrt"><strong><code>sqrt()</code></strong><p>求平方根</p></button>
+          </div>
+          <div id="symbol-feedback" class="feedback" aria-live="polite"></div>
+          <div class="notice">C变量区分大小写。程序用变量名 <code>area</code> 保存数学公式中的面积 <em>S</em>。</div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="16" data-section="double-question">
+        <div class="slide-inner">
+          <div class="eyebrow">QB-SC-059 · 格式说明符</div>
+          <h2>读取<code>double</code>变量</h2>
+          <article class="question-card" data-question-id="QB-SC-059" data-interaction="ask-wait-reveal">
+            <p class="question-text prompt">读取 <code>double</code> 变量应使用的 <code>scanf</code> 格式说明符是（ ）。</p>
+            <div class="question-options">
+              <button data-question-option="A" data-correct="false" data-feedback="不正确。scanf中的%f对应float变量的存放位置。">A. %f</button>
+              <button data-question-option="B" data-correct="true" data-feedback="正确。scanf中的%lf对应double变量的存放位置。">B. %lf</button>
+              <button data-question-option="C" data-correct="false" data-feedback="不正确。%d用于读取int整数。">C. %d</button>
+              <button data-question-option="D" data-correct="false" data-feedback="不正确。%ld用于读取long整数。">D. %ld</button>
+            </div>
+            <div class="question-feedback feedback" aria-live="polite"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="17" data-section="semiperimeter">
+        <div class="slide-inner">
+          <div class="eyebrow">第一步 · 半周长</div>
+          <h2>先计算 <em>s</em></h2>
+          <div class="grid-2">
+            <div class="formula">s = <span class="fraction"><span>a + b + c</span><span>2</span></span></div>
+            <div class="code-panel"><div class="code-head"><span>C表达式</span><span>使用浮点除法</span></div><pre class="code-block"><span class="code-line">s = (a + b + c) / <span class="num">2.0</span>;</span></pre></div>
+          </div>
+          <div class="grid-3" style="margin-top:17px">
+            <div class="state"><strong>a</strong><code>3.0</code></div>
+            <div class="state"><strong>b</strong><code>4.0</code></div>
+            <div class="state"><strong>c</strong><code>5.0</code></div>
+          </div>
+          <div class="formula" style="margin-top:14px">s = (3 + 4 + 5) / 2.0 = 6.0</div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="18" data-section="heron-factors">
+        <div class="slide-inner">
+          <div class="eyebrow">面积公式中的四个因子</div>
+          <h2>把海伦公式逐项计算</h2>
+          <div class="grid-4" data-interaction="ask-wait-reveal">
+            <button class="state" data-factor="s"><strong>s</strong><code>6</code></button>
+            <button class="state" data-factor="s-a"><strong>s − a</strong><code>3</code></button>
+            <button class="state" data-factor="s-b"><strong>s − b</strong><code>2</code></button>
+            <button class="state" data-factor="s-c"><strong>s − c</strong><code>1</code></button>
+          </div>
+          <div id="factor-feedback" class="feedback" aria-live="polite"></div>
+          <div class="formula" style="margin-top:18px">s(s − a)(s − b)(s − c) = 6 × 3 × 2 × 1 = 36</div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="19" data-section="sqrt-library">
+        <div class="slide-inner">
+          <div class="eyebrow">平方根函数</div>
+          <h2><code>sqrt()</code>来自<code>math.h</code></h2>
+          <div class="grid-2">
+            <div class="code-panel"><div class="code-head"><span>头文件</span><span>提供数学函数声明</span></div><pre class="code-block"><span class="code-line"><span class="kw">#include</span> &lt;math.h&gt;</span><span class="code-line">area = sqrt(<span class="num">36.0</span>);</span></pre></div>
+            <div class="panel soft">
+              <div class="formula"><span class="radical">√</span><span style="text-decoration:overline">36</span> = 6</div>
+              <p><code>sqrt(x)</code>计算非负数 <code>x</code> 的平方根，结果为浮点数。</p>
+            </div>
+          </div>
+          <div class="notice">本课只使用已有的标准库函数，不展开函数定义和参数机制。</div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="20" data-section="heron-expression">
+        <div class="slide-inner">
+          <div class="eyebrow">从公式到C表达式</div>
+          <h2>海伦公式的完整转换</h2>
+          <div class="formula">S = <span class="radical">√</span><span style="text-decoration:overline">s(s − a)(s − b)(s − c)</span></div>
+          <div class="code-panel" style="margin-top:16px"><div class="code-head"><span>C表达式</span><span>每一对括号都对应公式中的一项</span></div><pre class="code-block"><span class="code-line">area = sqrt(s * (s - a) * (s - b) * (s - c));</span></pre></div>
+          <div class="grid-3" style="margin-top:14px">
+            <div class="rule-card"><strong>减法先算</strong><p>括号保证先得到每个差值。</p></div>
+            <div class="rule-card"><strong>再做乘法</strong><p>四个因子依次相乘。</p></div>
+            <div class="rule-card"><strong>最后开方</strong><p>乘积作为 <code>sqrt()</code> 的参数。</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="21" data-section="area-output">
+        <div class="slide-inner">
+          <div class="eyebrow">格式化输出</div>
+          <h2>面积保留两位小数</h2>
+          <div class="grid-2">
+            <div class="code-panel"><div class="code-head"><span>输出语句</span><span>double由printf的%f输出</span></div><pre class="code-block"><span class="code-line">printf(<span class="str">"%.2f\n"</span>, area);</span></pre></div>
+            <div class="panel soft">
+              <div class="state-grid" style="grid-template-columns:1fr 1fr"><div class="state"><strong>area实际值</strong><code>9.902...</code></div><div class="state"><strong>屏幕输出</strong><code>9.90</code></div></div>
+              <p><code>.2</code>规定小数点后显示两位，输出时会按规则舍入。</p>
+            </div>
+          </div>
+          <div class="notice"><code>scanf()</code>读取 <code>double</code> 使用 <code>%lf</code>；<code>printf()</code>输出 <code>double</code> 使用 <code>%f</code>。</div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="22" data-section="heron-stepper">
+        <div class="slide-inner">
+          <div class="eyebrow">逐步执行</div>
+          <h2><code>3 4 5</code>如何得到面积<code>6.00</code>？</h2>
+          <div class="grid-2">
+            <div class="code-panel"><div class="code-head"><span>核心语句</span><span id="area-step-label">第1步</span></div><pre class="code-block"><span class="code-line" data-code-line data-area-step="1">double a, b, c;</span><span class="code-line" data-code-line data-area-step="2">double s, area;</span><span class="code-line" data-code-line data-area-step="3">scanf("%lf %lf %lf", &amp;a, &amp;b, &amp;c);</span><span class="code-line" data-code-line data-area-step="4">s = (a + b + c) / 2.0;</span><span class="code-line" data-code-line data-area-step="5">area = sqrt(s * (s - a) * (s - b) * (s - c));</span><span class="code-line" data-code-line data-area-step="6">printf("%.2f\n", area);</span><span class="code-line" data-code-line data-area-step="7">return 0;</span></pre></div>
+            <div class="panel soft">
+              <div class="state-grid" style="grid-template-columns:1fr 1fr 1fr"><div class="state"><strong>三边</strong><code id="area-sides">—</code></div><div class="state"><strong>s</strong><code id="area-s">—</code></div><div class="state"><strong>area</strong><code id="area-value">—</code></div></div>
+              <div id="area-step-explanation" class="feedback"></div>
+              <div id="area-terminal" class="terminal">屏幕尚无输出</div>
+              <div class="button-row"><button class="primary" data-area-next>下一步</button><button class="ghost" data-area-reset>重置</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="23" data-section="heron-program">
+        <div class="slide-inner">
+          <div class="eyebrow">完整参考程序</div>
+          <h2>使用海伦公式计算面积</h2>
+          <div class="code-panel"><div class="code-head"><span>triangle.c</span><span>输入约束：三边能够组成三角形</span></div><pre class="code-block"><span class="code-line"><span class="kw">#include</span> &lt;math.h&gt;</span><span class="code-line"><span class="kw">#include</span> &lt;stdio.h&gt;</span><span class="code-line"><span class="type">int</span> main()</span><span class="code-line">{</span><span class="code-line">    <span class="type">double</span> a, b, c;</span><span class="code-line">    <span class="type">double</span> s, area;</span><span class="code-line">    scanf(<span class="str">"%lf %lf %lf"</span>, &amp;a, &amp;b, &amp;c);</span><span class="code-line">    s = (a + b + c) / <span class="num">2.0</span>;</span><span class="code-line">    area = sqrt(s * (s - a) * (s - b) * (s - c));</span><span class="code-line">    printf(<span class="str">"%.2f\n"</span>, area);</span><span class="code-line">    <span class="kw">return</span> <span class="num">0</span>;</span><span class="code-line">}</span></pre></div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="24" data-section="heron-errors">
+        <div class="slide-inner">
+          <div class="eyebrow">错误诊断</div>
+          <h2>公式正确，程序还需要哪些细节？</h2>
+          <div class="grid-3" data-interaction="ask-wait-reveal">
+            <div class="panel warm"><h3>遗漏头文件</h3><pre class="error-code">area = sqrt(x);</pre><button data-area-error="header">查看原因</button></div>
+            <div class="panel warm"><h3>输入格式错误</h3><pre class="error-code">double a;
+scanf("%f", &amp;a);</pre><button data-area-error="format">查看原因</button></div>
+            <div class="panel warm"><h3>遗漏括号</h3><pre class="error-code">s = a + b + c / 2.0;</pre><button data-area-error="parentheses">查看原因</button></div>
+          </div>
+          <div id="area-error-feedback" class="feedback" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="slide" data-slide="25" data-section="summary" data-topic="summary-review">
+        <div class="slide-inner">
+          <div class="eyebrow">测试与课后自检</div>
+          <h2>海伦公式程序</h2>
+          <div class="grid-2">
+            <div class="panel soft">
+              <div class="button-row" data-interaction="ask-wait-reveal"><button class="choice" data-area-test="3 4 5" data-expected-output="6.00">3 4 5</button><button class="choice" data-area-test="2 2 2" data-expected-output="1.73">2 2 2</button><button class="choice" data-area-test="3.67 5.43 6.21" data-expected-output="9.90">3.67 5.43 6.21</button></div>
+              <div id="area-test-output" class="terminal">请选择一组三角形边长</div>
+              <div class="terminal" style="margin-top:10px">gcc triangle.c -o triangle.exe
+.\triangle.exe</div>
+              <div class="button-row"><a class="link-button" href="../../../例程/chapters/03-sequential-programming/ex_c03_004_3_4.c">EX-C03-004</a><a class="link-button" href="../../../题库/选择题/qb_sc_059.md">QB-SC-059</a></div>
+            </div>
+            <div class="panel">
+              <div class="review-list">
+                <button class="review-item" data-review-answer="整数除法去掉右侧低位，取余保留右侧低位。">整数除法和取余分别做什么？</button>
+                <button class="review-item" data-review-answer="依次使用n/1000、n/100%10、n/10%10和n%10。">怎样取得四个数位？</button>
+                <button class="review-item" data-review-answer="C语言中的^表示按位异或；立方可写成d*d*d。">为什么不能写d^3？</button>
+                <button class="review-item" data-review-answer="半周长s等于(a+b+c)/2。">海伦公式先计算什么？</button>
+                <button class="review-item" data-review-answer="面积S等于sqrt(s*(s-a)*(s-b)*(s-c))。">海伦公式怎样计算面积？</button>
+                <button class="review-item" data-review-answer="scanf读取double使用%lf，printf输出double使用%f。">double的输入输出格式是什么？</button>
+                <button class="review-item" data-review-answer="包含math.h后，可使用sqrt()计算非负数的平方根。">sqrt()需要哪个头文件？</button>
+              </div>
+              <div id="review-feedback" class="feedback" aria-live="polite"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <nav class="nav" aria-label="页面切换">
+    <button id="prev" class="ghost">上一页</button>
+    <span id="slide-number" class="slide-number">01 / 25</span>
+    <button id="next" class="primary">下一页</button>
+  </nav>
+  <div id="footer" class="footer">CW-L03 · Kevin@SUT · 01/25</div>
+
+  <script>
+    (() => {
+      const slides = [...document.querySelectorAll("[data-slide]")];
+      const totalSlides = slides.length;
+      let current = 0;
+
+      function showSlide(index) {
+        current = Math.max(0, Math.min(totalSlides - 1, index));
+        slides.forEach((slide, position) => slide.classList.toggle("active", position === current));
+        const page = String(current + 1).padStart(2, "0");
+        document.getElementById("slide-number").textContent = `${page} / ${totalSlides}`;
+        document.getElementById("progress-text").textContent = `${current + 1} / ${totalSlides}`;
+        document.getElementById("progress-bar").style.width = `${((current + 1) / totalSlides) * 100}%`;
+        document.getElementById("footer").textContent = `CW-L03 · Kevin@SUT · ${page}/${totalSlides}`;
+        document.getElementById("prev").disabled = current === 0;
+        document.getElementById("next").disabled = current === totalSlides - 1;
+      }
+
+      document.getElementById("prev").addEventListener("click", () => showSlide(current - 1));
+      document.getElementById("next").addEventListener("click", () => showSlide(current + 1));
+      document.addEventListener("keydown", event => {
+        if (["ArrowRight", "PageDown"].includes(event.key)) showSlide(current + 1);
+        if (["ArrowLeft", "PageUp"].includes(event.key)) showSlide(current - 1);
+        if (event.key === "Home") showSlide(0);
+        if (event.key === "End") showSlide(totalSlides - 1);
+      });
+
+      document.querySelectorAll("[data-question-id]").forEach(card => {
+        card.querySelectorAll("[data-question-option]").forEach(button => {
+          button.addEventListener("click", () => {
+            card.querySelectorAll("[data-question-option]").forEach(item => item.classList.remove("selected"));
+            button.classList.add("selected");
+            const feedback = card.querySelector(".question-feedback");
+            feedback.textContent = button.dataset.feedback;
+            feedback.className = button.dataset.correct === "true" ? "question-feedback feedback ok" : "question-feedback feedback warn";
+          });
+        });
+      });
+
+      document.querySelector("[data-division-answer]").addEventListener("click", () => {
+        const feedback = document.getElementById("division-feedback");
+        feedback.textContent = "9876 / 100 = 98。两个操作数都是整数，小数部分0.76被舍去。";
+        feedback.className = "feedback ok";
+      });
+
+      document.querySelectorAll("[data-digit-input]").forEach(button => {
+        button.addEventListener("click", () => {
+          const n = Number(button.dataset.digitInput);
+          const values = [Math.trunc(n / 1000), Math.trunc(n / 100) % 10, Math.trunc(n / 10) % 10, n % 10];
+          ["digit-thousands", "digit-hundreds", "digit-tens", "digit-ones"].forEach((id, index) => document.getElementById(id).textContent = values[index]);
+          document.querySelectorAll("[data-digit-input]").forEach(item => item.classList.remove("selected"));
+          button.classList.add("selected");
+          const feedback = document.getElementById("digit-simulator-feedback");
+          feedback.textContent = `${n}被分解为${values.join("、")}。`;
+          feedback.className = "feedback ok";
+        });
+      });
+
+      const digitSteps = [
+        { current: "n=1234", sum: "未赋值", text: "输入的四位整数保存到n。", output: "屏幕尚无输出" },
+        { current: "千位=1", sum: "未赋值", text: "整数除以1000得到千位1。", output: "屏幕尚无输出" },
+        { current: "百位=2", sum: "未赋值", text: "先除以100，再取余10，得到百位2。", output: "屏幕尚无输出" },
+        { current: "十位=3", sum: "未赋值", text: "先除以10，再取余10，得到十位3。", output: "屏幕尚无输出" },
+        { current: "个位=4", sum: "未赋值", text: "n除以10的余数是个位4。", output: "屏幕尚无输出" },
+        { current: "千位立方", sum: "1", text: "sum从千位立方1³开始。", output: "屏幕尚无输出" },
+        { current: "加入百位", sum: "9", text: "1 + 2³ = 9。", output: "屏幕尚无输出" },
+        { current: "加入十位", sum: "36", text: "9 + 3³ = 36。", output: "屏幕尚无输出" },
+        { current: "加入个位", sum: "100", text: "36 + 4³ = 100。", output: "屏幕尚无输出" },
+        { current: "输出", sum: "100", text: "printf输出sum的当前值。", output: "100" }
+      ];
+      let digitStepIndex = 0;
+
+      function renderDigitStep() {
+        const state = digitSteps[digitStepIndex];
+        document.querySelectorAll("[data-digit-step]").forEach(line => {
+          const active = Number(line.dataset.digitStep) === digitStepIndex + 1;
+          line.classList.toggle("is-active", active);
+          line.classList.toggle("active-code-line", active);
+        });
+        document.getElementById("digit-step-label").textContent = `第${digitStepIndex + 1}步`;
+        document.getElementById("digit-current").textContent = state.current;
+        document.getElementById("digit-sum").textContent = state.sum;
+        document.getElementById("digit-step-explanation").textContent = state.text;
+        document.getElementById("digit-terminal").textContent = state.output;
+      }
+
+      document.querySelector("[data-digit-next]").addEventListener("click", () => {
+        digitStepIndex = Math.min(digitSteps.length - 1, digitStepIndex + 1);
+        renderDigitStep();
+      });
+      document.querySelector("[data-digit-reset]").addEventListener("click", () => {
+        digitStepIndex = 0;
+        renderDigitStep();
+      });
+
+      const digitErrorMessages = {
+        power: "^是按位异或，不是乘方。立方应写成d * d * d。",
+        mod: "n / 10得到去掉个位后的整个整数；再%10才能只保留十位。",
+        place: "百位应先除以100。n / 10 % 10得到的是十位。"
+      };
+      document.querySelectorAll("[data-digit-error]").forEach(button => button.addEventListener("click", () => {
+        const feedback = document.getElementById("digit-error-feedback");
+        feedback.textContent = digitErrorMessages[button.dataset.digitError];
+        feedback.className = "feedback warn";
+      }));
+
+      document.querySelectorAll("[data-digit-test]").forEach(button => button.addEventListener("click", () => {
+        const n = Number(button.dataset.digitTest);
+        const digits = [Math.trunc(n / 1000), Math.trunc(n / 100) % 10, Math.trunc(n / 10) % 10, n % 10];
+        const sum = digits.reduce((value, digit) => value + digit * digit * digit, 0);
+        document.getElementById("digit-test-output").textContent = `输入：${n}\n输出：${sum}`;
+      }));
+
+      const symbolMessages = {
+        "a-b-c": "a、b、c保存三条边的长度。",
+        s: "s保存三条边之和的一半，即半周长。",
+        S: "数学公式用S表示面积；C程序使用变量area保存它。",
+        sqrt: "sqrt()计算非负数的平方根，需要包含math.h。"
+      };
+      document.querySelectorAll("[data-symbol]").forEach(button => button.addEventListener("click", () => {
+        const feedback = document.getElementById("symbol-feedback");
+        feedback.textContent = symbolMessages[button.dataset.symbol];
+        feedback.className = "feedback ok";
+      }));
+
+      const factorMessages = {
+        s: "半周长s=(3+4+5)/2=6。",
+        "s-a": "s-a=6-3=3。",
+        "s-b": "s-b=6-4=2。",
+        "s-c": "s-c=6-5=1。"
+      };
+      document.querySelectorAll("[data-factor]").forEach(button => button.addEventListener("click", () => {
+        const feedback = document.getElementById("factor-feedback");
+        feedback.textContent = factorMessages[button.dataset.factor];
+        feedback.className = "feedback ok";
+      }));
+
+      const areaSteps = [
+        { sides: "—", s: "—", area: "—", text: "建立三个double边长变量。", output: "屏幕尚无输出" },
+        { sides: "—", s: "未赋值", area: "未赋值", text: "建立半周长和面积变量。", output: "屏幕尚无输出" },
+        { sides: "3,4,5", s: "未赋值", area: "未赋值", text: "把三条边保存到a、b、c。", output: "屏幕尚无输出" },
+        { sides: "3,4,5", s: "6.0", area: "未赋值", text: "半周长s=(3+4+5)/2.0=6.0。", output: "屏幕尚无输出" },
+        { sides: "3,4,5", s: "6.0", area: "6.0", text: "海伦公式得到sqrt(6×3×2×1)=6。", output: "屏幕尚无输出" },
+        { sides: "3,4,5", s: "6.0", area: "6.0", text: "按两位小数输出面积。", output: "6.00" },
+        { sides: "3,4,5", s: "6.0", area: "6.0", text: "return 0表示程序正常结束。", output: "6.00" }
+      ];
+      let areaStepIndex = 0;
+
+      function renderAreaStep() {
+        const state = areaSteps[areaStepIndex];
+        document.querySelectorAll("[data-area-step]").forEach(line => {
+          const active = Number(line.dataset.areaStep) === areaStepIndex + 1;
+          line.classList.toggle("is-active", active);
+          line.classList.toggle("active-code-line", active);
+        });
+        document.getElementById("area-step-label").textContent = `第${areaStepIndex + 1}步`;
+        document.getElementById("area-sides").textContent = state.sides;
+        document.getElementById("area-s").textContent = state.s;
+        document.getElementById("area-value").textContent = state.area;
+        document.getElementById("area-step-explanation").textContent = state.text;
+        document.getElementById("area-terminal").textContent = state.output;
+      }
+
+      document.querySelector("[data-area-next]").addEventListener("click", () => {
+        areaStepIndex = Math.min(areaSteps.length - 1, areaStepIndex + 1);
+        renderAreaStep();
+      });
+      document.querySelector("[data-area-reset]").addEventListener("click", () => {
+        areaStepIndex = 0;
+        renderAreaStep();
+      });
+
+      const areaErrorMessages = {
+        header: "使用sqrt()前应包含#include <math.h>，让编译器获得函数声明。",
+        format: "scanf读取double变量应使用%lf，修正为scanf(\"%lf\", &a);。",
+        parentheses: "除法只会作用于c。半周长应写成s = (a + b + c) / 2.0;。"
+      };
+      document.querySelectorAll("[data-area-error]").forEach(button => button.addEventListener("click", () => {
+        const feedback = document.getElementById("area-error-feedback");
+        feedback.textContent = areaErrorMessages[button.dataset.areaError];
+        feedback.className = "feedback warn";
+      }));
+
+      document.querySelectorAll("[data-area-test]").forEach(button => button.addEventListener("click", () => {
+        const [a, b, c] = button.dataset.areaTest.split(" ").map(Number);
+        const s = (a + b + c) / 2;
+        const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+        document.getElementById("area-test-output").textContent = `输入：${button.dataset.areaTest}\n输出：${area.toFixed(2)}`;
+      }));
+
+      document.querySelectorAll("[data-review-answer]").forEach(button => button.addEventListener("click", () => {
+        const feedback = document.getElementById("review-feedback");
+        feedback.textContent = button.dataset.reviewAnswer;
+        feedback.className = "feedback ok";
+      }));
+
+      renderDigitStep();
+      renderAreaStep();
+      showSlide(0);
+    })();
+  </script>
+</body>
+</html>

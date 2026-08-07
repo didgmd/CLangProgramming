@@ -105,6 +105,7 @@ BEHAVIOR_FIXTURES: dict[str, list[BehaviorFixture]] = {
     "QB-PG-006": [("2\n", "prime\n"), ("1\n", "not prime\n")],
     "QB-PG-007": [("-2048\n", "-2048\n"), ("12x\n", "invalid\n")],
     "QB-PG-010": [("1 2 3 4 5 6 20 8 9 10 11 12\n", "20 1 2\n")],
+    "QB-PG-014": [("1000\n", "1\n"), ("9999\n", "2916\n")],
     "QB-PG-018": [("0\n", "1\n"), ("21\n", "invalid\n")],
     "QB-PG-021": [("1 2 3 4 5 6 7 8 9\n", "1 4 7\n2 5 8\n3 6 9\n")],
     "QB-PG-038": [("hello world\n", "11\n"), ("\n", "0\n")],

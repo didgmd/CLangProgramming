@@ -16,6 +16,7 @@ from question_common import scan_questions
 ROOT = Path(__file__).resolve().parents[1]
 CW_L01 = ROOT / "课件" / "讲授" / "01-course-introduction-and-hello-world" / "index.html"
 CW_L02 = ROOT / "课件" / "讲授" / "02-algorithms-and-program-logic" / "index.html"
+CW_L03 = ROOT / "课件" / "讲授" / "03-sequential-programming" / "index.html"
 ALLOWED_EXTERNAL_HREFS = frozenset({"https://w3schools.org.cn/c/index.php"})
 
 REQUIRED_MARKERS = (
@@ -168,14 +169,19 @@ def question_source_parts(text: str) -> tuple[str, dict[str, str]]:
     return normalize_visible_text(" ".join(prompt_lines)), options
 
 
-def validate_embedded_questions(text: str, failures: list[str]) -> None:
+def validate_embedded_questions(
+    text: str,
+    failures: list[str],
+    expected_ids: tuple[str, ...],
+    course_id: str,
+) -> None:
     source_questions = scan_questions()
     blocks = list(QUESTION_BLOCK_PATTERN.finditer(text))
     block_ids = [match.group("id") for match in blocks]
-    if sorted(block_ids) != sorted(CW_L02_QUESTION_IDS):
+    if sorted(block_ids) != sorted(expected_ids):
         fail(
             failures,
-            "CW-L02 embedded question IDs must match the eight declared questions exactly",
+            f"{course_id} embedded choice-question IDs do not match the declared set",
         )
         return
 
@@ -215,6 +221,8 @@ def target_for(course_id: str) -> Path:
         return CW_L01
     if course_id == "CW-L02":
         return CW_L02
+    if course_id == "CW-L03":
+        return CW_L03
     raise ValueError(f"unknown courseware id: {course_id}")
 
 
@@ -259,7 +267,7 @@ def check_links(
     if require_optional_external and external_seen.count("https://w3schools.org.cn/c/index.php") != 1:
         fail(failures, "CW-L01 must contain exactly one marked W3Schools optional link")
     if not require_optional_external and external_seen:
-        fail(failures, "CW-L02 must remain fully offline and contain no external links")
+        fail(failures, "courseware must remain fully offline and contain no external links")
 
 
 def validate_cw_l02(path: Path) -> list[str]:
@@ -365,7 +373,7 @@ def validate_cw_l02(path: Path) -> list[str]:
         fail(failures, "CW-L02 input diagnosis must contain two repair cases")
     if len(re.findall(r'data-review-item(?:\s|>)', text)) != 7:
         fail(failures, "CW-L02 review checklist must contain seven items")
-    validate_embedded_questions(text, failures)
+    validate_embedded_questions(text, failures, CW_L02_QUESTION_IDS, "CW-L02")
 
     pre_blocks = "\n".join(re.findall(r"<pre\b[^>]*>(.*?)</pre>", text, re.IGNORECASE | re.DOTALL))
     code_text = html.unescape(re.sub(r"<[^>]+>", "", pre_blocks))
@@ -410,9 +418,197 @@ def validate_cw_l02(path: Path) -> list[str]:
     check_links(text, path, failures, require_optional_external=False)
     return failures
 
+
+def validate_cw_l03(path: Path) -> list[str]:
+    failures: list[str] = []
+    if not path.exists():
+        return [f"file not found: {path}"]
+
+    raw = path.read_bytes()
+    if raw.startswith(b"\xef\xbb\xbf"):
+        fail(failures, "UTF-8 BOM is not allowed")
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        return [f"invalid UTF-8: {exc}"]
+
+    if "\t" in text:
+        fail(failures, "tab characters are not allowed")
+    if "<html" not in text.lower() or "</html>" not in text.lower():
+        fail(failures, "document is not a complete HTML file")
+    if "overflow: hidden" not in text:
+        fail(failures, "slide/page mode must hide page-level overflow")
+
+    required_markers = (
+        'data-courseware="c-freshman-interactive-html"',
+        'data-layout="slide-page"',
+        'data-course-id="CW-L03"',
+        'data-chapter="3"',
+        'data-routines="EX-C03-004"',
+        'data-questions="QB-PG-014,QB-SC-008,QB-SC-059"',
+        'data-lesson-variants="four-digit-cube-sum-sequential,heron-triangle-area-input"',
+        'data-attribution="Kevin@SUT"',
+        '<meta name="author" content="Kevin@SUT">',
+        '<meta name="copyright" content="Kevin@SUT">',
+        'data-programming-question-id="QB-PG-014"',
+        'data-interaction="ask-wait-reveal"',
+        "data-code-line",
+        "active-code-line",
+    )
+    for marker in required_markers:
+        if marker not in text:
+            fail(failures, f"missing CW-L03 marker: {marker}")
+
+    for pattern in EXTERNAL_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            fail(failures, f"external or persistent dependency found: {pattern}")
+    for pattern in TEACHER_ONLY_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            fail(failures, f"teacher-only content found: {pattern}")
+    for phrase in CW_L02_STUDENT_FORBIDDEN:
+        if phrase in text:
+            fail(failures, f"student-facing teacher-prep phrase found: {phrase}")
+
+    slides = SLIDE_PATTERN.findall(text)
+    sections = SECTION_PATTERN.findall(text)
+    section_blocks = SECTION_BLOCK_PATTERN.findall(text)
+    if len(slides) != 25:
+        fail(failures, f"CW-L03 expected 25 slides, found {len(slides)}")
+    if len(sections) != len(set(sections)):
+        fail(failures, "CW-L03 slide sections are not unique")
+    if len(section_blocks) != 25:
+        fail(failures, f"CW-L03 expected 25 complete section blocks, found {len(section_blocks)}")
+    if text.count("<details") != 0:
+        fail(failures, "CW-L03 must expose all knowledge and exercises directly")
+
+    validate_embedded_questions(
+        text,
+        failures,
+        ("QB-SC-008", "QB-SC-059"),
+        "CW-L03",
+    )
+    if len(re.findall(r'data-question-option="[A-D]"', text)) != 8:
+        fail(failures, "CW-L03 must expose four options for each choice question")
+
+    question_source = scan_questions()["QB-PG-014"].text
+    source_prompt_match = re.search(
+        r"## 题目\s*(.*?)\s*### 输入格式",
+        question_source,
+        re.DOTALL,
+    )
+    source_prompt = ""
+    if not source_prompt_match:
+        fail(failures, "QB-PG-014 lacks a parseable prompt in the question bank")
+    else:
+        source_prompt = normalize_visible_text(source_prompt_match.group(1))
+    programming_block_match = re.search(
+        r'<article\b[^>]*data-programming-question-id="QB-PG-014"[^>]*>(.*?)</article>',
+        text,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if not programming_block_match:
+        fail(failures, "CW-L03 must visibly embed QB-PG-014")
+    else:
+        programming_text = normalize_visible_text(programming_block_match.group(1))
+        if source_prompt and source_prompt not in programming_text:
+            fail(failures, "QB-PG-014 prompt differs from the question bank")
+        for expected in (
+            "一个四位正整数。",
+            "输出四个数位的立方和。",
+            "1000至9999",
+        ):
+            if expected not in programming_text:
+                fail(failures, f"QB-PG-014 visible contract is incomplete: {expected}")
+
+    if text.count("海伦公式") < 2:
+        fail(failures, "CW-L03 must name Heron's formula at least twice")
+    for marker in (
+        'data-formula="s=(a+b+c)/2"',
+        'data-formula="S=sqrt(s(s-a)(s-b)(s-c))"',
+        'data-symbol="a-b-c"',
+        'data-symbol="s"',
+        'data-symbol="S"',
+        'data-symbol="sqrt"',
+    ):
+        if marker not in text:
+            fail(failures, f"CW-L03 Heron explanation is incomplete: {marker}")
+
+    pre_blocks = "\n".join(
+        re.findall(r'<pre\b[^>]*class="[^"]*code-block[^"]*"[^>]*>(.*?)</pre>', text, re.IGNORECASE | re.DOTALL)
+    )
+    code_text = html.unescape(re.sub(r"<[^>]+>", "", pre_blocks))
+    for forbidden, label in (
+        (r"\bif\s*\(", "if"),
+        (r"\bfor\s*\(", "for"),
+        (r"\bwhile\s*\(", "while"),
+        (r"\bswitch\s*\(", "switch"),
+        (r"\breturn\s+1\s*;", "return 1"),
+        (r"\[[^\]]*\]", "array syntax"),
+    ):
+        if re.search(forbidden, code_text):
+            fail(failures, f"CW-L03 positive C examples must not introduce {label}")
+    if re.search(r"if\s*\(\s*scanf|scanf\s*\([^;]+\)\s*[!=]=", code_text):
+        fail(failures, "CW-L03 must not check scanf return values")
+
+    required_code = (
+        'scanf("%d", &n);',
+        "thousands = n / 1000;",
+        "hundreds = n / 100 % 10;",
+        "tens = n / 10 % 10;",
+        "ones = n % 10;",
+        "#include <math.h>",
+        'scanf("%lf %lf %lf", &a, &b, &c);',
+        "s = (a + b + c) / 2.0;",
+        "area = sqrt(s * (s - a) * (s - b) * (s - c));",
+        'printf("%.2f\\n", area);',
+    )
+    for marker in required_code:
+        if marker not in code_text:
+            fail(failures, f"CW-L03 positive program is incomplete: {marker}")
+
+    interaction_counts = (
+        ('data-digit-input="', 3, "digit fixtures"),
+        ('data-digit-step="', 10, "digit execution steps"),
+        ('data-digit-error="', 3, "digit diagnosis cases"),
+        ('data-digit-test="', 3, "digit tests"),
+        ('data-symbol="', 4, "Heron symbols"),
+        ('data-factor="', 4, "Heron factors"),
+        ('data-area-step="', 7, "area execution steps"),
+        ('data-area-error="', 3, "area diagnosis cases"),
+        ('data-area-test="', 3, "area tests"),
+        ('data-review-answer="', 7, "review questions"),
+    )
+    for marker, expected_count, label in interaction_counts:
+        actual = text.count(marker)
+        if actual != expected_count:
+            fail(failures, f"CW-L03 expected {expected_count} {label}, found {actual}")
+
+    for fixture in (
+        'data-digit-test="1234" data-expected-output="100"',
+        'data-digit-test="1000" data-expected-output="1"',
+        'data-digit-test="9999" data-expected-output="2916"',
+        'data-area-test="3 4 5" data-expected-output="6.00"',
+        'data-area-test="2 2 2" data-expected-output="1.73"',
+        'data-area-test="3.67 5.43 6.21" data-expected-output="9.90"',
+    ):
+        if fixture not in text:
+            fail(failures, f"CW-L03 deterministic fixture is missing: {fixture}")
+
+    for command in (
+        "gcc digits.c -o digits.exe\n.\\digits.exe",
+        "gcc triangle.c -o triangle.exe\n.\\triangle.exe",
+    ):
+        if command not in text:
+            fail(failures, f"CW-L03 beginner command is missing: {command.splitlines()[0]}")
+
+    check_links(text, path, failures, require_optional_external=False)
+    return failures
+
 def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
     if course_id == "CW-L02":
         return validate_cw_l02(path)
+    if course_id == "CW-L03":
+        return validate_cw_l03(path)
     failures: list[str] = []
     if not path.exists():
         return [f"file not found: {path}"]
@@ -505,7 +701,7 @@ def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--id", default="CW-L01", help="courseware id: CW-L01 or CW-L02")
+    parser.add_argument("--id", default="CW-L01", help="courseware id: CW-L01, CW-L02, or CW-L03")
     parser.add_argument("--path", type=Path, help="explicit HTML path for local validation")
     args = parser.parse_args()
 

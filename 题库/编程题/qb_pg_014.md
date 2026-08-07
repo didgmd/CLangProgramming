@@ -1,10 +1,10 @@
 <!-- question-meta
 id: QB-PG-014
 category: 编程题
-chapters: 5
-concepts: 数位分解
-difficulty: 综合
-minutes: 20
+chapters: 3
+concepts: 顺序结构、整数除法、取余、数位分解
+difficulty: 常规
+minutes: 15
 related_routines: 无
 compile_mode: c11-strict
 legacy_features: 无
@@ -45,37 +45,42 @@ legacy_features: 无
 
 
 
-围绕“四位数各位立方和”检查输入合法性、临界值、数组或循环边界，并严格匹配题目规定的输出格式。
+不要使用 `^` 表示乘方；C语言中的 `^` 是按位异或运算符。提取百位和十位时，注意先用整数除法去掉低位，再用 `% 10` 保留当前数位。
 
 <details>
 <summary>参考答案与解析</summary>
 
-**解题思路：** 反复使用除10和模10分离数位。
+**解题思路：** 使用整数除法和取余分别得到千位、百位、十位和个位，再把四个数位的立方相加。
 
 **评分建议：** 输入与边界处理2分，核心算法5分，正确输出2分，代码规范1分。
 
-**正常与边界测试：** `1000`；`9999`。
+**正常与边界测试：** `1234`得到`100`；`1000`得到`1`；`9999`得到`2916`。
 
 ### 完整参考程序
 
 <!-- reference-c:start -->
 ```c
 #include <stdio.h>
-int main(void)
+int main()
 {
     int n;
-    if (scanf("%d", &n) != 1 || n < 1000 || n > 9999)
-    {
-        puts("invalid");
-        return 0;
-    }
-    int sum = 0;
-    for (int x = n; x; x /= 10)
-    {
-        int d = x % 10;
-        sum += d * d * d;
-    }
+    int thousands, hundreds, tens, ones;
+    int sum;
+
+    scanf("%d", &n);
+
+    thousands = n / 1000;
+    hundreds = n / 100 % 10;
+    tens = n / 10 % 10;
+    ones = n % 10;
+
+    sum = thousands * thousands * thousands;
+    sum = sum + hundreds * hundreds * hundreds;
+    sum = sum + tens * tens * tens;
+    sum = sum + ones * ones * ones;
+
     printf("%d\n", sum);
+
     return 0;
 }
 ```
