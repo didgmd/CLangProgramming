@@ -1,11 +1,11 @@
 # 讲授课
 
-共16次讲授课、32学时。每次2课时、90分钟，只深讲1–2个程序。CW-L01已完成PPTX与HTML并通过校验，其余课次仍为`planned`。
+共16次讲授课、32学时。每次2课时、90分钟，只深讲1–2个程序。CW-L01已完成PPTX与HTML并通过校验；CW-L02已完成25页学生端HTML，前13页讲固定数据与格式化输出，后12页讲输入程序。
 
 | ID | 章节 | 主题 | 核心程序 | 状态 |
 |---|---|---|---|---|
 | [CW-L01](01-course-introduction-and-hello-world/README.md) | 第1章 | 课程介绍、编译流程、Hello World | `EX-C01-001` | ready |
-| [CW-L02](02-algorithms-and-program-logic/README.md) | 第2章 | 算法、伪代码与程序执行顺序 | `EX-C02-001` | planned |
+| [CW-L02](02-algorithms-and-program-logic/README.md) | 第2章 | 从算法步骤到可运行程序：常量、变量、类型与输入输出 | `EX-C01-001`；`scanf()`课件变体 | ready |
 | [CW-L03](03-sequential-programming/README.md) | 第3章 | 变量、表达式、scanf与printf | `EX-C03-006`、`QB-PG-041`（题库待补） | planned |
 | [CW-L04](04-selection-if/README.md) | 第4章 | 关系/逻辑表达式与if | `EX-C04-001` | planned |
 | [CW-L05](05-selection-nesting-and-switch/README.md) | 第4章 | 嵌套选择、switch与常见陷阱 | `QB-PG-003`、`QB-TR-007` | planned |

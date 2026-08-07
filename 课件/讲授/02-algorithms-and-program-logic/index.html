@@ -1,0 +1,1400 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Kevin@SUT">
+  <meta name="copyright" content="Kevin@SUT">
+  <meta name="description" content="CW-L02：常量、变量、基本类型、格式化输出与标准输入。">
+  <title>CW-L02 · 数据、变量与程序运行</title>
+  <style>
+    :root {
+      --ink: #17212b;
+      --muted: #526270;
+      --paper: #f3f7fa;
+      --panel: #ffffff;
+      --accent: #0b7285;
+      --accent-deep: #075985;
+      --warm: #e09100;
+      --warm-soft: #fff1c7;
+      --blue: #2563eb;
+      --ok: #15803d;
+      --danger: #b42318;
+      --line: #c8d5dc;
+      --code-bg: #0b1623;
+      --code-ink: #f8fafc;
+      --screen-bg: #06131a;
+      --screen-ink: #b6f5cf;
+      --shadow: 0 16px 36px rgba(15, 42, 58, 0.13);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    body {
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 8%, rgba(224, 145, 0, 0.15), transparent 25rem),
+        radial-gradient(circle at 92% 10%, rgba(11, 114, 133, 0.16), transparent 25rem),
+        linear-gradient(135deg, #f3f7fa 0%, #eaf4f4 100%);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-size: 20px;
+      line-height: 1.4;
+    }
+
+    button { font: inherit; }
+
+    button {
+      appearance: none;
+      min-height: 44px;
+      padding: 8px 15px;
+      border: 0;
+      border-radius: 13px;
+      color: #fff;
+      background: var(--accent);
+      box-shadow: 0 7px 16px rgba(11, 114, 133, 0.18);
+      cursor: pointer;
+      font-size: 17px;
+      font-weight: 800;
+      transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+    }
+
+    button:hover,
+    button:focus-visible {
+      outline: 4px solid rgba(37, 99, 235, 0.22);
+      transform: translateY(-1px);
+      box-shadow: 0 9px 20px rgba(11, 114, 133, 0.24);
+    }
+
+    button.ghost { color: var(--accent-deep); background: #e4edf2; box-shadow: none; }
+    button.warm { color: #2b1d05; background: var(--warm); }
+    button.active { color: #2b1d05; background: var(--warm); }
+
+    code,
+    pre { font-family: Consolas, "Courier New", monospace; }
+
+    code {
+      padding: 0 4px;
+      border-radius: 5px;
+      color: #075985;
+      background: #e5f3f5;
+    }
+
+    .app {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 10px 26px;
+      border-bottom: 1px solid rgba(200, 213, 220, 0.88);
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(8px);
+      z-index: 5;
+    }
+
+    .brand {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: #fff;
+      background: linear-gradient(140deg, var(--accent), var(--blue));
+      font-weight: 900;
+    }
+
+    .brand-title {
+      overflow: hidden;
+      font-size: 18px;
+      font-weight: 900;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .brand-subtitle { color: var(--muted); font-size: 14px; white-space: nowrap; }
+
+    .progress-wrap {
+      width: min(32vw, 390px);
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #dbe7ec;
+    }
+
+    .progress-bar {
+      width: 4%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--blue));
+      transition: width 180ms ease;
+    }
+
+    main { flex: 1; min-height: 0; position: relative; }
+    .deck { width: 100%; height: 100%; position: relative; }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      overflow: hidden;
+      padding: 24px 48px 44px;
+      animation: appear 180ms ease;
+    }
+
+    .slide.active { display: block; }
+
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(7px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-inner {
+      width: min(1280px, 100%);
+      min-height: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .hero {
+      justify-content: center;
+      padding: 36px clamp(30px, 7vw, 105px);
+      border: 1px solid rgba(200, 213, 220, 0.8);
+      border-radius: 32px;
+      background:
+        linear-gradient(120deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.72)),
+        radial-gradient(circle at 78% 28%, rgba(49, 198, 212, 0.20), transparent 18rem),
+        radial-gradient(circle at 86% 72%, rgba(224, 145, 0, 0.16), transparent 20rem);
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      color: var(--accent-deep);
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+    }
+
+    h1,
+    h2,
+    h3,
+    p { margin: 0; }
+
+    h1 { max-width: 940px; font-size: clamp(38px, 5vw, 64px); line-height: 1.08; }
+    h2 { font-size: clamp(29px, 3.8vw, 46px); line-height: 1.12; }
+    h3 { font-size: 22px; line-height: 1.2; }
+
+    .lead {
+      max-width: 920px;
+      color: #30424f;
+      font-size: clamp(21px, 2.1vw, 28px);
+      line-height: 1.45;
+    }
+
+    .small { font-size: 16px; }
+    .muted { color: var(--muted); }
+    .center { text-align: center; }
+
+    .pill-row,
+    .button-row,
+    .choice-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      color: var(--accent-deep);
+      background: #dff4f4;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .grid-2,
+    .grid-3,
+    .grid-4 {
+      display: grid;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .panel,
+    .card,
+    .question-card {
+      padding: 15px;
+      border: 1px solid rgba(200, 213, 220, 0.94);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.91);
+      box-shadow: 0 9px 22px rgba(15, 42, 58, 0.08);
+    }
+
+    .panel.soft { background: rgba(232, 247, 247, 0.85); }
+    .panel.warm { background: rgba(255, 246, 217, 0.9); border-color: #edd28b; }
+    .panel.blue { background: rgba(231, 238, 255, 0.88); border-color: #bbcbf5; }
+
+    .definition {
+      padding: 12px 16px;
+      border-left: 5px solid var(--accent);
+      border-radius: 11px;
+      color: #173d4b;
+      background: #e8f7f7;
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .rule-grid,
+    .example-grid,
+    .state-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .rule-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .example-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .state-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .rule-card,
+    .state {
+      padding: 11px 13px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.94);
+    }
+
+    .rule-card strong,
+    .state strong {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--accent-deep);
+      font-size: 16px;
+    }
+
+    .rule-card p,
+    .rule-card li { margin: 0; font-size: 16px; }
+
+    .compact-list { margin: 6px 0 0; padding-left: 22px; }
+    .compact-list li { margin: 2px 0; font-size: 17px; }
+
+    .code-panel {
+      overflow: hidden;
+      border-radius: var(--radius);
+      color: var(--code-ink);
+      background: var(--code-bg);
+      box-shadow: 0 14px 27px rgba(4, 15, 27, 0.23);
+    }
+
+    .code-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 14px;
+      color: #b7d7e0;
+      background: #102638;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .code-block {
+      margin: 0;
+      padding: 10px 14px 12px;
+      overflow-x: auto;
+      color: var(--code-ink);
+      font-size: clamp(16px, 1.45vw, 19px);
+      line-height: 1.36;
+      white-space: pre;
+    }
+
+    .code-line {
+      display: block;
+      min-height: 1.36em;
+      padding: 0 8px;
+      border-left: 4px solid transparent;
+      border-radius: 6px;
+    }
+
+    .code-line.is-active {
+      border-left-color: var(--warm);
+      background: rgba(49, 198, 212, 0.22);
+    }
+
+    .kw { color: #8bd6ff; }
+    .type { color: #f6c86e; }
+    .str { color: #b6f5cf; }
+    .num { color: #ffb4a5; }
+
+    .notice,
+    .feedback,
+    .terminal {
+      min-height: 48px;
+      padding: 11px 14px;
+      border-radius: 13px;
+      font-size: 17px;
+    }
+
+    .notice,
+    .feedback { color: #2d4553; background: #edf4f7; }
+    .feedback:empty { display: none; }
+    .feedback.ok { color: #14532d; background: #dcfce7; border: 1px solid #86efac; }
+    .feedback.warn { color: #713f12; background: #fef3c7; border: 1px solid #f6d365; }
+    .feedback.danger { color: #7f1d1d; background: #fee2e2; border: 1px solid #fca5a5; }
+
+    .terminal {
+      min-height: 110px;
+      color: var(--screen-ink);
+      background: var(--screen-bg);
+      font-family: Consolas, "Courier New", monospace;
+      white-space: pre-wrap;
+    }
+
+    .choice,
+    .option-button,
+    .token-button,
+    .review-item {
+      color: var(--ink);
+      background: #fff;
+      border: 2px solid var(--line);
+      box-shadow: none;
+    }
+
+    .choice:hover,
+    .choice:focus-visible,
+    .option-button:hover,
+    .option-button:focus-visible,
+    .token-button:hover,
+    .token-button:focus-visible,
+    .review-item:hover,
+    .review-item:focus-visible {
+      color: var(--accent-deep);
+      background: #f4fbfb;
+      border-color: var(--accent);
+    }
+
+    .choice.correct,
+    .option-button.correct { color: #14532d; background: #dcfce7; border-color: #4ade80; }
+    .choice.wrong,
+    .option-button.wrong { color: #7f1d1d; background: #fee2e2; border-color: #fca5a5; }
+    .choice.selected { color: #fff; background: var(--accent); border-color: var(--accent); }
+
+    .question-grid {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .question-card {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .question-id { color: var(--accent-deep); font-size: 14px; font-weight: 900; }
+    .question-text { min-height: 48px; font-size: 18px; font-weight: 800; }
+
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .option-button {
+      min-height: 46px;
+      padding: 7px 10px;
+      justify-content: flex-start;
+      text-align: left;
+      font-size: 16px;
+    }
+
+    .question-feedback { margin-top: auto; min-height: 62px; font-size: 15px; }
+
+    .stepper {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .state code { font-size: 20px; }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 14px;
+      background: #fff;
+      font-size: 17px;
+    }
+
+    .data-table th,
+    .data-table td { padding: 9px 11px; border: 1px solid var(--line); text-align: left; }
+    .data-table th { color: var(--accent-deep); background: #e8f7f7; }
+
+    .token-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .token-button { min-height: 56px; padding: 7px; }
+    .token-button.active { color: #2b1d05; background: var(--warm); border-color: var(--warm); }
+    .token-button code { color: inherit; background: transparent; font-size: 20px; }
+
+    .error-code {
+      margin: 0;
+      padding: 10px;
+      overflow: auto;
+      border: 1px solid #fecaca;
+      border-radius: 11px;
+      color: #7f1d1d;
+      background: #fff7f7;
+      font-size: 16px;
+    }
+
+    .review-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .review-item {
+      min-height: 52px;
+      justify-content: flex-start;
+      text-align: left;
+      font-size: 16px;
+    }
+
+    .question-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      color: #1e40af;
+      background: #e0eaff;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .question-link:hover,
+    .question-link:focus-visible { outline: 3px solid rgba(37, 99, 235, 0.25); }
+
+    .nav {
+      position: fixed;
+      left: 26px;
+      bottom: 9px;
+      z-index: 6;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav button { min-width: 82px; min-height: 40px; padding: 6px 11px; font-size: 15px; }
+    .slide-number { color: var(--muted); font-size: 15px; font-weight: 900; }
+
+    .footer {
+      position: fixed;
+      right: 26px;
+      bottom: 12px;
+      z-index: 6;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    @media (max-width: 900px) {
+      body { font-size: 18px; }
+      .topbar { height: 60px; padding: 8px 13px; }
+      .brand-subtitle { display: none; }
+      .progress-wrap { width: 42vw; font-size: 13px; }
+      .slide { padding: 18px 16px 65px; overflow: auto; }
+      .grid-2,
+      .grid-3,
+      .grid-4,
+      .question-grid,
+      .stepper,
+      .state-grid,
+      .rule-grid,
+      .example-grid,
+      .review-list { grid-template-columns: 1fr; }
+      .token-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .nav { left: 13px; }
+      .footer { right: 13px; font-size: 12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body
+  data-courseware="c-freshman-interactive-html"
+  data-layout="slide-page"
+  data-course-id="CW-L02"
+  data-chapter="2"
+  data-routines="EX-C01-001"
+  data-lesson-variants="hello-world-to-variable,scanf-score-input,three-score-practice"
+  data-questions="QB-SC-003,QB-SC-004,QB-SC-005,QB-SC-007,QB-SC-036,QB-SC-037,QB-SC-055,QB-SC-059"
+  data-attribution="Kevin@SUT">
+  <div class="app">
+    <header class="topbar" aria-label="课件导航">
+      <div class="brand">
+        <div class="brand-mark">C;</div>
+        <div>
+          <div class="brand-title">CW-L02 · 数据、变量与程序运行</div>
+          <div class="brand-subtitle">常量 · 变量 · 类型 · 程序运行</div>
+        </div>
+      </div>
+      <div class="progress-wrap" aria-label="课件进度">
+        <span id="progress-label">1 / 25</span>
+        <div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div>
+      </div>
+    </header>
+
+    <main>
+      <div id="deck" class="deck" data-deck="CW-L02">
+        <section class="slide active" data-slide="1" data-section="fixed-data-objectives">
+          <div class="slide-inner hero">
+            <div class="eyebrow">第2章 · 数据与程序</div>
+            <h1>常量、变量与格式化输出</h1>
+            <p class="lead">程序可以保存数据、更新数据、完成运算，并按照指定格式显示结果。</p>
+            <div class="pill-row">
+              <span class="pill">识别常量</span>
+              <span class="pill">理解变量</span>
+              <span class="pill">选择类型</span>
+              <span class="pill">预测输出</span>
+            </div>
+            <div class="definition">完成本部分后，能够解释变量值的变化，为数据选择合适类型，并使用 <code>printf()</code> 输出变量和计算结果。</div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="2" data-section="algorithm-steps">
+          <div class="slide-inner">
+            <div class="eyebrow">算法的基本含义</div>
+            <h2>算法是有限、明确、有序的步骤</h2>
+            <div class="definition">一个任务可以分解为若干可以逐步执行、最终能够得到结果的操作。</div>
+            <div class="grid-2">
+              <div class="panel soft">
+                <h3>已知数据</h3>
+                <p>三门成绩分别为 <code>80</code>、<code>90</code>、<code>70</code>，计算总分和平均分。</p>
+                <div class="state-grid">
+                  <div class="state"><strong>score1</strong><code>80</code></div>
+                  <div class="state"><strong>score2</strong><code>90</code></div>
+                  <div class="state"><strong>score3</strong><code>70</code></div>
+                </div>
+              </div>
+              <div class="panel">
+                <h3>四个有序步骤</h3>
+                <ol class="compact-list">
+                  <li>保存三个成绩。</li>
+                  <li>计算总分：<code>80 + 90 + 70</code>。</li>
+                  <li>计算平均分：<code>240 / 3.0</code>。</li>
+                  <li>输出总分和平均分。</li>
+                </ol>
+              </div>
+            </div>
+            <div class="rule-grid">
+              <div class="rule-card"><strong>有限</strong><p>步骤数量能够确定。</p></div>
+              <div class="rule-card"><strong>明确</strong><p>每一步都有具体动作。</p></div>
+              <div class="rule-card"><strong>有序</strong><p>先得到总分，再计算平均分。</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="3" data-section="minimal-c-program">
+          <div class="slide-inner">
+            <div class="eyebrow">最小程序结构</div>
+            <h2>一个可以运行的C程序</h2>
+            <div class="stepper">
+              <div class="code-panel">
+                <div class="code-head"><span>EX-C01-001</span><span>固定字符串输出</span></div>
+                <pre class="code-block"><span class="code-line"><span class="kw">#include</span> &lt;stdio.h&gt;</span><span class="code-line"></span><span class="code-line"><span class="type">int</span> main()</span><span class="code-line">{</span><span class="code-line">    printf(<span class="str">"This is a C program.\n"</span>);</span><span class="code-line">    <span class="kw">return</span> 0;</span><span class="code-line">}</span></pre>
+              </div>
+              <div class="panel soft" data-interaction="ask-wait-reveal">
+                <div class="rule-card"><strong><code>#include &lt;stdio.h&gt;</code></strong><p>提供 <code>printf()</code> 等标准库函数的声明。</p></div>
+                <div class="rule-card"><strong><code>main</code> 与花括号</strong><p>程序从 <code>main</code> 开始，花括号界定函数体。</p></div>
+                <div class="rule-card"><strong><code>printf()</code></strong><p>屏幕只显示双引号内要求输出的内容。</p></div>
+                <div class="rule-card"><strong><code>return 0;</code></strong><p>表示程序正常结束。</p></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="4" data-section="string-output-examples">
+          <div class="slide-inner">
+            <div class="eyebrow">字符串决定显示内容</div>
+            <h2>改变字符串，观察输出</h2>
+            <div class="grid-3" data-interaction="ask-wait-reveal">
+              <button class="card choice" data-output-example="Hello World"> <code>printf("Hello World\n");</code></button>
+              <button class="card choice" data-output-example="Welcome to C"> <code>printf("Welcome to C\n");</code></button>
+              <button class="card choice" data-output-example="Score = 95"> <code>printf("Score = 95\n");</code></button>
+            </div>
+            <div id="string-output-feedback" class="feedback" aria-live="polite"></div>
+            <div class="grid-2">
+              <div class="rule-card"><strong>字符串内容</strong><p>双引号内的文字按原样显示。</p></div>
+              <div class="rule-card"><strong><code>\n</code></strong><p>输出完成后移动到下一行，本身不会显示为两个普通字符。</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="5" data-section="constant-kinds">
+          <div class="slide-inner">
+            <div class="eyebrow">固定数据</div>
+            <h2>C程序中的常量</h2>
+            <div class="definition">常量是在程序中直接写出的固定数据。写法不同，表示的数据种类也不同。</div>
+            <div class="example-grid">
+              <div class="card"><h3>整数常量</h3><p><code>0</code>　<code>95</code>　<code>2026</code></p></div>
+              <div class="card"><h3>浮点常量</h3><p><code>3.14</code>　<code>0.5</code>　<code>1.2e3</code></p></div>
+              <div class="card"><h3>字符常量</h3><p><code>'A'</code>　<code>'0'</code>　<code>'\n'</code></p></div>
+              <div class="card"><h3>字符串常量</h3><p><code>"A"</code>　<code>"Hello"</code>　<code>"95"</code></p></div>
+            </div>
+            <div class="grid-3">
+              <div class="rule-card"><strong><code>95</code> 与 <code>"95"</code></strong><p>前者是整数，后者是两个字符组成的字符串。</p></div>
+              <div class="rule-card"><strong><code>'A'</code> 与 <code>"A"</code></strong><p>前者是一个字符，后者是字符串。</p></div>
+              <div class="rule-card"><strong><code>1.2e3</code></strong><p>科学计数法，表示 <code>1200.0</code>。</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="6" data-section="constant-questions">
+          <div class="slide-inner">
+            <div class="eyebrow">常量练习</div>
+            <h2>合法常量与科学计数法</h2>
+            <div class="question-grid">
+              <article class="question-card" data-question-id="QB-SC-003">
+                <div class="question-id">QB-SC-003 · 合法常量</div>
+                <p class="question-text">下列选项中不能作为 C 语言合法常量的是（ ）。</p>
+                <div class="option-grid">
+                  <button class="option-button" data-question-option="A" data-correct="true" data-feedback="正确。按本课程的单字符常量规则，'cd' 不能表示一个字符。">A. <code>'cd'</code></button>
+                  <button class="option-button" data-question-option="B" data-correct="false" data-feedback="0.1e+6 是合法的科学计数法浮点常量。">B. <code>0.1e+6</code></button>
+                  <button class="option-button" data-question-option="C" data-correct="false" data-feedback="&quot;\a&quot; 是包含转义字符的字符串常量。">C. <code>&quot;\a&quot;</code></button>
+                  <button class="option-button" data-question-option="D" data-correct="false" data-feedback="'\011' 使用八进制转义写法表示一个字符。">D. <code>'\011'</code></button>
+                </div>
+                <div class="feedback question-feedback" aria-live="polite"></div>
+              </article>
+              <article class="question-card" data-question-id="QB-SC-055">
+                <div class="question-id">QB-SC-055 · 科学计数法</div>
+                <p class="question-text">下列浮点常量写法合法的是（ ）。</p>
+                <div class="option-grid">
+                  <button class="option-button" data-question-option="A" data-correct="false" data-feedback="指数部分必须是整数，不能写成 2.5。">A. <code>12.5E2.5</code></button>
+                  <button class="option-button" data-question-option="B" data-correct="true" data-feedback="正确。12.5e2 的指数部分是整数。">B. <code>12.5e2</code></button>
+                  <button class="option-button" data-question-option="C" data-correct="false" data-feedback="E 前必须有有效的数值部分。">C. <code>E12.5</code></button>
+                  <button class="option-button" data-question-option="D" data-correct="false" data-feedback="指数符号后必须给出整数。">D. <code>12e+</code></button>
+                </div>
+                <div class="feedback question-feedback" aria-live="polite"></div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="7" data-section="variable-basics">
+          <div class="slide-inner">
+            <div class="eyebrow">可以变化的数据</div>
+            <h2>变量的声明、初始化与赋值</h2>
+            <div class="grid-3">
+              <div class="code-panel"><div class="code-head"><span>声明</span><span>建立变量</span></div><pre class="code-block"><span class="code-line"><span class="type">int</span> score;</span></pre></div>
+              <div class="code-panel"><div class="code-head"><span>初始化</span><span>给出第一个值</span></div><pre class="code-block"><span class="code-line"><span class="type">int</span> score = <span class="num">95</span>;</span></pre></div>
+              <div class="code-panel"><div class="code-head"><span>赋值</span><span>更新已有变量</span></div><pre class="code-block"><span class="code-line">score = <span class="num">100</span>;</span></pre></div>
+            </div>
+            <div class="definition">赋值号右边的结果保存到左边的变量中。新值会覆盖变量原来保存的值。</div>
+            <div class="grid-3">
+              <div class="rule-card"><strong><code>int count = 3;</code></strong><p>整数变量 <code>count</code> 的初值为3。</p></div>
+              <div class="rule-card"><strong><code>double average = 86.5;</code></strong><p>浮点变量保存带小数的平均值。</p></div>
+              <div class="rule-card"><strong><code>char grade = 'A';</code></strong><p>字符变量保存一个字符。</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="8" data-section="variable-state">
+          <div class="slide-inner">
+            <div class="eyebrow">赋值与复制</div>
+            <h2>变量的值如何变化</h2>
+            <div class="stepper">
+              <div class="code-panel">
+                <div class="code-head"><span>逐句执行</span><span id="variable-step-label">第1步</span></div>
+                <pre class="code-block"><span class="code-line" data-variable-step="1"><span class="type">int</span> a = <span class="num">5</span>;</span><span class="code-line" data-variable-step="2"><span class="type">int</span> b = a;</span><span class="code-line" data-variable-step="3">a = <span class="num">8</span>;</span></pre>
+              </div>
+              <div class="panel soft" data-interaction="ask-wait-reveal">
+                <div id="variable-step-explanation" class="notice" aria-live="polite"></div>
+                <div class="state-grid">
+                  <div class="state"><strong>a</strong><code id="variable-a">—</code></div>
+                  <div class="state"><strong>b</strong><code id="variable-b">—</code></div>
+                  <div class="state"><strong>当前动作</strong><code id="variable-action">准备</code></div>
+                </div>
+                <div class="button-row"><button data-variable-next>下一步</button><button class="ghost" data-variable-reset>重置</button></div>
+              </div>
+            </div>
+            <div class="definition">执行 <code>b = a;</code> 时复制的是当时的值5。后来把 <code>a</code> 改为8，<code>b</code> 仍然保存5。</div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="9" data-section="basic-types-identifiers">
+          <div class="slide-inner">
+            <div class="eyebrow">数据的表示方式</div>
+            <h2>基本数据类型与变量名</h2>
+            <table class="data-table">
+              <thead><tr><th>类型</th><th>完整示例</th><th>适合保存</th></tr></thead>
+              <tbody>
+                <tr><td><code>int</code></td><td><code>int count = 3;</code></td><td>整数</td></tr>
+                <tr><td><code>float</code></td><td><code>float temperature = 20.5f;</code></td><td>单精度小数</td></tr>
+                <tr><td><code>double</code></td><td><code>double average = 86.5;</code></td><td>双精度小数</td></tr>
+                <tr><td><code>char</code></td><td><code>char grade = 'A';</code></td><td>单个字符</td></tr>
+              </tbody>
+            </table>
+            <div class="grid-2">
+              <div class="panel soft">
+                <h3>合法变量名</h3>
+                <p><code>score</code>　<code>score_1</code>　<code>totalScore</code></p>
+                <p class="small muted">由字母、数字和下划线组成，不能以数字开头。</p>
+              </div>
+              <div class="panel warm">
+                <h3>非法变量名</h3>
+                <p><code>1score</code>　<code>total-score</code>　<code>int</code></p>
+                <p class="small muted">不能以数字开头，不能包含减号，也不能使用关键字。</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="10" data-section="character-questions">
+          <div class="slide-inner">
+            <div class="eyebrow">字符与字符串练习</div>
+            <h2>引号形式与字符存储</h2>
+            <div class="question-grid">
+              <article class="question-card" data-question-id="QB-SC-004">
+                <div class="question-id">QB-SC-004 · 字符串常量</div>
+                <p class="question-text">下列选项中属于字符串常量的是（ ）。</p>
+                <div class="option-grid">
+                  <button class="option-button" data-question-option="A" data-correct="false" data-feedback="ABC 没有双引号，不是字符串常量。">A. <code>ABC</code></button>
+                  <button class="option-button" data-question-option="B" data-correct="true" data-feedback="正确。双引号括起的是字符串常量。">B. <code>&quot;ABC&quot;</code></button>
+                  <button class="option-button" data-question-option="C" data-correct="false" data-feedback="单引号用于字符常量，不表示字符串。">C. <code>'abc'</code></button>
+                  <button class="option-button" data-question-option="D" data-correct="false" data-feedback="'A' 是一个字符常量。">D. <code>'A'</code></button>
+                </div>
+                <div class="feedback question-feedback" aria-live="polite"></div>
+              </article>
+              <article class="question-card" data-question-id="QB-SC-005">
+                <div class="question-id">QB-SC-005 · 字符的存储</div>
+                <p class="question-text">一个 <code>char</code> 型字符数据在内存中实际存放的是（ ）。</p>
+                <div class="option-grid">
+                  <button class="option-button" data-question-option="A" data-correct="true" data-feedback="正确。字符在内存中保存相应的编码值，输出时再按字符解释。">A. 字符的编码值</button>
+                  <button class="option-button" data-question-option="B" data-correct="false" data-feedback="内存不直接保存屏幕上的字符图形。">B. 字符图形</button>
+                  <button class="option-button" data-question-option="C" data-correct="false" data-feedback="字符变量保存编码值，不是字符地址。">C. 字符地址</button>
+                  <button class="option-button" data-question-option="D" data-correct="false" data-feedback="字符编码是数值，但不是十进制文本。">D. 十进制文本</button>
+                </div>
+                <div class="feedback question-feedback" aria-live="polite"></div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="11" data-section="printf-formats">
+          <div class="slide-inner">
+            <div class="eyebrow">格式化输出</div>
+            <h2><code>printf()</code>与格式说明符</h2>
+            <div class="token-grid" data-interaction="ask-wait-reveal">
+              <button class="token-button" data-output-token="%d"><code>%d</code></button>
+              <button class="token-button" data-output-token="%f"><code>%f</code></button>
+              <button class="token-button" data-output-token="%.2f"><code>%.2f</code></button>
+              <button class="token-button" data-output-token="%c"><code>%c</code></button>
+              <button class="token-button" data-output-token="\n"><code>\n</code></button>
+            </div>
+            <div id="output-token-feedback" class="feedback" aria-live="polite"></div>
+            <div class="grid-2">
+              <div class="code-panel">
+                <div class="code-head"><span>四个完整示例</span><span>数据与格式配对</span></div>
+                <pre class="code-block"><span class="code-line">printf(<span class="str">"%d\n"</span>, <span class="num">95</span>);</span><span class="code-line">printf(<span class="str">"%.2f\n"</span>, <span class="num">86.5</span>);</span><span class="code-line">printf(<span class="str">"%c\n"</span>, <span class="str">'A'</span>);</span><span class="code-line">printf(<span class="str">"score=%d average=%.1f\n"</span>, <span class="num">95</span>, <span class="num">86.5</span>);</span></pre>
+              </div>
+              <div class="terminal">95
+86.50
+A
+score=95 average=86.5</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="12" data-section="escape-division-questions">
+          <div class="slide-inner">
+            <div class="eyebrow">转义字符与除法练习</div>
+            <h2>写法不同，结果也不同</h2>
+            <div class="question-grid">
+              <article class="question-card" data-question-id="QB-SC-037">
+                <div class="question-id">QB-SC-037 · 转义字符表示</div>
+                <p class="question-text">下列选项中不能直接表示一个转义字符的是（ ）。</p>
+                <div class="option-grid">
+                  <button class="option-button" data-question-option="A" data-correct="false" data-feedback="\\ 是反斜杠字符的转义写法。">A. <code>\\</code></button>
+                  <button class="option-button" data-question-option="B" data-correct="false" data-feedback="\' 可以表示单引号字符。">B. <code>\'</code></button>
+                  <button class="option-button" data-question-option="C" data-correct="false" data-feedback="\0 是以0开头的转义写法。">C. <code>\0</code></button>
+                  <button class="option-button" data-question-option="D" data-correct="true" data-feedback="正确。074 是数字文本，没有反斜杠。">D. <code>074</code></button>
+                </div>
+                <div class="feedback question-feedback" aria-live="polite"></div>
+              </article>
+              <article class="question-card" data-question-id="QB-SC-007">
+                <div class="question-id">QB-SC-007 · 整型除法</div>
+                <p class="question-text">若 <code>int a=8,b=5; float c;</code>，执行 <code>c=a/b+0.4f;</code> 后 <code>c</code> 的值是（ ）。</p>
+                <div class="option-grid">
+                  <button class="option-button" data-question-option="A" data-correct="true" data-feedback="正确。8/5 先进行整型除法得到1，再加0.4f得到1.4。">A. <code>1.4</code></button>
+                  <button class="option-button" data-question-option="B" data-correct="false" data-feedback="还需要把整型除法的结果1与0.4f相加。">B. <code>1.0</code></button>
+                  <button class="option-button" data-question-option="C" data-correct="false" data-feedback="8/5 不会四舍五入为2。">C. <code>2.0</code></button>
+                  <button class="option-button" data-question-option="D" data-correct="false" data-feedback="8/5 的结果不是1.2，而是整数1。">D. <code>1.6</code></button>
+                </div>
+                <div class="feedback question-feedback" aria-live="polite"></div>
+              </article>
+            </div>
+            <div class="definition"><code>5 / 2</code> 的结果为2；<code>5 / 2.0</code> 的结果为2.5。至少一个操作数是浮点数时才进行浮点除法。</div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="13" data-section="fixed-score-program">
+          <div class="slide-inner">
+            <div class="eyebrow">固定数据程序</div>
+            <h2>从变量到计算结果</h2>
+            <div class="stepper">
+              <div class="code-panel">
+                <div class="code-head"><span>三门成绩：80、90、70</span><span id="fixed-step-label">第1步</span></div>
+                <pre class="code-block"><span class="code-line" data-fixed-step="1"><span class="kw">#include</span> &lt;stdio.h&gt;</span><span class="code-line" data-fixed-step="2"><span class="type">int</span> main()</span><span class="code-line">{</span><span class="code-line" data-fixed-step="3">    <span class="type">int</span> score1 = <span class="num">80</span>;</span><span class="code-line">    <span class="type">int</span> score2 = <span class="num">90</span>;</span><span class="code-line">    <span class="type">int</span> score3 = <span class="num">70</span>;</span><span class="code-line" data-fixed-step="4">    <span class="type">int</span> total;</span><span class="code-line"></span><span class="code-line" data-fixed-step="5">    total = score1 + score2 + score3;</span><span class="code-line"></span><span class="code-line" data-fixed-step="6">    printf(<span class="str">"sum=%d\n"</span>, total);</span><span class="code-line" data-fixed-step="7">    printf(<span class="str">"average=%.2f\n"</span>, total / <span class="num">3.0</span>);</span><span class="code-line"></span><span class="code-line" data-fixed-step="8">    <span class="kw">return</span> 0;</span><span class="code-line">}</span></pre>
+              </div>
+              <div class="panel soft" data-interaction="ask-wait-reveal">
+                <div id="fixed-step-explanation" class="notice" aria-live="polite"></div>
+                <div class="state-grid">
+                  <div class="state"><strong>成绩</strong><code id="fixed-scores">—</code></div>
+                  <div class="state"><strong>total</strong><code id="fixed-total">—</code></div>
+                  <div class="state"><strong>状态</strong><code id="fixed-status">准备</code></div>
+                </div>
+                <div id="fixed-terminal" class="terminal">屏幕尚无输出</div>
+                <div class="button-row"><button data-fixed-next>下一步</button><button class="ghost" data-fixed-reset>重置</button></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="14" data-section="input-introduction">
+          <div class="slide-inner hero">
+            <div class="eyebrow">让数据在运行时改变</div>
+            <h2>让程序从外部获得数据</h2>
+            <p class="lead">固定值写在源程序中；使用 <code>scanf()</code> 后，程序运行时可以接收不同的数据。</p>
+            <div class="grid-2">
+              <div class="code-panel"><div class="code-head"><span>固定值</span><span>每次都是95</span></div><pre class="code-block"><span class="code-line"><span class="type">int</span> score = <span class="num">95</span>;</span></pre></div>
+              <div class="code-panel"><div class="code-head"><span>运行时数据</span><span>由使用者提供</span></div><pre class="code-block"><span class="code-line"><span class="type">int</span> score;</span><span class="code-line">scanf(<span class="str">"%d"</span>, &amp;score);</span></pre></div>
+            </div>
+            <div class="definition">输入约束：后续示例提供的数据均符合程序规定的格式。</div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="15" data-section="scanf-parts">
+          <div class="slide-inner">
+            <div class="eyebrow">标准输入函数</div>
+            <h2><code>scanf()</code>接收数据</h2>
+            <div class="grid-2">
+              <div class="code-panel"><div class="code-head"><span>整数输入</span><span>输入约束：合法整数</span></div><pre class="code-block"><span class="code-line"><span class="type">int</span> score;</span><span class="code-line">scanf(<span class="str">"%d"</span>, &amp;score);</span></pre></div>
+              <div class="panel soft" data-interaction="ask-wait-reveal">
+                <button class="token-button" data-scanf-part="format"><code>"%d"</code> · 读取格式</button>
+                <button class="token-button" data-scanf-part="place"><code>&amp;score</code> · 存放位置</button>
+                <div id="scanf-part-feedback" class="feedback" aria-live="polite"></div>
+              </div>
+            </div>
+            <div class="rule-grid">
+              <div class="rule-card"><strong>文本</strong><p>运行时提供的数据首先是输入文本。</p></div>
+              <div class="rule-card"><strong>转换</strong><p><code>%d</code> 按整数格式解释文本。</p></div>
+              <div class="rule-card"><strong>保存</strong><p>转换后的整数写入 <code>score</code>。</p></div>
+            </div>
+            <div class="notice">这里先把 <code>&amp;score</code> 理解为“提供变量的存放位置”。</div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="16" data-section="scanf-type-formats">
+          <div class="slide-inner">
+            <div class="eyebrow">格式必须与类型对应</div>
+            <h2>四种变量的输入写法</h2>
+            <div class="grid-2">
+              <div class="code-panel"><div class="code-head"><span>整数与单精度浮点数</span><span>输入约束：格式合法</span></div><pre class="code-block"><span class="code-line"><span class="type">int</span> count;</span><span class="code-line">scanf(<span class="str">"%d"</span>, &amp;count);</span><span class="code-line"></span><span class="code-line"><span class="type">float</span> temperature;</span><span class="code-line">scanf(<span class="str">"%f"</span>, &amp;temperature);</span></pre></div>
+              <div class="code-panel"><div class="code-head"><span>双精度浮点数与字符</span><span>输入约束：格式合法</span></div><pre class="code-block"><span class="code-line"><span class="type">double</span> average;</span><span class="code-line">scanf(<span class="str">"%lf"</span>, &amp;average);</span><span class="code-line"></span><span class="code-line"><span class="type">char</span> grade;</span><span class="code-line">scanf(<span class="str">"%c"</span>, &amp;grade);</span></pre></div>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>变量类型</th><th><code>scanf()</code></th><th><code>printf()</code></th></tr></thead>
+              <tbody><tr><td><code>int</code></td><td><code>%d</code></td><td><code>%d</code></td></tr><tr><td><code>float</code></td><td><code>%f</code></td><td><code>%f</code></td></tr><tr><td><code>double</code></td><td><code>%lf</code></td><td><code>%f</code></td></tr><tr><td><code>char</code></td><td><code>%c</code></td><td><code>%c</code></td></tr></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="17" data-section="double-input-question">
+          <div class="slide-inner">
+            <div class="eyebrow">输入格式练习</div>
+            <h2>读取 <code>double</code> 变量</h2>
+            <article class="question-card" data-question-id="QB-SC-059">
+              <div class="question-id">QB-SC-059 · 格式说明符</div>
+              <p class="question-text">读取 <code>double</code> 变量应使用的 <code>scanf</code> 格式说明符是（ ）。</p>
+              <div class="option-grid">
+                <button class="option-button" data-question-option="A" data-correct="false" data-feedback="scanf 中 %f 对应 float 变量。">A. <code>%f</code></button>
+                <button class="option-button" data-question-option="B" data-correct="true" data-feedback="正确。scanf 中 %lf 对应 double 变量的存放位置。">B. <code>%lf</code></button>
+                <button class="option-button" data-question-option="C" data-correct="false" data-feedback="%d 用于读取 int 整数。">C. <code>%d</code></button>
+                <button class="option-button" data-question-option="D" data-correct="false" data-feedback="%ld 用于 long int，不对应 double。">D. <code>%ld</code></button>
+              </div>
+              <div class="feedback question-feedback" aria-live="polite"></div>
+            </article>
+            <div class="definition">同一个 <code>double</code> 变量：<code>scanf()</code> 读取时使用 <code>%lf</code>，<code>printf()</code> 输出时使用 <code>%f</code>。</div>
+            <div class="notice">输入约束：题目保证提供的是可以转换为 <code>double</code> 的数值文本。</div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="18" data-section="literal-format-question">
+          <div class="slide-inner">
+            <div class="eyebrow">普通字符也属于格式串</div>
+            <h2>输入文本必须与格式串对应</h2>
+            <div class="grid-2">
+              <div class="code-panel"><div class="code-head"><span>格式串</span><span>输入约束：按指定文字输入</span></div><pre class="code-block"><span class="code-line"><span class="type">float</span> x, y;</span><span class="code-line">scanf(<span class="str">"x=%f,y=%f"</span>, &amp;x, &amp;y);</span></pre></div>
+              <div class="panel soft"><h3>能够匹配的文本</h3><div class="terminal">x=2.5,y=2.5</div><p class="small">其中 <code>x=</code>、逗号和 <code>y=</code> 都必须原样出现。</p></div>
+            </div>
+            <article class="question-card" data-question-id="QB-SC-036">
+              <div class="question-id">QB-SC-036 · scanf格式匹配</div>
+              <p class="question-text">语句 <code>scanf("x=%f,y=%f",&amp;x,&amp;y);</code> 要求输入（ ）。</p>
+              <div class="option-grid">
+                <button class="option-button" data-question-option="A" data-correct="false" data-feedback="缺少格式串中要求的 x=、逗号和 y=。">A. <code>2.5 2.5</code></button>
+                <button class="option-button" data-question-option="B" data-correct="false" data-feedback="虽然有逗号，但仍缺少 x= 和 y=。">B. <code>2.5,2.5</code></button>
+                <button class="option-button" data-question-option="C" data-correct="true" data-feedback="正确。普通字符与格式串完全对应。">C. <code>x=2.5,y=2.5</code></button>
+                <button class="option-button" data-question-option="D" data-correct="false" data-feedback="格式串要求小写 x 和 y，大小写不能替换。">D. <code>X=2.5,Y=2.5</code></button>
+              </div>
+              <div class="feedback question-feedback" aria-live="polite"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="19" data-section="input-program-stepper">
+          <div class="slide-inner">
+            <div class="eyebrow">输入程序逐行执行</div>
+            <h2>从输入文本到屏幕输出</h2>
+            <div class="stepper">
+              <div class="code-panel">
+                <div class="code-head"><span>假设运行时提供95</span><span id="input-step-label">第1步</span></div>
+                <pre class="code-block"><span class="code-line" data-input-step="1"><span class="kw">#include</span> &lt;stdio.h&gt;</span><span class="code-line" data-input-step="2"><span class="type">int</span> main()</span><span class="code-line">{</span><span class="code-line" data-input-step="3">    <span class="type">int</span> score;</span><span class="code-line" data-input-step="4">    scanf(<span class="str">"%d"</span>, &amp;score);</span><span class="code-line" data-input-step="5">    printf(<span class="str">"Score = %d\n"</span>, score);</span><span class="code-line" data-input-step="6">    <span class="kw">return</span> 0;</span><span class="code-line">}</span></pre>
+              </div>
+              <div class="panel soft" data-interaction="ask-wait-reveal">
+                <div id="input-step-explanation" class="notice" aria-live="polite"></div>
+                <div class="state-grid"><div class="state"><strong>输入文本</strong><code id="input-text">—</code></div><div class="state"><strong>score</strong><code id="input-score">—</code></div><div class="state"><strong>状态</strong><code id="input-status">准备</code></div></div>
+                <div id="input-terminal" class="terminal">屏幕尚无输出</div>
+                <div class="button-row"><button data-input-next>下一步</button><button class="ghost" data-input-reset>重置</button></div>
+              </div>
+            </div>
+            <div class="notice">输入约束：运行时提供一个合法整数。</div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="20" data-section="input-value-simulator">
+          <div class="slide-inner">
+            <div class="eyebrow">变量接收不同数值</div>
+            <h2>同一程序，不同输入</h2>
+            <div class="grid-2">
+              <div class="code-panel"><div class="code-head"><span>程序语句保持不变</span><span>输入约束：合法整数</span></div><pre class="code-block"><span class="code-line"><span class="type">int</span> score;</span><span class="code-line">scanf(<span class="str">"%d"</span>, &amp;score);</span><span class="code-line">printf(<span class="str">"Score = %d\n"</span>, score);</span></pre></div>
+              <div class="panel soft" data-interaction="ask-wait-reveal">
+                <div class="button-row"><button class="choice" data-score-input="95">95</button><button class="choice" data-score-input="0">0</button><button class="choice" data-score-input="100">100</button></div>
+                <div class="state-grid"><div class="state"><strong>输入文本</strong><code id="score-text">—</code></div><div class="state"><strong>score</strong><code id="score-state">—</code></div><div class="state"><strong>输出</strong><code id="score-output">—</code></div></div>
+                <div id="score-terminal" class="terminal">请选择一个合法整数</div>
+              </div>
+            </div>
+            <div class="definition">变化的是运行时数据和变量值；程序中的三条语句不需要随数值改变。</div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="21" data-section="address-marker">
+          <div class="slide-inner">
+            <div class="eyebrow">存放位置</div>
+            <h2><code>scanf()</code>为什么需要 <code>&amp;</code></h2>
+            <div class="grid-2">
+              <div class="panel warm"><h3>故意错误示例</h3><pre class="error-code">int score;
+scanf("%d", score);</pre><p class="small">第二个参数没有提供变量的存放位置。</p></div>
+              <div class="panel soft"><h3>正确示例</h3><div class="code-panel"><pre class="code-block"><span class="code-line"><span class="type">int</span> score;</span><span class="code-line">scanf(<span class="str">"%d"</span>, &amp;score);</span></pre></div><p class="small"><code>&amp;score</code> 表示 <code>score</code> 的存放位置。</p></div>
+            </div>
+            <div class="button-row" data-interaction="ask-wait-reveal"><button data-address-choice="wrong"><code>score</code></button><button data-address-choice="right"><code>&amp;score</code></button></div>
+            <div id="address-feedback" class="feedback" aria-live="polite"></div>
+            <div class="notice">输入约束：示例只处理合法整数。完整的地址与指针知识将在后续内容中展开。</div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="22" data-section="input-diagnostics">
+          <div class="slide-inner">
+            <div class="eyebrow">格式、类型和分隔方式</div>
+            <h2>输入语句必须匹配数据形式</h2>
+            <div class="grid-2">
+              <div class="panel warm">
+                <h3>故意错误：类型不匹配</h3>
+                <pre class="error-code">double average;
+scanf("%d", &amp;average);</pre>
+                <button class="ghost" data-error-id="type">查看修正</button>
+              </div>
+              <div class="panel warm">
+                <h3>故意错误：分隔方式不一致</h3>
+                <p class="small">实际输入：<code>80 90 70</code></p>
+                <pre class="error-code">int a, b, c;
+scanf("%d,%d,%d", &amp;a, &amp;b, &amp;c);</pre>
+                <button class="ghost" data-error-id="separator">查看修正</button>
+              </div>
+            </div>
+            <div id="input-error-feedback" class="feedback" aria-live="polite"></div>
+            <div class="grid-2">
+              <div class="rule-card"><strong>空白分隔</strong><p><code>80 90 70</code> 可由 <code>"%d%d%d"</code> 或 <code>"%d %d %d"</code> 读取。</p></div>
+              <div class="rule-card"><strong>逗号分隔</strong><p><code>80,90,70</code> 对应 <code>"%d,%d,%d"</code>，逗号必须实际出现。</p></div>
+            </div>
+            <div class="notice"><code>%d</code>会自动跳过输入前的空格、Tab和换行；格式串中的空格主要用于清晰表示输入项。变量是否需要赋值取决于后续是否使用，与声明数量无关。</div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="23" data-section="three-score-task">
+          <div class="slide-inner">
+            <div class="eyebrow">综合练习</div>
+            <h2>三门成绩的总分和平均分</h2>
+            <div class="grid-2">
+              <div class="panel soft">
+                <h3>任务</h3>
+                <p>输入三个合法整数成绩，输出总分和保留两位小数的平均分。</p>
+                <table class="data-table"><tbody><tr><th>输入格式</th><td><code>score1 score2 score3</code></td></tr><tr><th>输出格式</th><td><code>sum=...</code><br><code>average=...</code></td></tr></tbody></table>
+              </div>
+              <div class="panel">
+                <h3>样例</h3>
+                <div class="terminal">输入：80 90 70
+输出：
+sum=240
+average=80.00</div>
+              </div>
+            </div>
+            <div class="rule-grid">
+              <div class="rule-card"><strong>数据</strong><p>三个成绩和一个总分变量。</p></div>
+              <div class="rule-card"><strong>计算</strong><p>总分相加，平均分除以 <code>3.0</code>。</p></div>
+              <div class="rule-card"><strong>格式</strong><p>平均分使用 <code>%.2f</code>。</p></div>
+            </div>
+            <div class="notice">输入约束：三个成绩均为符合格式的整数。</div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="24" data-section="three-score-solution">
+          <div class="slide-inner">
+            <div class="eyebrow">完整程序与运行结果</div>
+            <h2>三门成绩程序</h2>
+            <div class="stepper">
+              <div class="code-panel"><div class="code-head"><span>完整程序</span><span>输入约束：三个合法整数</span></div><pre class="code-block"><span class="code-line"><span class="kw">#include</span> &lt;stdio.h&gt;</span><span class="code-line"><span class="type">int</span> main()</span><span class="code-line">{</span><span class="code-line">    <span class="type">int</span> score1, score2, score3;</span><span class="code-line">    <span class="type">int</span> total;</span><span class="code-line">    scanf(<span class="str">"%d %d %d"</span>, &amp;score1, &amp;score2, &amp;score3);</span><span class="code-line">    total = score1 + score2 + score3;</span><span class="code-line">    printf(<span class="str">"sum=%d\n"</span>, total);</span><span class="code-line">    printf(<span class="str">"average=%.2f\n"</span>, total / <span class="num">3.0</span>);</span><span class="code-line">    <span class="kw">return</span> 0;</span><span class="code-line">}</span></pre></div>
+              <div class="panel soft" data-interaction="ask-wait-reveal">
+                <div class="button-row"><button class="choice" data-practice-input="80 90 70">80 90 70</button><button class="choice" data-practice-input="0 0 0">0 0 0</button><button class="choice" data-practice-input="100 100 100">100 100 100</button></div>
+                <div id="practice-feedback" class="feedback" aria-live="polite"></div>
+                <div id="practice-terminal" class="terminal">请选择一组合法成绩</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="25" data-section="summary-review">
+          <div class="slide-inner">
+            <div class="eyebrow">知识总结</div>
+            <h2>五条规则与七项自检</h2>
+            <div class="grid-2">
+              <div class="panel soft">
+                <div class="rule-card"><strong>常量</strong><p>表示程序中直接写出的固定数据。</p></div>
+                <div class="rule-card"><strong>变量</strong><p>保存数据，赋值可以更新当前值。</p></div>
+                <div class="rule-card"><strong>类型</strong><p>决定数据的表示方式和可用格式。</p></div>
+                <div class="rule-card"><strong><code>printf()</code></strong><p>按照格式说明符显示数据。</p></div>
+                <div class="rule-card"><strong><code>scanf()</code></strong><p>按照格式把运行时数据保存到变量。</p></div>
+              </div>
+              <div class="panel">
+                <div class="review-list">
+                  <button class="review-item" data-review-item data-review-answer="常量是直接写出的固定数据；变量有名字，可以保存和更新数据。">常量与变量有什么区别？</button>
+                  <button class="review-item" data-review-item data-review-answer="声明建立变量；初始化在声明时给出第一个值；赋值更新已有变量。">声明、初始化和赋值分别做什么？</button>
+                  <button class="review-item" data-review-item data-review-answer="int保存整数，float和double保存小数，char保存一个字符。">四种基本类型分别保存什么？</button>
+                  <button class="review-item" data-review-item data-review-answer="printf中%d输出整数，%f输出浮点数，%c输出字符，\n负责换行。">常用输出格式如何匹配？</button>
+                  <button class="review-item" data-review-item data-review-answer="两个整数相除得到整数结果；至少一个操作数为浮点数时才得到浮点结果。">整型除法与浮点除法有何区别？</button>
+                  <button class="review-item" data-review-item data-review-answer="格式串说明按什么类型读取，&变量提供存放结果的位置。">scanf的两个核心参数是什么？</button>
+                  <button class="review-item" data-review-item data-review-answer="声明三个成绩和总分，读取成绩，求和，再用total/3.0计算并输出平均分。">三门成绩程序包含哪些语句？</button>
+                </div>
+                <div id="review-feedback" class="feedback" aria-live="polite"></div>
+                <div class="terminal">gcc score.c -o score.exe
+.\score.exe</div>
+                <div class="button-row"><a class="question-link" href="../../../例程/chapters/01-programming-and-c/ex_c01_001_1_1.c">EX-C01-001</a><a class="question-link" href="../../../题库/README.md">题库索引</a></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <div class="nav" aria-label="页面切换">
+      <button id="prev" class="ghost">上一页</button>
+      <span id="slide-number" class="slide-number">01 / 25</span>
+      <button id="next">下一页</button>
+    </div>
+    <div class="footer">CW-L02 · Kevin@SUT · <span id="footer-page">01</span>/25</div>
+  </div>
+
+  <script>
+    (() => {
+      const slides = [...document.querySelectorAll("[data-slide]")];
+      const progressLabel = document.getElementById("progress-label");
+      const progressBar = document.getElementById("progress-bar");
+      const slideNumber = document.getElementById("slide-number");
+      const footerPage = document.getElementById("footer-page");
+      let current = 0;
+
+      const pad = value => String(value).padStart(2, "0");
+
+      function showSlide(index) {
+        current = Math.max(0, Math.min(slides.length - 1, index));
+        slides.forEach((slide, itemIndex) => slide.classList.toggle("active", itemIndex === current));
+        const page = current + 1;
+        progressLabel.textContent = `${page} / ${slides.length}`;
+        progressBar.style.width = `${(page / slides.length) * 100}%`;
+        slideNumber.textContent = `${pad(page)} / ${slides.length}`;
+        footerPage.textContent = pad(page);
+        document.getElementById("prev").disabled = current === 0;
+        document.getElementById("next").disabled = current === slides.length - 1;
+      }
+
+      document.getElementById("prev").addEventListener("click", () => showSlide(current - 1));
+      document.getElementById("next").addEventListener("click", () => showSlide(current + 1));
+      document.addEventListener("keydown", event => {
+        if (["ArrowRight", "PageDown"].includes(event.key)) showSlide(current + 1);
+        if (["ArrowLeft", "PageUp"].includes(event.key)) showSlide(current - 1);
+        if (event.key === "Home") showSlide(0);
+        if (event.key === "End") showSlide(slides.length - 1);
+      });
+
+      document.querySelectorAll("[data-output-example]").forEach(button => {
+        button.addEventListener("click", () => {
+          document.querySelectorAll("[data-output-example]").forEach(item => item.classList.remove("selected"));
+          button.classList.add("selected");
+          const feedback = document.getElementById("string-output-feedback");
+          feedback.textContent = `屏幕显示：${button.dataset.outputExample}，随后换行。`;
+          feedback.className = "feedback ok";
+        });
+      });
+
+      document.querySelectorAll("[data-question-id]").forEach(card => {
+        card.querySelectorAll("[data-question-option]").forEach(button => {
+          button.addEventListener("click", () => {
+            card.querySelectorAll("[data-question-option]").forEach(item => item.classList.remove("correct", "wrong"));
+            button.classList.add(button.dataset.correct === "true" ? "correct" : "wrong");
+            const feedback = card.querySelector(".question-feedback");
+            feedback.textContent = button.dataset.feedback;
+            feedback.className = button.dataset.correct === "true" ? "feedback question-feedback ok" : "feedback question-feedback warn";
+          });
+        });
+      });
+
+      const variableSteps = [
+        { a: "5", b: "—", action: "初始化a", text: "建立变量a，并保存整数5。" },
+        { a: "5", b: "5", action: "复制", text: "把a当前保存的5复制给新变量b。" },
+        { a: "8", b: "5", action: "更新a", text: "把a更新为8，b仍然保存原来复制的5。" }
+      ];
+      let variableIndex = 0;
+
+      function renderVariableStep() {
+        const state = variableSteps[variableIndex];
+        document.querySelectorAll("[data-variable-step]").forEach(line => line.classList.toggle("is-active", Number(line.dataset.variableStep) === variableIndex + 1));
+        document.getElementById("variable-step-label").textContent = `第${variableIndex + 1}步`;
+        document.getElementById("variable-step-explanation").textContent = state.text;
+        document.getElementById("variable-a").textContent = state.a;
+        document.getElementById("variable-b").textContent = state.b;
+        document.getElementById("variable-action").textContent = state.action;
+      }
+
+      document.querySelector("[data-variable-next]").addEventListener("click", () => {
+        variableIndex = (variableIndex + 1) % variableSteps.length;
+        renderVariableStep();
+      });
+      document.querySelector("[data-variable-reset]").addEventListener("click", () => {
+        variableIndex = 0;
+        renderVariableStep();
+      });
+
+      const outputTokenMessages = {
+        "%d": "%d 把整数转换为十进制文字。",
+        "%f": "%f 输出浮点数，默认显示六位小数。",
+        "%.2f": "%.2f 输出浮点数并保留两位小数。",
+        "%c": "%c 输出一个字符。",
+        "\\n": "\\n 使后续输出从下一行开始。"
+      };
+      document.querySelectorAll("[data-output-token]").forEach(button => {
+        button.addEventListener("click", () => {
+          document.querySelectorAll("[data-output-token]").forEach(item => item.classList.remove("active"));
+          button.classList.add("active");
+          const feedback = document.getElementById("output-token-feedback");
+          feedback.textContent = outputTokenMessages[button.dataset.outputToken];
+          feedback.className = "feedback ok";
+        });
+      });
+
+      const fixedSteps = [
+        { scores: "—", total: "—", status: "构建", output: "屏幕尚无输出", text: "准备printf()的标准库声明。" },
+        { scores: "—", total: "—", status: "进入main", output: "屏幕尚无输出", text: "程序从main开始执行。" },
+        { scores: "80,90,70", total: "—", status: "建立变量", output: "屏幕尚无输出", text: "三个成绩变量分别保存80、90和70。" },
+        { scores: "80,90,70", total: "未赋值", status: "声明total", output: "屏幕尚无输出", text: "建立整数变量total。" },
+        { scores: "80,90,70", total: "240", status: "计算", output: "屏幕尚无输出", text: "三个成绩相加，结果240保存到total。" },
+        { scores: "80,90,70", total: "240", status: "输出总分", output: "sum=240", text: "用%d输出total的整数值。" },
+        { scores: "80,90,70", total: "240", status: "输出平均分", output: "sum=240\naverage=80.00", text: "用total/3.0得到浮点结果，并保留两位小数。" },
+        { scores: "80,90,70", total: "240", status: "正常结束", output: "sum=240\naverage=80.00", text: "return 0表示程序正常结束。" }
+      ];
+      let fixedIndex = 0;
+
+      function renderFixedStep() {
+        const state = fixedSteps[fixedIndex];
+        document.querySelectorAll("[data-fixed-step]").forEach(line => line.classList.toggle("is-active", Number(line.dataset.fixedStep) === fixedIndex + 1));
+        document.getElementById("fixed-step-label").textContent = `第${fixedIndex + 1}步`;
+        document.getElementById("fixed-step-explanation").textContent = state.text;
+        document.getElementById("fixed-scores").textContent = state.scores;
+        document.getElementById("fixed-total").textContent = state.total;
+        document.getElementById("fixed-status").textContent = state.status;
+        document.getElementById("fixed-terminal").textContent = state.output;
+      }
+
+      document.querySelector("[data-fixed-next]").addEventListener("click", () => {
+        fixedIndex = (fixedIndex + 1) % fixedSteps.length;
+        renderFixedStep();
+      });
+      document.querySelector("[data-fixed-reset]").addEventListener("click", () => {
+        fixedIndex = 0;
+        renderFixedStep();
+      });
+
+      document.querySelectorAll("[data-scanf-part]").forEach(button => {
+        button.addEventListener("click", () => {
+          const feedback = document.getElementById("scanf-part-feedback");
+          feedback.textContent = button.dataset.scanfPart === "format"
+            ? "%d说明按照整数格式解释输入文本。"
+            : "&score提供变量score的存放位置。";
+          feedback.className = "feedback ok";
+        });
+      });
+
+      const inputSteps = [
+        { text: "—", score: "—", status: "构建", output: "屏幕尚无输出", explain: "准备标准输入输出函数的声明。" },
+        { text: "—", score: "—", status: "进入main", output: "屏幕尚无输出", explain: "程序从main开始执行。" },
+        { text: "—", score: "未赋值", status: "建立变量", output: "屏幕尚无输出", explain: "建立整数变量score。" },
+        { text: "95", score: "95", status: "保存数据", output: "屏幕尚无输出", explain: "把输入文本95转换为整数并保存到score。" },
+        { text: "95", score: "95", status: "显示结果", output: "Score = 95", explain: "printf读取score当前值并显示。" },
+        { text: "95", score: "95", status: "正常结束", output: "Score = 95", explain: "return 0表示程序正常结束。" }
+      ];
+      let inputIndex = 0;
+
+      function renderInputStep() {
+        const state = inputSteps[inputIndex];
+        document.querySelectorAll("[data-input-step]").forEach(line => line.classList.toggle("is-active", Number(line.dataset.inputStep) === inputIndex + 1));
+        document.getElementById("input-step-label").textContent = `第${inputIndex + 1}步`;
+        document.getElementById("input-step-explanation").textContent = state.explain;
+        document.getElementById("input-text").textContent = state.text;
+        document.getElementById("input-score").textContent = state.score;
+        document.getElementById("input-status").textContent = state.status;
+        document.getElementById("input-terminal").textContent = state.output;
+      }
+
+      document.querySelector("[data-input-next]").addEventListener("click", () => {
+        inputIndex = (inputIndex + 1) % inputSteps.length;
+        renderInputStep();
+      });
+      document.querySelector("[data-input-reset]").addEventListener("click", () => {
+        inputIndex = 0;
+        renderInputStep();
+      });
+
+      document.querySelectorAll("[data-score-input]").forEach(button => {
+        button.addEventListener("click", () => {
+          const value = button.dataset.scoreInput;
+          document.querySelectorAll("[data-score-input]").forEach(item => item.classList.remove("selected"));
+          button.classList.add("selected");
+          document.getElementById("score-text").textContent = value;
+          document.getElementById("score-state").textContent = value;
+          document.getElementById("score-output").textContent = `Score = ${value}`;
+          document.getElementById("score-terminal").textContent = `输入：${value}\nScore = ${value}`;
+        });
+      });
+
+      document.querySelectorAll("[data-address-choice]").forEach(button => {
+        button.addEventListener("click", () => {
+          const feedback = document.getElementById("address-feedback");
+          const correct = button.dataset.addressChoice === "right";
+          feedback.textContent = correct
+            ? "正确。&score提供变量score的存放位置。"
+            : "score表示变量当前值，不是scanf写入整数时需要的存放位置。";
+          feedback.className = correct ? "feedback ok" : "feedback warn";
+        });
+      });
+
+      document.querySelectorAll("[data-error-id]").forEach(button => {
+        button.addEventListener("click", () => {
+          const feedback = document.getElementById("input-error-feedback");
+          feedback.textContent = button.dataset.errorId === "type"
+            ? "修正：double average; scanf(\"%lf\", &average);"
+            : "输入80 90 70时，逗号无法匹配。修正：int a, b, c; scanf(\"%d %d %d\", &a, &b, &c);";
+          feedback.className = "feedback ok";
+        });
+      });
+
+      document.querySelectorAll("[data-practice-input]").forEach(button => {
+        button.addEventListener("click", () => {
+          const values = button.dataset.practiceInput.split(" ").map(Number);
+          const total = values.reduce((sum, value) => sum + value, 0);
+          const average = (total / 3).toFixed(2);
+          document.querySelectorAll("[data-practice-input]").forEach(item => item.classList.remove("selected"));
+          button.classList.add("selected");
+          const feedback = document.getElementById("practice-feedback");
+          feedback.textContent = `三个成绩相加得到${total}，再除以3.0得到${average}。`;
+          feedback.className = "feedback ok";
+          document.getElementById("practice-terminal").textContent = `输入：${button.dataset.practiceInput}\nsum=${total}\naverage=${average}`;
+        });
+      });
+
+      document.querySelectorAll("[data-review-item]").forEach(button => {
+        button.addEventListener("click", () => {
+          const feedback = document.getElementById("review-feedback");
+          feedback.textContent = button.dataset.reviewAnswer;
+          feedback.className = "feedback ok";
+        });
+      });
+
+      renderVariableStep();
+      renderFixedStep();
+      renderInputStep();
+      showSlide(0);
+    })();
+  </script>
+</body>
+</html>
