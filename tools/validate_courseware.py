@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CW_L01 = ROOT / "课件" / "讲授" / "01-course-introduction-and-hello-world" / "index.html"
 CW_L02 = ROOT / "课件" / "讲授" / "02-algorithms-and-program-logic" / "index.html"
 CW_L03 = ROOT / "课件" / "讲授" / "03-sequential-programming" / "index.html"
+CW_L04 = ROOT / "课件" / "讲授" / "04-selection-if" / "index.html"
 ALLOWED_EXTERNAL_HREFS = frozenset({"https://w3schools.org.cn/c/index.php"})
 
 REQUIRED_MARKERS = (
@@ -223,6 +224,8 @@ def target_for(course_id: str) -> Path:
         return CW_L02
     if course_id == "CW-L03":
         return CW_L03
+    if course_id == "CW-L04":
+        return CW_L04
     raise ValueError(f"unknown courseware id: {course_id}")
 
 
@@ -604,11 +607,213 @@ def validate_cw_l03(path: Path) -> list[str]:
     check_links(text, path, failures, require_optional_external=False)
     return failures
 
+
+def validate_cw_l04(path: Path) -> list[str]:
+    failures: list[str] = []
+    if not path.exists():
+        return [f"file not found: {path}"]
+
+    raw = path.read_bytes()
+    if raw.startswith(b"\xef\xbb\xbf"):
+        fail(failures, "UTF-8 BOM is not allowed")
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        return [f"invalid UTF-8: {exc}"]
+
+    if "\t" in text:
+        fail(failures, "tab characters are not allowed")
+    if "<html" not in text.lower() or "</html>" not in text.lower():
+        fail(failures, "document is not a complete HTML file")
+    if "overflow:hidden" not in text.replace(" ", ""):
+        fail(failures, "slide/page mode must hide page-level overflow")
+
+    required_markers = (
+        'data-courseware="c-freshman-interactive-html"',
+        'data-layout="slide-page"',
+        'data-course-id="CW-L04"',
+        'data-chapter="4"',
+        'data-routines="EX-C04-002"',
+        'data-questions="QB-PG-003,QB-SC-009,QB-SC-035,QB-SC-039,QB-TR-013"',
+        'data-lesson-variants="two-number-ordering-normalized-io,leap-year-if-else"',
+        'data-attribution="Kevin@SUT"',
+        '<meta name="author" content="Kevin@SUT">',
+        '<meta name="copyright" content="Kevin@SUT">',
+        'data-programming-question-id="QB-PG-003"',
+        'data-trace-question-id="QB-TR-013"',
+        'data-interaction="ask-wait-reveal"',
+        "data-code-line",
+        "active-code-line",
+    )
+    for marker in required_markers:
+        if marker not in text:
+            fail(failures, f"missing CW-L04 marker: {marker}")
+
+    for pattern in EXTERNAL_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            fail(failures, f"external or persistent dependency found: {pattern}")
+    for pattern in TEACHER_ONLY_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            fail(failures, f"teacher-only content found: {pattern}")
+    for phrase in CW_L02_STUDENT_FORBIDDEN:
+        if phrase in text:
+            fail(failures, f"student-facing teacher-prep phrase found: {phrase}")
+
+    slides = SLIDE_PATTERN.findall(text)
+    section_blocks = SECTION_BLOCK_PATTERN.findall(text)
+    if len(slides) != 26:
+        fail(failures, f"CW-L04 expected 26 slides, found {len(slides)}")
+    if len(section_blocks) != 26:
+        fail(failures, f"CW-L04 expected 26 complete section blocks, found {len(section_blocks)}")
+    if text.count("<details") != 0:
+        fail(failures, "CW-L04 must expose all knowledge and exercises directly")
+
+    validate_embedded_questions(
+        text,
+        failures,
+        ("QB-SC-009", "QB-SC-035", "QB-SC-039"),
+        "CW-L04",
+    )
+    if text.count('data-question-option="') != 12:
+        fail(failures, "CW-L04 must expose four options for each choice question")
+
+    programming_source = scan_questions()["QB-PG-003"].text
+    source_prompt_match = re.search(
+        r"## 题目\s*(.*?)\s*### 输入格式",
+        programming_source,
+        re.DOTALL,
+    )
+    source_prompt = (
+        normalize_visible_text(source_prompt_match.group(1))
+        if source_prompt_match
+        else ""
+    )
+    programming_match = re.search(
+        r'<section\b[^>]*data-programming-question-id="QB-PG-003"[^>]*>(.*?)</section>',
+        text,
+        re.IGNORECASE | re.DOTALL,
+    )
+    programming_block = (
+        normalize_visible_text(programming_match.group(1))
+        if programming_match
+        else ""
+    )
+    if not programming_match:
+        fail(failures, "CW-L04 must visibly embed QB-PG-003")
+    if not source_prompt_match:
+        fail(failures, "QB-PG-003 lacks a parseable prompt in the question bank")
+    if source_prompt and source_prompt not in programming_block:
+        fail(failures, "QB-PG-003 prompt differs from the question bank")
+    for marker in ("一个整数年份。", "闰年输出 leap，否则输出 common。", "按公历闰年规则判断。"):
+        if marker not in programming_block:
+            fail(failures, f"QB-PG-003 visible contract is incomplete: {marker}")
+
+    positive_blocks = "\n".join(
+        re.findall(
+            r'<pre\b[^>]*class="[^"]*code-block[^"]*"[^>]*>(.*?)</pre>',
+            text,
+            re.IGNORECASE | re.DOTALL,
+        )
+    )
+    code_text = html.unescape(re.sub(r"<[^>]+>", "", positive_blocks))
+    for forbidden, label in (
+        (r"\belse\s+if\b", "else if"),
+        (r"\bswitch\s*\(", "switch"),
+        (r"\bfor\s*\(", "for loop"),
+        (r"\bwhile\s*\(", "while loop"),
+        (r"\bdo\s*\{", "do loop"),
+        (r"\[[^\]]*\]", "array syntax"),
+        (r"\?[^:\n]+:", "conditional operator"),
+        (r"\breturn\s+1\s*;", "return 1"),
+    ):
+        if re.search(forbidden, code_text):
+            fail(failures, f"CW-L04 positive examples must not introduce {label}")
+    if re.search(r"if\s*\(\s*scanf|scanf\s*\([^;]+\)\s*[!=]=", code_text):
+        fail(failures, "CW-L04 must not check scanf return values")
+    if len(re.findall(r"\b(?:int|void|float|double|char)\s+(?!main\b)\w+\s*\([^;]*\)\s*\{", code_text)) != 0:
+        fail(failures, "CW-L04 must not introduce custom functions")
+
+    required_code = (
+        'scanf("%f %f", &a, &b);',
+        "if (a > b)",
+        "t = a;",
+        "a = b;",
+        "b = t;",
+        'printf("%.2f %.2f\\n", a, b);',
+        'scanf("%d", &year);',
+        "if (year % 400 == 0",
+        "|| (year % 4 == 0 && year % 100 != 0))",
+        'printf("leap\\n");',
+        'printf("common\\n");',
+    )
+    for marker in required_code:
+        if marker not in code_text:
+            fail(failures, f"CW-L04 positive program is incomplete: {marker}")
+
+    interaction_counts = (
+        ('data-swap-line', 3, "swap steps"),
+        ('data-order-step', 6, "ordering execution steps"),
+        ('data-order-test="', 3, "ordering tests"),
+        ('data-order-error="', 3, "ordering diagnosis cases"),
+        ('data-div-year="', 4, "divisibility fixtures"),
+        ('data-leap-predict="', 4, "condition fixtures"),
+        ('data-branch="', 2, "branch fixtures"),
+        ('data-leap-step', 5, "leap-year execution steps"),
+        ('data-trace-answer="', 4, "trace answer options"),
+        ('data-leap-error="', 3, "leap-year diagnosis cases"),
+        ('data-leap-test="', 4, "leap-year tests"),
+        ('data-review="', 14, "review questions"),
+    )
+    for marker, expected_count, label in interaction_counts:
+        if marker.endswith('"'):
+            actual = text.count(marker)
+        else:
+            actual = len(re.findall(r"\b" + re.escape(marker) + r"(?:\s|>)", text))
+        if actual != expected_count:
+            fail(failures, f"CW-L04 expected {expected_count} {label}, found {actual}")
+
+    for fixture in (
+        'data-order-test="5,3" data-expected="3.00 5.00"',
+        'data-order-test="2,8" data-expected="2.00 8.00"',
+        'data-order-test="4,4" data-expected="4.00 4.00"',
+        'data-leap-test="2000" data-expected="leap"',
+        'data-leap-test="1900" data-expected="common"',
+        'data-leap-test="2024" data-expected="leap"',
+        'data-leap-test="2023" data-expected="common"',
+    ):
+        if fixture not in text:
+            fail(failures, f"CW-L04 deterministic fixture is missing: {fixture}")
+
+    for marker in (
+        "零是假，非零是真",
+        "能被400整除",
+        "能被4整除且不能被100整除",
+        "故意错误示例",
+        "本题程序不读取外部输入",
+        "x变为6",
+        "最后输出9",
+    ):
+        if marker not in text:
+            fail(failures, f"CW-L04 student explanation is incomplete: {marker}")
+
+    for command in (
+        "gcc order.c -o order.exe\n.\\order.exe",
+        "gcc leap.c -o leap.exe\n.\\leap.exe",
+    ):
+        if command not in text:
+            fail(failures, f"CW-L04 beginner command is missing: {command.splitlines()[0]}")
+
+    check_links(text, path, failures, require_optional_external=False)
+    return failures
+
+
 def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
     if course_id == "CW-L02":
         return validate_cw_l02(path)
     if course_id == "CW-L03":
         return validate_cw_l03(path)
+    if course_id == "CW-L04":
+        return validate_cw_l04(path)
     failures: list[str] = []
     if not path.exists():
         return [f"file not found: {path}"]
@@ -701,7 +906,7 @@ def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--id", default="CW-L01", help="courseware id: CW-L01, CW-L02, or CW-L03")
+    parser.add_argument("--id", default="CW-L01", help="courseware id: CW-L01, CW-L02, CW-L03, or CW-L04")
     parser.add_argument("--path", type=Path, help="explicit HTML path for local validation")
     args = parser.parse_args()
 
@@ -718,7 +923,7 @@ def main() -> int:
             print(f"- {item}")
         return 1
 
-    slide_count = 12 if args.id == "CW-L01" else 25
+    slide_count = 12 if args.id == "CW-L01" else 26 if args.id == "CW-L04" else 25
     optional_external = 1 if args.id == "CW-L01" else 0
     print(f"COURSEWARE VALIDATION PASS: {args.id}, slides={slide_count}, offline-core=ok, optional_external={optional_external}, links=ok, text_encoding=UTF-8, bom=utf8-no-bom")
     return 0
