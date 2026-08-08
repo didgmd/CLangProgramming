@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="Kevin@SUT">
+<meta name="copyright" content="Kevin@SUT">
+<title>CW-L06 循环与状态</title>
+<style>
+:root{--ink:#14213d;--muted:#53657d;--blue:#0b6e99;--cyan:#dff5f8;--amber:#f5b942;--paper:#f5f8fb;--green:#19704a;--red:#a33a3a;--code:#101827}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#dce7ef;color:var(--ink);font-family:"Microsoft YaHei","Segoe UI",sans-serif}
+body{display:grid;grid-template-rows:1fr 54px}
+.deck{position:relative;min-height:0}.slide{position:absolute;inset:0;display:none;padding:22px 34px 14px}.slide.active{display:block}
+.slide-inner{height:100%;max-width:1212px;margin:auto;background:var(--paper);border-radius:18px;padding:22px 30px;box-shadow:0 10px 35px #17314a24;overflow:auto}
+.eyebrow{font-size:17px;font-weight:800;color:var(--blue);letter-spacing:.04em}h1{font-size:42px;margin:12px 0 18px;line-height:1.18}h2{font-size:32px;margin:5px 0 16px;line-height:1.2}h3{font-size:23px;margin:5px 0 10px}
+p,li,td,th{font-size:20px;line-height:1.5}.lead{font-size:24px;color:var(--muted)}.small{font-size:17px;color:var(--muted)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.card,.route,.question-card{background:#fff;border:2px solid #d7e3ec;border-radius:14px;padding:14px 18px}.accent{border-color:#70c9d3;background:#eefbfd}.warn{border-color:#efc36c;background:#fff8e8}.error{border-color:#e6aaaa;background:#fff2f2}
+.rule{background:#e6f5f7;border-left:7px solid var(--blue);padding:11px 18px;border-radius:10px;font-size:20px;margin:11px 0}.formula{font:700 27px/1.35 "Cambria Math","Times New Roman",serif;text-align:center;background:#fff;border-radius:12px;padding:11px}
+.code-block,.trace-code,.error-code,.terminal{background:var(--code);color:#eef6ff;border-radius:12px;padding:13px 18px;font:18px/1.35 Consolas,"Courier New",monospace;white-space:pre-wrap;margin:9px 0;overflow:auto}.trace-code.compact{font-size:16px;line-height:1.22}.program-full{font-size:13.7px;line-height:1.08;padding:5px 14px;margin:0}.error-code{border:2px solid #d96161}.terminal{background:#06111e;color:#9cf0c9;min-height:58px}
+[data-section="prime-program"] .slide-inner{padding-top:16px;padding-bottom:16px}[data-section="prime-program"] h2{margin:2px 0 8px}[data-section="prime-program"] .program-full{line-height:1}
+[data-section="prime-errors"] [data-prime-error] h3,[data-section="narcissistic-errors"] [data-narcissistic-error] h3{color:#5f1f1f}
+.code-line{display:block;border-left:4px solid transparent;padding-left:7px}.active-code-line{background:#16476c;border-left-color:var(--amber)}
+table{width:100%;border-collapse:collapse;background:#fff}th,td{border:1px solid #cbd8e2;padding:7px 11px;text-align:left}th{background:#e7f2f7}
+button,.button-link{border:0;border-radius:10px;background:var(--blue);color:#fff;padding:10px 16px;font-size:18px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}button:hover,button:focus-visible,.button-link:focus-visible{outline:3px solid var(--amber);outline-offset:2px}button.secondary{background:#53657d}
+button.option{display:block;width:100%;text-align:left;margin:7px 0;background:#eaf2f7;color:var(--ink)}button.option.correct{background:#d7f1e4;color:#124c34}button.option.wrong{background:#fae1e1;color:#772a2a}
+.button-row{display:flex;gap:10px;flex-wrap:wrap;margin:11px 0}.feedback{min-height:54px;padding:11px 16px;border-radius:10px;background:#e8f1f5;color:#18354b;font-size:19px}.feedback.good{background:#d9f2e5;color:#155e35}.feedback.bad{background:#fae1e1;color:#772a2a}
+.path{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}.node{border:2px solid #8bb8ca;border-radius:11px;background:#fff;padding:9px 13px;font-size:18px}.arrow{font-size:26px;color:var(--blue)}
+.state-box{background:#fff;border:2px solid #8bb8ca;border-radius:12px;padding:10px;text-align:center}.state-box strong{display:block;font-size:23px;color:var(--blue)}.pill{display:inline-block;padding:5px 10px;border-radius:999px;background:#dff5f8;color:#14556a;font-weight:700;margin:3px}
+.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.review{background:#edf3f7;color:var(--ink);text-align:left;padding:8px 12px}.review.done{background:#d9f2e5;color:#155e35}
+footer{display:grid;grid-template-columns:190px 1fr 190px;align-items:center;background:#0d2238;color:#fff;padding:0 22px;gap:18px}.nav-buttons{display:flex;gap:8px}.nav-buttons button{padding:7px 13px;background:#264c6d;white-space:nowrap;min-width:84px}.progress{height:8px;background:#39566d;border-radius:8px;overflow:hidden}.progress>span{display:block;height:100%;background:var(--amber);width:0}.page{text-align:right;font-weight:700}
+@media(max-width:850px){body{grid-template-rows:1fr 62px}.slide{padding:8px}.slide-inner{padding:16px}.grid-2,.grid-3,.grid-4,.review-grid{grid-template-columns:1fr}h1{font-size:32px}h2{font-size:27px}p,li,td,th{font-size:18px}footer{grid-template-columns:150px 1fr 90px}.code-block,.trace-code,.error-code{font-size:15px}}
+</style>
+</head>
+<body data-courseware="c-freshman-interactive-html" data-layout="slide-page" data-course-id="CW-L06" data-chapter="5" data-routines="EX-C05-001,EX-C05-002" data-questions="QB-PG-006,QB-PG-011,QB-TR-020,QB-SC-032,QB-SC-033" data-lesson-variants="prime-check-while-state,narcissistic-number-single-for" data-attribution="Kevin@SUT">
+<main class="deck" data-deck>
+
+<section class="slide active" data-slide data-section="objectives"><div class="slide-inner"><div class="eyebrow">01 · 学习目标</div><h1>循环与状态</h1><div class="grid-2"><div class="card accent"><h3>循环如何工作</h3><ul><li>识别初始化、条件、循环体和更新</li><li>逐轮跟踪变量值</li><li>比较 <code>while</code>、<code>do-while</code> 和 <code>for</code></li></ul></div><div class="card"><h3>两个完整程序</h3><ul><li>使用 <code>while</code> 判断整数是否为素数</li><li>使用单层 <code>for</code> 输出三位水仙花数</li><li>根据状态判断循环为何继续或结束</li></ul></div></div><p class="lead">循环不是“重复一段代码”这么简单：每一轮都读取旧状态、产生新状态，并再次判断是否继续。</p></div></section>
+
+<section class="slide" data-slide data-section="prime-task" data-programming-question-id="QB-PG-006"><div class="slide-inner"><div class="eyebrow">02 · QB-PG-006</div><h2>判断整数是否为素数</h2><div class="grid-2"><div class="card"><h3>题目</h3><p>输入整数，判断是否为素数。</p><h3>输入格式</h3><p>一个整数 <code>n</code>。</p><h3>输出格式</h3><p>输出 <code>prime</code> 或 <code>not prime</code>。</p></div><div class="card accent"><h3>数据范围与边界</h3><p><code>n&lt;2</code>不是素数。</p><h3>样例</h3><pre class="terminal">输入：17
+输出：prime</pre><p>输入约束：输入数据符合整数格式。</p></div></div></div></section>
+
+<section class="slide" data-slide data-section="prime-definition"><div class="slide-inner"><div class="eyebrow">03 · 素数</div><h2>只有1和自身两个正因数</h2><div class="grid-4"><div class="card warn"><h3>1</h3><p>不是素数。</p></div><div class="card accent"><h3>2</h3><p>最小的素数。</p></div><div class="card"><h3>17</h3><p>只能被1和17整除。</p></div><div class="card error"><h3>21</h3><p><code>21 % 3 == 0</code>，不是素数。</p></div></div><div class="rule">要证明一个数不是素数，只要找到一个大于1且小于它自身的因数。</div><div class="button-row"><button data-prime-definition="2">2 是素数吗？</button><button data-prime-definition="1">1 是素数吗？</button><button data-prime-definition="21">21 是素数吗？</button></div><div class="feedback" id="prime-definition-feedback" aria-live="polite">选择一个整数查看判断依据。</div></div></section>
+
+<section class="slide" data-slide data-section="factor-pairs"><div class="slide-inner"><div class="eyebrow">04 · 因数成对出现</div><h2>不必试除到 n−1</h2><div class="grid-2"><div class="card"><h3>以36为例</h3><table><tr><th>较小因数</th><th>较大因数</th></tr><tr><td>1</td><td>36</td></tr><tr><td>2</td><td>18</td></tr><tr><td>3</td><td>12</td></tr><tr><td>4</td><td>9</td></tr><tr><td>6</td><td>6</td></tr></table></div><div class="card accent"><h3>停止条件</h3><div class="formula">i ≤ n / i</div><p>当较小因数超过平方根附近后，若仍未找到因数，后面也不会出现新的因数对。</p><p><code>i &lt;= n / i</code>避免直接计算可能过大的<code>i * i</code>。</p></div></div></div></section>
+
+<section class="slide" data-slide data-section="prime-state"><div class="slide-inner"><div class="eyebrow">05 · 循环状态</div><h2>每一轮都更新“当前判断”</h2><div class="grid-3"><div class="state-box"><strong>n</strong>待判断的整数<br><code>17</code></div><div class="state-box"><strong>i</strong>当前试除数<br><code>2, 3, 4, ...</code></div><div class="state-box"><strong>is_prime</strong>尚未发现因数为<code>1</code><br>发现因数后为<code>0</code></div></div><div class="path" style="margin-top:20px"><span class="node">计算 n % i</span><span class="arrow">→</span><span class="node">余数为0？</span><span class="arrow">→</span><span class="node">更新 is_prime</span><span class="arrow">→</span><span class="node">i++</span></div><div class="rule">状态变量保存已经获得的信息。下一轮的条件会读取这些信息，决定是否继续。</div></div></section>
+
+<section class="slide" data-slide data-section="while-cycle"><div class="slide-inner"><div class="eyebrow">06 · while</div><h2>先判断条件，再执行循环体</h2><div class="grid-2"><pre class="trace-code">初始化;
+
+while (条件)
+{
+    循环体;
+    更新;
+}</pre><div><div class="path"><span class="node">初始化</span><span class="arrow">→</span><span class="node">判断条件</span><span class="arrow">→</span><span class="node">执行</span><span class="arrow">→</span><span class="node">更新</span></div><ol><li>初始化只执行一次。</li><li>每一轮开始前都检查条件。</li><li>条件为真才进入循环体。</li><li>更新必须让程序逐步接近结束。</li></ol></div></div><div class="button-row"><button id="while-cycle-next">下一阶段</button><button class="secondary" id="while-cycle-reset">重置</button></div><div class="feedback" id="while-cycle-feedback">点击“下一阶段”查看一次循环的执行顺序。</div></div></section>
+
+<section class="slide" data-slide data-section="prime-condition"><div class="slide-inner"><div class="eyebrow">07 · 循环条件</div><h2>两个条件同时成立才继续试除</h2><div class="formula">is_prime &amp;&amp; i &lt;= n / i</div><div class="grid-2"><div class="card accent"><h3>is_prime</h3><p>值为1：还没有发现因数，可以继续。</p><p>值为0：已经确定不是素数，循环结束。</p></div><div class="card"><h3>i &lt;= n / i</h3><p>当前试除数仍在需要检查的范围内。</p><p>超过范围：所有必要的试除已经完成。</p></div></div><div class="rule">循环有两种结束原因：发现因数，或者完成全部必要试除。</div></div></section>
+
+<section class="slide" data-slide data-section="trace-020" data-trace-question-id="QB-TR-020"><div class="slide-inner"><div class="eyebrow">08 · QB-TR-020</div><h2>循环后变量值</h2><div class="grid-2"><div><p class="question-text">写出程序的准确输出：</p><pre class="trace-code compact">#include &lt;stdio.h&gt;
+int main(void)
+{
+    int i = 10, j = 0;
+    while (--i)
+        j++;
+    printf("%d,%d\n", i, j);
+    return 0;
+}</pre><p>本题程序不读取外部输入。请写出程序运行后的精确输出。</p></div><div><div class="button-row"><button data-trace-020="10,9">10,9</button><button data-trace-020="0,9">0,9</button><button data-trace-020="0,10">0,10</button><button data-trace-020="1,9">1,9</button></div><div class="feedback" id="trace-020-feedback">选择一个输出。</div><div class="card accent"><p><code>--i</code>先减1再判断。<code>i</code>从9到1时循环九次，减为0后结束。</p></div></div></div></div></section>
+
+<section class="slide" data-slide data-section="while-do-while"><div class="slide-inner"><div class="eyebrow">09 · while 与 do-while</div><h2>初始条件为假时，执行次数不同</h2><div class="grid-2"><div class="card"><h3>while：先判断</h3><pre class="trace-code">int i = 5;
+while (i &lt; 5)
+{
+    printf("%d\n", i);
+    i++;
+}</pre><p>循环体执行0次。</p></div><div class="card accent"><h3>do-while：先执行</h3><pre class="trace-code">int i = 5;
+do
+{
+    printf("%d\n", i);
+    i++;
+} while (i &lt; 5);</pre><p><code>do-while</code> 先输出5，再执行 <code>i++</code>，最后判断条件；循环体执行1次，末尾必须有分号。</p></div></div><div class="button-row"><button data-loop-first="while">查看 while</button><button data-loop-first="do">查看 do-while</button></div><div class="feedback" id="loop-first-feedback">选择一种循环查看首次执行规则。</div></div></section>
+
+<section class="slide" data-slide data-section="prime-program"><div class="slide-inner"><div class="eyebrow">10 · 完整程序</div><h2>使用 while 和状态变量判断素数</h2><pre class="code-block program-full" data-positive-program="prime-while"><span class="code-line" data-code-line>#include &lt;stdio.h&gt;
+
+int main()
+{</span>
+<span class="code-line" data-code-line>    int n;
+    int i = 2;
+    int is_prime = 1;
+
+    scanf("%d", &amp;n);</span>
+<span class="code-line" data-code-line>    if (n &lt; 2)
+    {
+        is_prime = 0;
+    }</span>
+<span class="code-line" data-code-line>    while (is_prime &amp;&amp; i &lt;= n / i)
+    {
+        if (n % i == 0)
+        {
+            is_prime = 0;
+        }
+
+        i++;
+    }</span>
+<span class="code-line" data-code-line>    if (is_prime)
+    {
+        printf("prime\n");
+    }
+    else
+    {
+        printf("not prime\n");
+    }</span>
+<span class="code-line" data-code-line>    return 0;
+}</span></pre></div></section>
+
+<section class="slide" data-slide data-section="prime-stepper"><div class="slide-inner"><div class="eyebrow">11 · 逐轮执行</div><h2>输入17：观察 i 和余数</h2><div class="button-row"><button id="prime-17-next">下一轮</button><button class="secondary" id="prime-17-reset">重置</button></div><div class="grid-2"><div><table><tr><th>轮次</th><th>i</th><th>17 % i</th><th>is_prime</th></tr><tbody id="prime-17-table"><tr><td>初始</td><td>2</td><td>—</td><td>1</td></tr></tbody></table></div><div class="card accent"><h3>当前结论</h3><div class="feedback" id="prime-17-feedback">尚未开始试除。</div><h3>屏幕输出</h3><pre class="terminal" id="prime-17-output">尚未输出</pre></div></div></div></section>
+
+<section class="slide" data-slide data-section="prime-cases"><div class="slide-inner"><div class="eyebrow">12 · 不同输入</div><h2>循环可以因不同原因结束</h2><div class="button-row"><button data-prime-case="21">21</button><button data-prime-case="2">2</button><button data-prime-case="1">1</button><button data-prime-case="49">49</button><button class="secondary" id="prime-case-reset">重置</button></div><div class="grid-2"><div class="card"><h3>状态变化</h3><div class="feedback" id="prime-case-feedback">选择一个整数。</div></div><div class="card accent"><h3>精确输出</h3><pre class="terminal" id="prime-case-output">尚未输出</pre><p class="small">浏览器进行确定性预演，不执行真实C代码。</p></div></div><table><tr><th>输入</th><th>关键状态</th><th>结束原因</th></tr><tr><td>21</td><td>i=3时余数为0</td><td>发现因数</td></tr><tr><td>2</td><td>初始条件为假</td><td>无需试除</td></tr><tr><td>1</td><td>is_prime=0</td><td>不进入循环</td></tr><tr><td>49</td><td>i=7时余数为0</td><td>发现因数</td></tr></table></div></section>
+
+<section class="slide" data-slide data-section="prime-errors"><div class="slide-inner"><div class="eyebrow">13 · 错误诊断</div><h2>循环必须正确初始化、判断和更新</h2><div class="grid-4"><button class="card error" data-prime-error="flag"><h3>状态未初始化</h3><pre class="error-code">int is_prime;</pre></button><button class="card error" data-prime-error="update"><h3>遗漏更新</h3><pre class="error-code">while (...)
+{
+    /* 没有 i++ */
+}</pre></button><button class="card error" data-prime-error="operator"><h3>运算符错误</h3><pre class="error-code">if (n / i == 0)</pre></button><button class="card error" data-prime-error="boundary"><h3>边界遗漏</h3><pre class="error-code">/* 未处理 n &lt; 2 */</pre></button></div><div class="feedback" id="prime-error-feedback">以上均为故意错误示例。选择一项查看正确写法和原因。</div></div></section>
+
+<section class="slide" data-slide data-section="prime-review"><div class="slide-inner"><div class="eyebrow">14 · 测试与自检</div><h2>素数判断的五组结果</h2><div class="grid-2"><div><table><tr><th>输入</th><th>输出</th></tr><tr data-prime-test="17" data-expected="prime"><td>17</td><td>prime</td></tr><tr data-prime-test="21" data-expected="not prime"><td>21</td><td>not prime</td></tr><tr data-prime-test="2" data-expected="prime"><td>2</td><td>prime</td></tr><tr data-prime-test="1" data-expected="not prime"><td>1</td><td>not prime</td></tr><tr data-prime-test="49" data-expected="not prime"><td>49</td><td>not prime</td></tr></table><pre class="code-block">gcc prime.c -o prime.exe
+.\prime.exe</pre></div><div><div class="review-grid" id="prime-review"><button class="review" data-review="p1" data-answer="初始化、条件、循环体和更新。">循环的四部分是什么？</button><button class="review" data-review="p2" data-answer="n小于2时不是素数。">n&lt;2如何处理？</button><button class="review" data-review="p3" data-answer="i表示当前试除数。">变量i表示什么？</button><button class="review" data-review="p4" data-answer="is_prime保存是否仍可能为素数。">状态变量保存什么？</button><button class="review" data-review="p5" data-answer="余数为0说明找到了因数。">何时确定不是素数？</button><button class="review" data-review="p6" data-answer="while先判断，do-while至少执行一次。">两种循环首次执行有何不同？</button><button class="review" data-review="p7" data-answer="更新让循环逐步接近终止条件。">为什么不能遗漏i++？</button></div><div class="feedback" id="prime-review-feedback">点击问题查看答案。</div></div></div></div></section>
+
+<section class="slide" data-slide data-section="narcissistic-task" data-programming-question-id="QB-PG-011"><div class="slide-inner"><div class="eyebrow">15 · QB-PG-011</div><h2>输出全部三位水仙花数</h2><div class="grid-2"><div class="card"><h3>题目</h3><p>输出全部三位水仙花数。</p><h3>输入格式</h3><p>无输入。</p><h3>输出格式</h3><p>输出所有三位水仙花数，每个一行。</p><p>三位数范围为100至999。</p></div><div class="card accent"><h3>精确输出</h3><pre class="terminal">153
+370
+371
+407</pre><p>程序必须检查整个三位数范围。</p></div></div></div></section>
+
+<section class="slide" data-slide data-section="narcissistic-definition"><div class="slide-inner"><div class="eyebrow">16 · 水仙花数</div><h2>各位数字的立方和等于原数</h2><div class="formula">153 = 1³ + 5³ + 3³ = 1 + 125 + 27</div><div class="grid-3"><div class="state-box"><strong>百位</strong>1³ = 1</div><div class="state-box"><strong>十位</strong>5³ = 125</div><div class="state-box"><strong>个位</strong>3³ = 27</div></div><div class="button-row"><button data-narcissistic-definition="153">检查153</button><button data-narcissistic-definition="152">检查152</button><button data-narcissistic-definition="370">检查370</button></div><div class="feedback" id="narcissistic-definition-feedback">选择一个三位数，比较各位立方和。</div></div></section>
+
+<section class="slide" data-slide data-section="digit-extraction"><div class="slide-inner"><div class="eyebrow">17 · 数位分解</div><h2>使用整数除法和取余得到三位数字</h2><table><tr><th>数位</th><th>C表达式</th><th>n=407</th></tr><tr><td>百位</td><td><code>n / 100</code></td><td>4</td></tr><tr><td>十位</td><td><code>n / 10 % 10</code></td><td>0</td></tr><tr><td>个位</td><td><code>n % 10</code></td><td>7</td></tr></table><div class="button-row"><button data-digit-number="153">153</button><button data-digit-number="370">370</button><button data-digit-number="407">407</button></div><div class="feedback" id="digit-feedback">选择一个数查看百、十、个位。</div><div class="rule">数位表达式与CW-L03相同；本课把它放入循环，对100至999的每个候选数重复计算。</div></div></section>
+
+<section class="slide" data-slide data-section="enumeration"><div class="slide-inner"><div class="eyebrow">18 · 枚举</div><h2>每一轮只处理一个候选整数</h2><div class="path"><span class="node">n = 100</span><span class="arrow">→</span><span class="node">分解数位</span><span class="arrow">→</span><span class="node">计算立方和</span><span class="arrow">→</span><span class="node">判断是否输出</span><span class="arrow">→</span><span class="node">n++</span></div><div class="grid-3" style="margin-top:20px"><div class="card"><h3>开始</h3><p><code>n = 100</code></p></div><div class="card accent"><h3>继续条件</h3><p><code>n &lt;= 999</code></p></div><div class="card"><h3>更新</h3><p><code>n++</code></p></div></div><div class="rule">循环范围是闭区间：100和999都必须接受检查。</div></div></section>
+
+<section class="slide" data-slide data-section="for-syntax"><div class="slide-inner"><div class="eyebrow">19 · for</div><h2>把循环控制集中写在一行</h2><pre class="trace-code">for (n = 100; n &lt;= 999; n++)
+{
+    /* 处理当前的 n */
+}</pre><div class="grid-3"><div class="card accent"><h3>n = 100</h3><p>初始化，只执行一次。</p></div><div class="card"><h3>n &lt;= 999</h3><p>每轮开始前判断。</p></div><div class="card warn"><h3>n++</h3><p>每轮结束后更新。</p></div></div></div></section>
+
+<section class="slide" data-slide data-section="for-order"><div class="slide-inner"><div class="eyebrow">20 · 执行顺序</div><h2>初始化一次，其余部分循环执行</h2><div class="path"><span class="node">初始化</span><span class="arrow">→</span><span class="node">判断条件</span><span class="arrow">→</span><span class="node">循环体</span><span class="arrow">→</span><span class="node">更新</span><span class="arrow">↩</span></div><div class="button-row"><button id="for-order-next">下一阶段</button><button class="secondary" id="for-order-reset">重置</button></div><div class="grid-2"><div class="feedback" id="for-order-feedback">点击“下一阶段”查看执行顺序。</div><div class="card accent"><h3>关键规则</h3><p>更新表达式在循环体执行完之后运行，然后程序再次判断条件。</p></div></div></div></section>
+
+<section class="slide" data-slide data-section="question-sc032"><div class="slide-inner"><div class="eyebrow">21 · QB-SC-032</div><h2>循环结束值</h2><article class="question-card" data-question-id="QB-SC-032"><p class="question-text">执行 <code>for(j=0;j&lt;=9;j++);</code> 后，<code>j</code> 的值是（ ）。</p><div class="grid-2"><div><button class="option" data-question-option="A" data-correct="false" data-feedback="j等于9时条件仍为真，还会执行更新表达式。">A. 9</button><button class="option" data-question-option="B" data-correct="true" data-feedback="j增加为10后，条件j&lt;=9为假，循环结束。">B. 10</button></div><div><button class="option" data-question-option="C" data-correct="false" data-feedback="条件在j等于10时已经失败，不会再增加到11。">C. 11</button><button class="option" data-question-option="D" data-correct="false" data-feedback="循环边界和更新均明确，结果可以确定。">D. 不确定</button></div></div><div class="feedback" data-question-feedback>选择一个答案。</div></article></div></section>
+
+<section class="slide" data-slide data-section="question-sc033"><div class="slide-inner"><div class="eyebrow">22 · QB-SC-033</div><h2>空语句陷阱</h2><article class="question-card" data-question-id="QB-SC-033"><p class="question-text"><code>while(--i);</code> 中分号的作用是（ ）。</p><div class="grid-2"><div><button class="option" data-question-option="A" data-correct="false" data-feedback="分号不会结束整个程序。">A. 结束程序</button><button class="option" data-question-option="B" data-correct="true" data-feedback="紧随条件的分号是一条空语句，它就是循环体。">B. 构成空循环体</button></div><div><button class="option" data-question-option="C" data-correct="false" data-feedback="空语句在C语言中合法，因此不是语法错误。">C. 语法错误</button><button class="option" data-question-option="D" data-correct="false" data-feedback="只要--i仍为非零，空循环体就会反复执行。">D. 只执行一次</button></div></div><div class="feedback" data-question-feedback>选择一个答案。</div></article></div></section>
+
+<section class="slide" data-slide data-section="cube-condition"><div class="slide-inner"><div class="eyebrow">23 · 判断表达式</div><h2>C语言没有用 ^ 表示乘方</h2><div class="grid-2"><div class="card error"><h3>错误写法</h3><pre class="error-code">sum = hundreds ^ 3
+    + tens ^ 3
+    + ones ^ 3;</pre><p><code>^</code>是按位异或运算符。</p></div><div class="card accent"><h3>正确写法</h3><pre class="trace-code">sum = hundreds * hundreds * hundreds
+    + tens * tens * tens
+    + ones * ones * ones;</pre></div></div><div class="formula">if (sum == n) → 输出当前 n</div></div></section>
+
+<section class="slide" data-slide data-section="narcissistic-program"><div class="slide-inner"><div class="eyebrow">24 · 完整程序</div><h2>使用单层 for 枚举三位数</h2><pre class="code-block program-full" data-positive-program="narcissistic-for"><span class="code-line" data-code-line>#include &lt;stdio.h&gt;
+
+int main()
+{</span>
+<span class="code-line" data-code-line>    int n;
+    int hundreds, tens, ones;
+    int sum;</span>
+<span class="code-line" data-code-line>    for (n = 100; n &lt;= 999; n++)
+    {</span>
+<span class="code-line" data-code-line>        hundreds = n / 100;
+        tens = n / 10 % 10;
+        ones = n % 10;</span>
+<span class="code-line" data-code-line>        sum = hundreds * hundreds * hundreds
+            + tens * tens * tens
+            + ones * ones * ones;</span>
+<span class="code-line" data-code-line>        if (sum == n)
+        {
+            printf("%d\n", n);
+        }
+    }</span>
+<span class="code-line" data-code-line>    return 0;
+}</span></pre></div></section>
+
+<section class="slide" data-slide data-section="candidate-stepper"><div class="slide-inner"><div class="eyebrow">25 · 候选数</div><h2>比较152、153和154</h2><div class="button-row"><button data-candidate="152">152</button><button data-candidate="153">153</button><button data-candidate="154">154</button><button class="secondary" id="candidate-reset">重置</button></div><div class="grid-2"><div><table><tr><th>候选数</th><th>百位</th><th>十位</th><th>个位</th><th>立方和</th></tr><tbody id="candidate-table"><tr><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr></tbody></table></div><div class="card accent"><h3>判断结果</h3><div class="feedback" id="candidate-feedback">选择一个候选数。</div><h3>屏幕输出</h3><pre class="terminal" id="candidate-output">无输出</pre></div></div></div></section>
+
+<section class="slide" data-slide data-section="range-scan"><div class="slide-inner"><div class="eyebrow">26 · 完整范围</div><h2>循环检查900个候选数，只输出符合条件者</h2><div class="button-row"><button id="range-next">找到下一个结果</button><button class="secondary" id="range-reset">重置</button></div><div class="grid-2"><div class="card"><h3>当前扫描状态</h3><div class="feedback" id="range-feedback">尚未开始扫描100至999。</div><p>未满足条件的候选数不会产生屏幕输出。</p></div><div class="card accent"><h3>累计输出</h3><pre class="terminal" id="range-output">尚未输出</pre></div></div><div class="path"><span class="node">100…152</span><span class="arrow">→</span><span class="node">153</span><span class="arrow">→</span><span class="node">370</span><span class="arrow">→</span><span class="node">371</span><span class="arrow">→</span><span class="node">407</span><span class="arrow">→</span><span class="node">…999</span></div></div></section>
+
+<section class="slide" data-slide data-section="narcissistic-errors"><div class="slide-inner"><div class="eyebrow">27 · 错误诊断</div><h2>范围、更新、数位和分号都影响结果</h2><div class="grid-4"><button class="card error" data-narcissistic-error="range"><h3>范围不完整</h3><pre class="error-code">n &lt; 999</pre></button><button class="card error" data-narcissistic-error="update"><h3>更新方向错误</h3><pre class="error-code">n--</pre></button><button class="card error" data-narcissistic-error="digit"><h3>十位错误</h3><pre class="error-code">tens = n % 100;</pre></button><button class="card error" data-narcissistic-error="semicolon"><h3>for后有分号</h3><pre class="error-code">for (...);</pre></button></div><div class="feedback" id="narcissistic-error-feedback">以上均为故意错误示例。选择一项查看正确写法和原因。</div></div></section>
+
+<section class="slide" data-slide data-section="summary"><div class="slide-inner"><div class="eyebrow">28 · 总结与自检</div><h2>循环让状态按规则重复变化</h2><div class="grid-2"><div><table data-narcissistic-test data-expected="153|370|371|407"><tr><th>循环</th><th>首次判断</th><th>适合场景</th></tr><tr><td><code>while</code></td><td>执行前</td><td>次数由状态决定</td></tr><tr><td><code>do-while</code></td><td>执行后</td><td>至少执行一次</td></tr><tr><td><code>for</code></td><td>执行前</td><td>控制变量和范围明确</td></tr></table><pre class="terminal">153
+370
+371
+407</pre><pre class="code-block">gcc narcissistic.c -o narcissistic.exe
+.\narcissistic.exe</pre></div><div><div class="review-grid" id="loop-review"><button class="review" data-review="l1" data-answer="初始化、条件、循环体和更新。">循环包含哪些部分？</button><button class="review" data-review="l2" data-answer="while在进入循环体前判断条件。">while何时判断？</button><button class="review" data-review="l3" data-answer="do-while至少执行一次，末尾有分号。">do-while有何特点？</button><button class="review" data-review="l4" data-answer="for的更新表达式在循环体之后执行。">for何时更新？</button><button class="review" data-review="l5" data-answer="遗漏更新可能使条件永远为真。">为何必须正确更新？</button><button class="review" data-review="l6" data-answer="^是按位异或，不是乘方。">为什么不能写^3？</button><button class="review" data-review="l7" data-answer="水仙花数为153、370、371、407。">三位水仙花数有哪些？</button></div><div class="feedback" id="loop-review-feedback">点击问题查看答案。</div><div class="button-row"><a class="button-link" href="../../../题库/编程题/qb_pg_006.md">QB-PG-006</a><a class="button-link" href="../../../题库/编程题/qb_pg_011.md">QB-PG-011</a><a class="button-link" href="../../../例程/chapters/05-loops/ex_c05_001_5_1.c">EX-C05-001</a><a class="button-link" href="../../../例程/chapters/05-loops/ex_c05_002_5_2.c">EX-C05-002</a></div></div></div></div></section>
+
+</main>
+<footer><div class="nav-buttons"><button id="prev" aria-label="上一页">← 上一页</button><button id="next" aria-label="下一页">下一页 →</button></div><div class="progress" aria-label="课件进度"><span id="progress"></span></div><div class="page"><span id="page-number">1</span> / 28 · Kevin@SUT</div></footer>
+<script>
+"use strict";
+var slides=Array.from(document.querySelectorAll("[data-slide]")),index=0;
+var prev=document.getElementById("prev"),next=document.getElementById("next"),progress=document.getElementById("progress"),page=document.getElementById("page-number");
+function show(n){index=Math.max(0,Math.min(slides.length-1,n));slides.forEach(function(s,i){s.classList.toggle("active",i===index);});page.textContent=String(index+1);progress.style.width=((index+1)/slides.length*100)+"%";prev.disabled=index===0;next.disabled=index===slides.length-1;}
+prev.addEventListener("click",function(){show(index-1);});next.addEventListener("click",function(){show(index+1);});
+document.addEventListener("keydown",function(e){if(["ArrowRight","PageDown"].includes(e.key))show(index+1);if(["ArrowLeft","PageUp"].includes(e.key))show(index-1);if(e.key==="Home")show(0);if(e.key==="End")show(slides.length-1);});
+function setFeedback(el,text,good){el.textContent=text;el.classList.toggle("good",good===true);el.classList.toggle("bad",good===false);}
+var primeDefinition={"2":"2只有1和2两个正因数，是素数。","1":"1只有一个正因数，不是素数。","21":"21能被3和7整除，不是素数。"};
+document.querySelectorAll("[data-prime-definition]").forEach(function(b){b.addEventListener("click",function(){setFeedback(document.getElementById("prime-definition-feedback"),primeDefinition[b.dataset.primeDefinition],b.dataset.primeDefinition==="2");});});
+var whileStages=["初始化：为循环变量和状态变量设置初值。","判断条件：条件为真才进入循环体。","执行循环体：使用当前状态完成本轮工作。","更新：改变状态，为下一轮判断做准备。","再次判断：条件为真继续，为假结束循环。"];var whileStageIndex=0;
+document.getElementById("while-cycle-next").addEventListener("click",function(){setFeedback(document.getElementById("while-cycle-feedback"),whileStages[whileStageIndex],true);whileStageIndex=(whileStageIndex+1)%whileStages.length;});
+document.getElementById("while-cycle-reset").addEventListener("click",function(){whileStageIndex=0;setFeedback(document.getElementById("while-cycle-feedback"),"点击“下一阶段”查看一次循环的执行顺序。");});
+document.querySelectorAll("[data-trace-020]").forEach(function(b){b.addEventListener("click",function(){var good=b.getAttribute("data-trace-020")==="0,9";setFeedback(document.getElementById("trace-020-feedback"),good?"正确。i从9到1时循环九次，减为0后结束，输出0,9。":"不正确。--i先减1再判断，最后一次判断把i减为0。",good);});});
+document.querySelectorAll("[data-loop-first]").forEach(function(b){b.addEventListener("click",function(){var isWhile=b.dataset.loopFirst==="while";setFeedback(document.getElementById("loop-first-feedback"),isWhile?"while先检查i<5。初始i=5，条件为假，循环体执行0次。":"do-while先输出5并执行i++，随后检查条件，因此循环体执行1次。",true);});});
+var prime17Rows=[["第1轮",2,1,1],["第2轮",3,2,1],["第3轮",4,1,1],["结束",5,"条件为假",1]],prime17Index=0;
+document.getElementById("prime-17-next").addEventListener("click",function(){if(prime17Index>=prime17Rows.length)return;var r=prime17Rows[prime17Index++],tr=document.createElement("tr");r.forEach(function(v){var td=document.createElement("td");td.textContent=String(v);tr.appendChild(td);});document.getElementById("prime-17-table").appendChild(tr);var done=prime17Index===prime17Rows.length;setFeedback(document.getElementById("prime-17-feedback"),done?"没有发现因数，17是素数。":"本轮余数不为0，is_prime保持1。",true);document.getElementById("prime-17-output").textContent=done?"prime":"尚未输出";});
+document.getElementById("prime-17-reset").addEventListener("click",function(){prime17Index=0;document.getElementById("prime-17-table").innerHTML="<tr><td>初始</td><td>2</td><td>—</td><td>1</td></tr>";setFeedback(document.getElementById("prime-17-feedback"),"尚未开始试除。");document.getElementById("prime-17-output").textContent="尚未输出";});
+var primeCases={"21":["i=2时余数为1；i=3时余数为0，is_prime变为0，循环结束。","not prime"],"2":["初始时2<=2/2为假，不进入循环；is_prime保持1。","prime"],"1":["n<2使is_prime变为0，不进入循环。","not prime"],"49":["依次试除2至7；i=7时余数为0，循环结束。","not prime"]};
+document.querySelectorAll("[data-prime-case]").forEach(function(b){b.addEventListener("click",function(){var d=primeCases[b.dataset.primeCase];setFeedback(document.getElementById("prime-case-feedback"),d[0],true);document.getElementById("prime-case-output").textContent=d[1];});});
+document.getElementById("prime-case-reset").addEventListener("click",function(){setFeedback(document.getElementById("prime-case-feedback"),"选择一个整数。");document.getElementById("prime-case-output").textContent="尚未输出";});
+var primeErrors={flag:"应初始化为int is_prime = 1;。未初始化变量的值不确定。",update:"循环体末尾必须执行i++，否则可能永远检查同一个试除数。",operator:"判断整除应写n % i == 0；除法结果为0不是整除条件。",boundary:"输入后先判断n < 2，并把is_prime设置为0。"};
+document.querySelectorAll("[data-prime-error]").forEach(function(b){b.addEventListener("click",function(){setFeedback(document.getElementById("prime-error-feedback"),primeErrors[b.dataset.primeError],false);});});
+var narcissisticDefinition={"153":[153,true],"152":[134,false],"370":[370,true]};
+document.querySelectorAll("[data-narcissistic-definition]").forEach(function(b){b.addEventListener("click",function(){var d=narcissisticDefinition[b.dataset.narcissisticDefinition];setFeedback(document.getElementById("narcissistic-definition-feedback"),b.dataset.narcissisticDefinition+"的各位立方和为"+d[0]+(d[1]?"，等于原数。":"，不等于原数。"),d[1]);});});
+var digits={"153":"百位1，十位5，个位3。","370":"百位3，十位7，个位0。","407":"百位4，十位0，个位7。"};
+document.querySelectorAll("[data-digit-number]").forEach(function(b){b.addEventListener("click",function(){setFeedback(document.getElementById("digit-feedback"),digits[b.dataset.digitNumber],true);});});
+var forStages=["初始化：n=100，只执行一次。","判断：检查n<=999。","循环体：分解数位、计算立方和并判断。","更新：执行n++。","返回条件判断，开始下一轮。"];var forStageIndex=0;
+document.getElementById("for-order-next").addEventListener("click",function(){setFeedback(document.getElementById("for-order-feedback"),forStages[forStageIndex],true);forStageIndex=(forStageIndex+1)%forStages.length;});
+document.getElementById("for-order-reset").addEventListener("click",function(){forStageIndex=0;setFeedback(document.getElementById("for-order-feedback"),"点击“下一阶段”查看执行顺序。");});
+document.querySelectorAll("article.question-card").forEach(function(article){article.querySelectorAll("button.option").forEach(function(b){b.addEventListener("click",function(){article.querySelectorAll("button.option").forEach(function(x){x.classList.remove("correct","wrong");});var good=b.dataset.correct==="true";b.classList.add(good?"correct":"wrong");setFeedback(article.querySelector("[data-question-feedback]"),b.dataset.feedback,good);});});});
+var candidateData={"152":[1,5,2,134,false],"153":[1,5,3,153,true],"154":[1,5,4,190,false]};
+document.querySelectorAll("[data-candidate]").forEach(function(b){b.addEventListener("click",function(){var d=candidateData[b.dataset.candidate];document.getElementById("candidate-table").innerHTML="<tr><td>"+b.dataset.candidate+"</td><td>"+d[0]+"</td><td>"+d[1]+"</td><td>"+d[2]+"</td><td>"+d[3]+"</td></tr>";setFeedback(document.getElementById("candidate-feedback"),d[4]?"立方和等于原数，执行printf。":"立方和不等于原数，本轮不输出。",d[4]);document.getElementById("candidate-output").textContent=d[4]?b.dataset.candidate:"无输出";});});
+document.getElementById("candidate-reset").addEventListener("click",function(){document.getElementById("candidate-table").innerHTML="<tr><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>";setFeedback(document.getElementById("candidate-feedback"),"选择一个候选数。");document.getElementById("candidate-output").textContent="无输出";});
+var rangeResults=[153,370,371,407],rangeIndex=0;
+document.getElementById("range-next").addEventListener("click",function(){if(rangeIndex<rangeResults.length){rangeIndex++;document.getElementById("range-output").textContent=rangeResults.slice(0,rangeIndex).join("\n");setFeedback(document.getElementById("range-feedback"),"扫描到"+rangeResults[rangeIndex-1]+"：各位立方和等于原数，产生第"+rangeIndex+"行输出。",true);}else{setFeedback(document.getElementById("range-feedback"),"继续扫描到999，没有新的水仙花数，循环结束。",true);}});
+document.getElementById("range-reset").addEventListener("click",function(){rangeIndex=0;setFeedback(document.getElementById("range-feedback"),"尚未开始扫描100至999。");document.getElementById("range-output").textContent="尚未输出";});
+var narcissisticErrors={range:"条件应写n <= 999，保证999也被检查。",update:"应使用n++按升序枚举，否则会离开三位数范围。",digit:"十位应写n / 10 % 10；n % 100会保留后两位。",semicolon:"for头部后不能误加分号；分号会形成空循环体。"};
+document.querySelectorAll("[data-narcissistic-error]").forEach(function(b){b.addEventListener("click",function(){setFeedback(document.getElementById("narcissistic-error-feedback"),narcissisticErrors[b.dataset.narcissisticError],false);});});
+document.querySelectorAll("[data-review]").forEach(function(b){b.addEventListener("click",function(){b.classList.toggle("done");var target=b.closest(".slide").querySelector(".feedback[id$='review-feedback']");setFeedback(target,b.dataset.answer,true);});});
+show(0);
+</script>
+</body>
+</html>

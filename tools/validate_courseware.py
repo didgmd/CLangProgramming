@@ -19,6 +19,7 @@ CW_L02 = ROOT / "课件" / "讲授" / "02-algorithms-and-program-logic" / "index
 CW_L03 = ROOT / "课件" / "讲授" / "03-sequential-programming" / "index.html"
 CW_L04 = ROOT / "课件" / "讲授" / "04-selection-if" / "index.html"
 CW_L05 = ROOT / "课件" / "讲授" / "05-selection-nesting-and-switch" / "index.html"
+CW_L06 = ROOT / "课件" / "讲授" / "06-loops-and-state" / "index.html"
 ALLOWED_EXTERNAL_HREFS = frozenset({"https://w3schools.org.cn/c/index.php"})
 
 REQUIRED_MARKERS = (
@@ -229,6 +230,8 @@ def target_for(course_id: str) -> Path:
         return CW_L04
     if course_id == "CW-L05":
         return CW_L05
+    if course_id == "CW-L06":
+        return CW_L06
     raise ValueError(f"unknown courseware id: {course_id}")
 
 
@@ -1065,6 +1068,222 @@ def validate_cw_l05(path: Path) -> list[str]:
     return failures
 
 
+def validate_cw_l06(path: Path) -> list[str]:
+    failures: list[str] = []
+    if not path.exists():
+        return [f"file not found: {path}"]
+
+    raw = path.read_bytes()
+    if raw.startswith(b"\xef\xbb\xbf"):
+        fail(failures, "UTF-8 BOM is not allowed")
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        return [f"invalid UTF-8: {exc}"]
+
+    if "\t" in text:
+        fail(failures, "tab characters are not allowed")
+    if "<html" not in text.lower() or "</html>" not in text.lower():
+        fail(failures, "document is not a complete HTML file")
+    if "overflow:hidden" not in text.replace(" ", ""):
+        fail(failures, "slide/page mode must hide page-level overflow")
+
+    required_markers = (
+        'data-courseware="c-freshman-interactive-html"',
+        'data-layout="slide-page"',
+        'data-course-id="CW-L06"',
+        'data-chapter="5"',
+        'data-routines="EX-C05-001,EX-C05-002"',
+        'data-questions="QB-PG-006,QB-PG-011,QB-TR-020,QB-SC-032,QB-SC-033"',
+        'data-lesson-variants="prime-check-while-state,narcissistic-number-single-for"',
+        'data-attribution="Kevin@SUT"',
+        '<meta name="author" content="Kevin@SUT">',
+        '<meta name="copyright" content="Kevin@SUT">',
+        'data-programming-question-id="QB-PG-006"',
+        'data-programming-question-id="QB-PG-011"',
+        'data-trace-question-id="QB-TR-020"',
+        'data-positive-program="prime-while"',
+        'data-positive-program="narcissistic-for"',
+        "data-code-line",
+        "active-code-line",
+    )
+    for marker in required_markers:
+        if marker not in text:
+            fail(failures, f"missing CW-L06 marker: {marker}")
+
+    for pattern in EXTERNAL_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            fail(failures, f"external or persistent dependency found: {pattern}")
+    for pattern in TEACHER_ONLY_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            fail(failures, f"teacher-only content found: {pattern}")
+    for phrase in CW_L02_STUDENT_FORBIDDEN:
+        if phrase in text:
+            fail(failures, f"student-facing teacher-prep phrase found: {phrase}")
+
+    slides = len(SLIDE_PATTERN.findall(text))
+    sections = len(SECTION_BLOCK_PATTERN.findall(text))
+    if slides != 28:
+        fail(failures, f"CW-L06 expected 28 slides, found {slides}")
+    if sections != 28:
+        fail(failures, f"CW-L06 expected 28 complete section blocks, found {sections}")
+    if text.count("<details") != 0:
+        fail(failures, "CW-L06 must expose all knowledge and exercises directly")
+    if " / 28 · Kevin@SUT" not in text:
+        fail(failures, "CW-L06 footer total must be 28")
+
+    validate_embedded_questions(text, failures, ("QB-SC-032", "QB-SC-033"), "CW-L06")
+    if text.count('data-question-option="') != 8:
+        fail(failures, "CW-L06 must expose eight options across two choice questions")
+
+    questions = scan_questions()
+    for question_id in ("QB-PG-006", "QB-PG-011"):
+        source = questions[question_id].text
+        prompt_match = re.search(r"## 题目\s*(.*?)\s*### 输入格式", source, re.DOTALL)
+        html_match = re.search(
+            rf'<section\b[^>]*data-programming-question-id="{question_id}"[^>]*>(.*?)</section>',
+            text,
+            re.IGNORECASE | re.DOTALL,
+        )
+        source_prompt = normalize_visible_text(prompt_match.group(1)) if prompt_match else ""
+        html_prompt = normalize_visible_text(html_match.group(1)) if html_match else ""
+        if not source_prompt or source_prompt not in html_prompt:
+            fail(failures, f"CW-L06 must visibly embed the {question_id} prompt")
+
+    trace_source = questions["QB-TR-020"].text
+    trace_source_match = re.search(r"```c\s*(.*?)```", trace_source, re.DOTALL)
+    trace_html_match = re.search(
+        r'<section\b[^>]*data-trace-question-id="QB-TR-020"[^>]*>(.*?)</section>',
+        text,
+        re.IGNORECASE | re.DOTALL,
+    )
+    trace_html_code = re.search(
+        r'<pre\b[^>]*class="[^"]*trace-code[^"]*"[^>]*>(.*?)</pre>',
+        trace_html_match.group(1) if trace_html_match else "",
+        re.DOTALL,
+    )
+    source_tokens = re.sub(r"\s+", "", trace_source_match.group(1)) if trace_source_match else ""
+    html_tokens = re.sub(
+        r"\s+",
+        "",
+        html.unescape(re.sub(r"<[^>]+>", "", trace_html_code.group(1))),
+    ) if trace_html_code else ""
+    if source_tokens != html_tokens:
+        fail(failures, "QB-TR-020 program differs from the question bank")
+    if "0,9" not in normalize_visible_text(trace_html_match.group(1) if trace_html_match else ""):
+        fail(failures, "QB-TR-020 expected output is not represented")
+    if 'b.getAttribute("data-trace-020")==="0,9"' not in text:
+        fail(failures, "QB-TR-020 correct-answer handler must read the numeric data attribute explicitly")
+
+    for marker in (
+        '[data-section="prime-errors"] [data-prime-error] h3',
+        '[data-section="narcissistic-errors"] [data-narcissistic-error] h3',
+        "color:#5f1f1f",
+    ):
+        if marker not in text:
+            fail(failures, f"CW-L06 diagnosis title contrast rule is missing: {marker}")
+
+    program_blocks = {
+        match.group("id"): html.unescape(re.sub(r"<[^>]+>", "", match.group("body")))
+        for match in re.finditer(
+            r'<pre\b[^>]*data-positive-program="(?P<id>[^"]+)"[^>]*>(?P<body>.*?)</pre>',
+            text,
+            re.IGNORECASE | re.DOTALL,
+        )
+    }
+    if set(program_blocks) != {"prime-while", "narcissistic-for"}:
+        fail(failures, "CW-L06 must contain exactly the two declared positive programs")
+    code_text = "\n".join(program_blocks.values())
+    for forbidden, label in (
+        (r"\[[^\]]*\]", "array syntax"),
+        (r"\bbreak\s*;", "break"),
+        (r"\bcontinue\s*;", "continue"),
+        (r"\bswitch\s*\(", "switch"),
+        (r"\bgoto\b", "goto"),
+        (r"\?[^:\n]+:", "conditional operator"),
+        (r"\breturn\s+1\s*;", "return 1"),
+    ):
+        if re.search(forbidden, code_text):
+            fail(failures, f"CW-L06 positive programs must not introduce {label}")
+    if re.search(r"if\s*\(\s*scanf|scanf\s*\([^;]+\)\s*[!=]=", code_text):
+        fail(failures, "CW-L06 student programs must not check scanf return values")
+    if len(re.findall(r"\b(?:int|void|float|double|char)\s+(?!main\b)\w+\s*\([^;]*\)\s*\{", code_text)):
+        fail(failures, "CW-L06 must not introduce custom functions")
+
+    prime_code = program_blocks.get("prime-while", "")
+    narcissistic_code = program_blocks.get("narcissistic-for", "")
+    if len(re.findall(r"\b(?:while|for|do)\b", prime_code)) != 1:
+        fail(failures, "CW-L06 prime program must contain exactly one loop")
+    if len(re.findall(r"\b(?:while|for|do)\b", narcissistic_code)) != 1:
+        fail(failures, "CW-L06 narcissistic program must contain exactly one loop")
+    for marker in (
+        "int i = 2;",
+        "int is_prime = 1;",
+        "if (n < 2)",
+        "while (is_prime && i <= n / i)",
+        "if (n % i == 0)",
+        "i++;",
+        'printf("prime\\n");',
+        'printf("not prime\\n");',
+    ):
+        if marker not in prime_code:
+            fail(failures, f"CW-L06 prime program is incomplete: {marker}")
+    for marker in (
+        "for (n = 100; n <= 999; n++)",
+        "hundreds = n / 100;",
+        "tens = n / 10 % 10;",
+        "ones = n % 10;",
+        "sum = hundreds * hundreds * hundreds",
+        "if (sum == n)",
+    ):
+        if marker not in narcissistic_code:
+            fail(failures, f"CW-L06 narcissistic program is incomplete: {marker}")
+
+    counts = (
+        ('data-prime-test="', 5, "prime tests"),
+        ('data-prime-case="', 4, "prime alternate inputs"),
+        ('data-prime-error="', 4, "prime diagnosis cases"),
+        ('data-candidate="', 3, "candidate checks"),
+        ('data-narcissistic-error="', 4, "narcissistic diagnosis cases"),
+        ('data-review="', 14, "review questions"),
+    )
+    for marker, expected, label in counts:
+        actual = text.count(marker)
+        if actual != expected:
+            fail(failures, f"CW-L06 expected {expected} {label}, found {actual}")
+    for fixture in (
+        'data-prime-test="17" data-expected="prime"',
+        'data-prime-test="21" data-expected="not prime"',
+        'data-prime-test="2" data-expected="prime"',
+        'data-prime-test="1" data-expected="not prime"',
+        'data-prime-test="49" data-expected="not prime"',
+        'data-narcissistic-test data-expected="153|370|371|407"',
+    ):
+        if fixture not in text:
+            fail(failures, f"CW-L06 deterministic fixture is missing: {fixture}")
+
+    for marker in (
+        "初始化、条件、循环体和更新",
+        "循环有两种结束原因",
+        "先输出5",
+        "^是按位异或运算符",
+        "循环范围是闭区间",
+    ):
+        if marker not in normalize_visible_text(text):
+            fail(failures, f"CW-L06 student explanation is incomplete: {marker}")
+    if "浏览器进行确定性" not in text:
+        fail(failures, "CW-L06 must disclose that browser execution is simulated")
+    for command in (
+        "gcc prime.c -o prime.exe\n.\\prime.exe",
+        "gcc narcissistic.c -o narcissistic.exe\n.\\narcissistic.exe",
+    ):
+        if command not in text:
+            fail(failures, f"CW-L06 beginner command is missing: {command.splitlines()[0]}")
+
+    check_links(text, path, failures, require_optional_external=False)
+    return failures
+
+
 def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
     if course_id == "CW-L02":
         return validate_cw_l02(path)
@@ -1074,6 +1293,8 @@ def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
         return validate_cw_l04(path)
     if course_id == "CW-L05":
         return validate_cw_l05(path)
+    if course_id == "CW-L06":
+        return validate_cw_l06(path)
     failures: list[str] = []
     if not path.exists():
         return [f"file not found: {path}"]
@@ -1166,7 +1387,7 @@ def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--id", default="CW-L01", help="courseware id: CW-L01, CW-L02, CW-L03, CW-L04, or CW-L05")
+    parser.add_argument("--id", default="CW-L01", help="courseware id: CW-L01 through CW-L06")
     parser.add_argument("--path", type=Path, help="explicit HTML path for local validation")
     args = parser.parse_args()
 
@@ -1183,7 +1404,7 @@ def main() -> int:
             print(f"- {item}")
         return 1
 
-    slide_count = 12 if args.id == "CW-L01" else 26 if args.id in {"CW-L04", "CW-L05"} else 25
+    slide_count = 12 if args.id == "CW-L01" else 28 if args.id == "CW-L06" else 26 if args.id in {"CW-L04", "CW-L05"} else 25
     optional_external = 1 if args.id == "CW-L01" else 0
     print(f"COURSEWARE VALIDATION PASS: {args.id}, slides={slide_count}, offline-core=ok, optional_external={optional_external}, links=ok, text_encoding=UTF-8, bom=utf8-no-bom")
     return 0

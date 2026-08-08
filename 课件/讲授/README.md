@@ -1,6 +1,6 @@
 # 讲授课
 
-共16次讲授课、32学时。每次2课时、90分钟，只深讲1–2个程序。CW-L01已完成PPTX与HTML并通过校验；CW-L02、CW-L03均已完成25页学生端HTML；CW-L04、CW-L05均已完成26页学生端HTML。
+共16次讲授课、32学时。每次2课时、90分钟，只深讲1–2个程序。CW-L01已完成PPTX与HTML并通过校验；CW-L02、CW-L03均已完成25页学生端HTML；CW-L04、CW-L05均已完成26页学生端HTML；CW-L06已完成28页学生端HTML。
 
 | ID | 章节 | 主题 | 核心程序 | 状态 |
 |---|---|---|---|---|
@@ -9,7 +9,7 @@
 | [CW-L03](03-sequential-programming/README.md) | 第3章 | 顺序程序设计：数位分解与海伦公式 | `QB-PG-014`、`EX-C03-004` | ready |
 | [CW-L04](04-selection-if/README.md) | 第4章 | 关系与逻辑表达式：单分支排序与闰年判断 | `EX-C04-002`、`QB-PG-003` | ready |
 | [CW-L05](05-selection-nesting-and-switch/README.md) | 第4章 | 嵌套条件与 switch：方程分类和成绩等级 | `QB-PG-001`、`EX-C04-008` | ready |
-| [CW-L06](06-loops-and-state/README.md) | 第5章 | while、do-while、for与状态变化 | `EX-C05-001` | planned |
+| [CW-L06](06-loops-and-state/README.md) | 第5章 | 循环与状态：素数试除和水仙花数 | `QB-PG-006`、`QB-PG-011` | ready |
 | [CW-L07](07-nested-loops-and-primes/README.md) | 第5章 | 嵌套循环、break、continue与素数 | `QB-PG-006`、`QB-PG-009` | planned |
 | [CW-L08](08-one-dimensional-arrays/README.md) | 第6章 | 一维数组、遍历与排序 | `EX-C06-001`、`QB-PG-004` | planned |
 | [CW-L09](09-matrices-and-strings/README.md) | 第6章 | 二维数组、字符数组与字符串 | `QB-PG-010`、`QB-PG-012` | planned |

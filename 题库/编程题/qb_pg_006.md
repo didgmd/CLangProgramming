@@ -45,16 +45,16 @@ prime
 
 
 
-围绕“判断整数是否为素数”检查输入合法性、临界值、数组或循环边界，并严格匹配题目规定的输出格式。
+`n<2`必须判为非素数；试除范围不能遗漏平方根附近的因数；循环变量和素数标志必须正确初始化并更新；输出必须严格使用`prime`或`not prime`。
 
 <details>
 <summary>参考答案与解析</summary>
 
-**解题思路：** 试除到 `i*i<=n` 即可。
+**解题思路：** 从2开始试除。`is_prime`保存当前判断状态；循环在发现因数或试除数超过平方根附近时结束。
 
 **评分建议：** 输入与边界处理2分，核心算法5分，正确输出2分，代码规范1分。
 
-**正常与边界测试：** `2`；`1`。
+**正常与边界测试：** `17`；`21`；`2`；`1`；`49`。
 
 ### 完整参考程序
 
@@ -64,19 +64,38 @@ prime
 int main(void)
 {
     int n;
+    int i = 2;
+    int is_prime = 1;
+
     if (scanf("%d", &n) != 1)
     {
         return 1;
     }
-    int p = n >= 2;
-    for (int i = 2; i <= n / i && p; i++)
+
+    if (n < 2)
+    {
+        is_prime = 0;
+    }
+
+    while (is_prime && i <= n / i)
     {
         if (n % i == 0)
         {
-            p = 0;
+            is_prime = 0;
         }
+
+        i++;
     }
-    puts(p ? "prime" : "not prime");
+
+    if (is_prime)
+    {
+        printf("prime\n");
+    }
+    else
+    {
+        printf("not prime\n");
+    }
+
     return 0;
 }
 ```

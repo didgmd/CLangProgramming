@@ -48,7 +48,7 @@ legacy_features: 无
 
 
 
-围绕“水仙花数”检查输入合法性、临界值、数组或循环边界，并严格匹配题目规定的输出格式。
+枚举范围必须包含100和999；百、十、个位的提取表达式不能混淆；C语言中的`^`不是乘方；只有各位立方和等于原数时才输出，并且每个结果独占一行。
 
 <details>
 <summary>参考答案与解析</summary>
@@ -66,10 +66,19 @@ legacy_features: 无
 #include <stdio.h>
 int main(void)
 {
-    for (int n = 100; n <= 999; n++)
+    int n;
+    int hundreds, tens, ones;
+    int sum;
+
+    for (n = 100; n <= 999; n++)
     {
-        int a = n / 100, b = n / 10 % 10, c = n % 10;
-        if (a * a * a + b * b * b + c * c * c == n)
+        hundreds = n / 100;
+        tens = n / 10 % 10;
+        ones = n % 10;
+
+        sum = hundreds * hundreds * hundreds + tens * tens * tens + ones * ones * ones;
+
+        if (sum == n)
         {
             printf("%d\n", n);
         }
