@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="Kevin@SUT">
+<meta name="copyright" content="Kevin@SUT">
+<title>CW-L05 嵌套条件与 switch</title>
+<style>
+:root{--ink:#14213d;--muted:#53657d;--blue:#0b6e99;--cyan:#dff5f8;--amber:#f5b942;--paper:#f5f8fb;--green:#19704a;--red:#a33a3a;--code:#101827}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#dce7ef;color:var(--ink);font-family:"Microsoft YaHei","Segoe UI",sans-serif}
+body{display:grid;grid-template-rows:1fr 54px}
+.deck{position:relative;min-height:0}
+.slide{position:absolute;inset:0;display:none;padding:22px 34px 14px}
+.slide.active{display:block}
+.slide-inner{height:100%;max-width:1212px;margin:auto;background:var(--paper);border-radius:18px;padding:22px 30px;box-shadow:0 10px 35px #17314a24;overflow:auto}
+.eyebrow{font-size:17px;font-weight:800;color:var(--blue);letter-spacing:.04em}
+h1{font-size:42px;margin:12px 0 18px;line-height:1.18}h2{font-size:32px;margin:5px 0 16px;line-height:1.2}h3{font-size:23px;margin:5px 0 10px}
+p,li,td,th{font-size:20px;line-height:1.55}.lead{font-size:24px;color:var(--muted)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card,.route,.question-card{background:#fff;border:2px solid #d7e3ec;border-radius:14px;padding:15px 18px}.accent{border-color:#70c9d3;background:#eefbfd}.warn{border-color:#efc36c;background:#fff8e8}.error{border-color:#e6aaaa;background:#fff2f2}
+.rule{background:#e6f5f7;border-left:7px solid var(--blue);padding:12px 18px;border-radius:10px;font-size:20px;margin:12px 0}
+.code-block,.trace-code,.error-code,.terminal{background:var(--code);color:#eef6ff;border-radius:12px;padding:14px 18px;font:18px/1.38 Consolas,"Courier New",monospace;white-space:pre-wrap;margin:10px 0;overflow:auto}
+.code-block.compact,.trace-code.compact{font-size:16px;line-height:1.25}
+.code-block.equation-full{font-size:14.6px;line-height:1.02;padding:3px 14px;margin:0}[data-section="equation-program"] h2{margin-bottom:8px}.code-block.dense{font-size:13px;line-height:1.12;padding:10px 14px}
+.error-code{border:2px solid #d96161}.terminal{background:#06111e;color:#9cf0c9;min-height:60px}
+.code-line{display:block;border-left:4px solid transparent;padding-left:7px}.active-code-line{background:#16476c;border-left-color:var(--amber)}
+table{width:100%;border-collapse:collapse;background:#fff}th,td{border:1px solid #cbd8e2;padding:8px 12px;text-align:left}th{background:#e7f2f7}
+button,.button-link{border:0;border-radius:10px;background:var(--blue);color:#fff;padding:10px 16px;font-size:18px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}
+button:hover,button:focus-visible,.button-link:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+button.secondary{background:#53657d}button.option{display:block;width:100%;text-align:left;margin:7px 0;background:#eaf2f7;color:var(--ink)}
+button.option.correct{background:#d7f1e4;color:#124c34}button.option.wrong{background:#fae1e1;color:#772a2a}
+.button-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.feedback{min-height:56px;padding:12px 16px;border-radius:10px;background:#e8f1f5;color:#18354b;font-size:19px}.feedback.good{background:#d9f2e5;color:#155e35}.feedback.bad{background:#fae1e1;color:#772a2a}
+.path{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}.node{border:2px solid #8bb8ca;border-radius:11px;background:#fff;padding:9px 13px;font-size:18px}.arrow{font-size:26px;color:var(--blue)}
+.formula{font:italic 700 27px/1.35 "Cambria Math","Times New Roman",serif;text-align:center;background:#fff;border-radius:12px;padding:12px}.formula.nowrap{display:flex;align-items:center;justify-content:center;gap:3px;white-space:nowrap;font-size:21px;padding-left:6px;padding-right:6px}.fraction{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;line-height:1.05;margin:0 5px}.fraction>span:first-child{border-bottom:2px solid currentColor;padding:0 5px 3px}.fraction>span:last-child{padding-top:3px}.radical{font-style:normal;font-size:1.18em;margin-right:2px}
+.small{font-size:17px;color:var(--muted)}.pill{display:inline-block;padding:5px 10px;border-radius:999px;background:#dff5f8;color:#14556a;font-weight:700;margin:3px}
+.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.review{background:#edf3f7;color:var(--ink);text-align:left}.review.done{background:#d9f2e5;color:#155e35}
+footer{display:grid;grid-template-columns:190px 1fr 190px;align-items:center;background:#0d2238;color:white;padding:0 22px;gap:18px}
+.nav-buttons{display:flex;gap:8px}.nav-buttons button{padding:7px 13px;background:#264c6d;white-space:nowrap;min-width:84px}.progress{height:8px;background:#39566d;border-radius:8px;overflow:hidden}.progress>span{display:block;height:100%;background:var(--amber);width:0}.page{text-align:right;font-weight:700}
+@media(max-width:850px){body{grid-template-rows:1fr 62px}.slide{padding:8px}.slide-inner{padding:16px}.grid-2,.grid-3,.review-grid{grid-template-columns:1fr}h1{font-size:32px}h2{font-size:27px}p,li,td,th{font-size:18px}footer{grid-template-columns:150px 1fr 90px}.code-block,.trace-code,.error-code{font-size:15px}}
+</style>
+</head>
+<body data-courseware="c-freshman-interactive-html" data-layout="slide-page" data-course-id="CW-L05" data-chapter="4" data-routines="EX-C04-008" data-questions="QB-PG-001,QB-TR-002,QB-TR-007,QB-SC-010" data-lesson-variants="quadratic-equation-explicit-nested-selection,grade-range-switch" data-attribution="Kevin@SUT">
+<main class="deck" data-deck>
+<section class="slide active" data-slide data-section="objectives"><div class="slide-inner"><div class="eyebrow">01 · 学习目标</div><h1>嵌套条件分支与 switch</h1><div class="grid-2"><div class="card accent"><h3>嵌套条件</h3><ul><li>用多层判断处理逐级分类</li><li>理解 <code>if / else if / else</code> 的互斥路径</li><li>判断 <code>else</code> 的实际归属</li></ul></div><div class="card"><h3>固定选项分支</h3><ul><li>理解 <code>switch</code> 的匹配过程</li><li>说明 <code>case</code>、<code>break</code>、<code>default</code></li><li>识别没有 <code>break</code> 时的贯穿</li></ul></div></div><p class="lead">两个程序：完整求解一元二次方程；按成绩等级输出分数范围。</p></div></section>
+
+<section class="slide" data-slide data-section="equation-task" data-programming-question-id="QB-PG-001"><div class="slide-inner"><div class="eyebrow">02 · QB-PG-001</div><h2>一元二次方程</h2><div class="grid-2"><div class="card"><h3>题目</h3><p>输入一元二次方程的三个实数系数，分别处理两个实根、重根和共轭复根。</p><h3>输入格式</h3><p>三个实数 <code>a b c</code>。</p><h3>输出格式</h3><p>按判别式输出两个实根、重根或共轭复根。</p></div><div class="card accent"><h3>三种结果</h3><p>判别式大于0：输出两个实根。</p><p>判别式等于0：输出重根。</p><p>判别式小于0：输出共轭复根。</p><h3>样例</h3><pre class="terminal">输入：1 2 1
+输出：-1.000000</pre><p class="small">输入约束：三个系数均符合规定的实数格式。</p></div></div></div></section>
+
+<section class="slide" data-slide data-section="quadratic-and-discriminant"><div class="slide-inner"><div class="eyebrow">03 · 标准形式与判别式</div><h2>由系数计算 Δ，判断根的类型</h2><div class="grid-2"><div class="card"><h3>标准形式</h3><div class="formula" data-formula="ax^2+bx+c=0"><em>a</em>x<sup>2</sup> + <em>b</em>x + <em>c</em> = 0，<em>a</em> ≠ 0</div><p><code>a</code> 是二次项系数，<code>b</code> 是一次项系数，<code>c</code> 是常数项。</p></div><div class="card accent"><h3>判别式</h3><div class="formula" data-formula="Delta=b^2-4ac">Δ = <em>b</em><sup>2</sup> − 4<em>ac</em></div><p>Δ 的正、零、负分别对应两个实根、重根和共轭复根。</p></div></div><table><tr><th><code>a b c</code></th><th>判别式计算</th><th>结果</th></tr><tr><td><code>1 -3 2</code></td><td>9 − 8 = 1</td><td>Δ &gt; 0</td></tr><tr><td><code>1 2 1</code></td><td>4 − 4 = 0</td><td>Δ = 0</td></tr><tr><td><code>1 2 5</code></td><td>4 − 20 = −16</td><td>Δ &lt; 0</td></tr></table></div></section>
+
+<section class="slide" data-slide data-section="root-formulas"><div class="slide-inner"><div class="eyebrow">04 · 求根公式</div><h2>三种结果使用不同形式</h2><div class="grid-3"><div class="card accent"><h3>Δ &gt; 0：两个实根</h3><div class="formula" data-formula="x12=(-b+-sqrt(Delta))/(2a)"><em>x</em><sub>1,2</sub> = <span class="fraction"><span>−<em>b</em> ± √Δ</span><span>2<em>a</em></span></span></div></div><div class="card"><h3>Δ = 0：重根</h3><div class="formula" data-formula="x=-b/(2a)"><em>x</em> = <span class="fraction"><span>−<em>b</em></span><span>2<em>a</em></span></span></div></div><div class="card warn"><h3>Δ &lt; 0：共轭复根</h3><div class="formula nowrap" data-formula="x12=-b/(2a)+-sqrt(-Delta)/abs(2a)i"><em>x</em><sub>1,2</sub> = <span class="fraction"><span>−<em>b</em></span><span>2<em>a</em></span></span> ± <span class="fraction"><span>√(−Δ)</span><span>|2<em>a</em>|</span></span><em>i</em></div></div></div></div></section>
+
+<section class="slide" data-slide data-section="three-states"><div class="slide-inner"><div class="eyebrow">05 · 完整分类</div><h2>判别式对应三种结果</h2><table><tr><th>判别式</th><th>根的类型</th><th>示例输入</th><th>输出</th></tr><tr><td>Δ &gt; 0</td><td>两个实根</td><td><code>1 -3 2</code></td><td><code>2.000000 1.000000</code></td></tr><tr><td>Δ = 0</td><td>重根</td><td><code>1 2 1</code></td><td><code>-1.000000</code></td></tr><tr><td>Δ &lt; 0</td><td>共轭复根</td><td><code>1 2 5</code></td><td><code>-1.000000±2.000000i</code></td></tr></table><div class="button-row"><button data-three-state="1,-3,2">1 -3 2</button><button data-three-state="1,2,1">1 2 1</button><button data-three-state="1,2,5">1 2 5</button></div><div class="feedback" id="state-feedback">选择一组系数，查看判别式与结果类型。</div></div></section>
+
+<section class="slide" data-slide data-section="formula-to-c"><div class="slide-inner"><div class="eyebrow">06 · 从公式到C表达式</div><h2>数学符号需要转换为运算符和函数</h2><div class="grid-2"><div><div class="formula" data-formula="Delta=b^2-4ac">Δ = <em>b</em><sup>2</sup> − 4<em>ac</em></div><pre class="code-block">d = b * b - 4.0 * a * c;</pre><div class="formula" data-formula="x1=(-b+sqrt(Delta))/(2a)"><em>x</em><sub>1</sub> = <span class="fraction"><span>−<em>b</em> + √Δ</span><span>2<em>a</em></span></span></div><pre class="code-block">x1 = (-b + sqrt(d)) / (2.0 * a);</pre></div><div class="card accent"><h3>转换规则</h3><ul><li><em>b</em><sup>2</sup> 写成 <code>b * b</code>。</li><li>省略的乘号必须写成 <code>*</code>。</li><li>根号使用 <code>sqrt()</code>。</li><li>分子和分母分别使用括号。</li></ul></div></div></div></section>
+
+<section class="slide" data-slide data-section="multi-branch"><div class="slide-inner"><div class="eyebrow">07 · 多分支</div><h2>if / else if / else：互斥路径</h2><div class="grid-2"><pre class="code-block">if (d &gt; 1e-12)
+{
+    /* 两个实根 */
+}
+else if (fabs(d) &lt;= 1e-12)
+{
+    /* 重根 */
+}
+else
+{
+    /* 复根 */
+}</pre><div class="card accent"><h3>执行规则</h3><ol><li>从上到下检查条件。</li><li>执行第一个成立的分支。</li><li>该分支结束后，跳过其余分支。</li><li>前面条件都不成立时执行 <code>else</code>。</li></ol></div></div><div class="rule">三个分支互斥，一次只执行其中一个。</div></div></section>
+
+<section class="slide" data-slide data-section="equation-program"><div class="slide-inner"><div class="eyebrow">08 · 完整程序</div><h2>按判别式处理三种结果</h2><pre class="code-block equation-full"><span class="code-line" data-code-line>#include &lt;math.h&gt;
+#include &lt;stdio.h&gt;
+
+int main()
+{</span>
+<span class="code-line" data-code-line>    double a, b, c, d, x1, x2;
+    double real_part, imag_part;</span>
+<span class="code-line" data-code-line>    /* 输入、判别式和两个实根 */
+    scanf("%lf %lf %lf", &amp;a, &amp;b, &amp;c);
+    d = b * b - 4.0 * a * c;
+    if (d &gt; 1e-12)
+    {
+        x1 = (-b + sqrt(d)) / (2.0 * a);
+        x2 = (-b - sqrt(d)) / (2.0 * a);
+        printf("%.6f %.6f\n", x1, x2);
+    }</span>
+<span class="code-line" data-code-line>    /* 重根、复根和程序结束 */
+    else if (fabs(d) &lt;= 1e-12)
+    {
+        printf("%.6f\n", -b / (2.0 * a));
+    }
+    else
+    {
+        real_part = -b / (2.0 * a);
+        imag_part = sqrt(-d) / fabs(2.0 * a);
+        printf("%.6f+%.6fi %.6f-%.6fi\n",
+            real_part, imag_part, real_part, imag_part);
+    }</span>
+<span class="code-line" data-code-line>    return 0;
+}</span></pre></div></section>
+
+<section class="slide" data-slide data-section="equation-stepper"><div class="slide-inner"><div class="eyebrow">09 · 逐步执行</div><h2>观察判别式如何决定路径</h2><div class="button-row"><button data-equation-input="1,-3,2">1 -3 2</button><button data-equation-input="1,2,1">1 2 1</button><button data-equation-input="1,2,5">1 2 5</button><button class="secondary" id="equation-next">下一步</button><button class="secondary" id="equation-reset">重置</button></div><div class="grid-2"><div class="card"><h3>当前状态</h3><div id="equation-state" class="feedback">先选择一组系数。</div><p id="equation-explain">执行器将显示每次计算与分支选择。</p></div><div class="card accent"><h3>屏幕输出</h3><pre class="terminal" id="equation-output">尚未输出</pre><p class="small">浏览器进行确定性预演，不执行真实C代码。</p></div></div><ol id="equation-steps"><li data-equation-step>读取三个系数</li><li data-equation-step>计算判别式 d</li><li data-equation-step>比较 d 与0</li><li data-equation-step>使用对应求根公式</li><li data-equation-step>按六位小数格式输出</li><li data-equation-step>程序正常结束</li></ol></div></section>
+
+<section class="slide" data-slide data-section="trace-002" data-trace-question-id="QB-TR-002"><div class="slide-inner"><div class="eyebrow">10 · QB-TR-002</div><h2>嵌套if与后续语句</h2><div class="grid-2"><div><p class="question-text">写出程序的准确输出：</p><pre class="trace-code compact">#include &lt;stdio.h&gt;
+int main(void)
+{
+    int a = 2, b = 3, c = 1;
+    if (a &gt; b)
+        if (a &gt; c)
+            printf("%d\n", a);
+        else
+            printf("%d\n", b);
+    printf("over!\n");
+    return 0;
+}</pre><p>本题程序不读取外部输入。请写出程序运行后的精确输出。</p></div><div class="question-card"><button class="option" data-trace-002="A">A. 2</button><button class="option" data-trace-002="B">B. 3</button><button class="option" data-trace-002="C">C. over!</button><button class="option" data-trace-002="D">D. 2<br>over!</button><div class="feedback" id="trace-002-feedback">选择输出结果。</div></div></div></div></section>
+
+<section class="slide" data-slide data-section="trace-007" data-trace-question-id="QB-TR-007"><div class="slide-inner"><div class="eyebrow">11 · QB-TR-007</div><h2>悬空else</h2><div class="grid-2"><div><p class="question-text">写出程序的准确输出：</p><pre class="trace-code compact">#include &lt;stdio.h&gt;
+int main(void)
+{
+    int a = 1, b = 0, c = 0;
+    if (a &lt; b)
+        if (b &lt; 0)
+            c = 0;
+        else
+            c++;
+    printf("%d\n", c);
+    return 0;
+}</pre><p>本题程序不读取外部输入。请写出程序运行后的精确输出。</p></div><div class="question-card"><p class="rule"><code>else</code> 与最近且尚未配对的 <code>if</code> 配对。</p><button class="option" data-trace-007="A">A. 0</button><button class="option" data-trace-007="B">B. 1</button><button class="option" data-trace-007="C">C. -1</button><button class="option" data-trace-007="D">D. 无输出</button><div class="feedback" id="trace-007-feedback">选择输出结果。</div></div></div></div></section>
+
+<section class="slide" data-slide data-section="equation-review"><div class="slide-inner"><div class="eyebrow">12 · 测试与自检</div><h2>方程程序的三条路径</h2><div class="grid-2"><div><table><tr><th>输入</th><th>根的类型</th><th>输出</th></tr><tr data-equation-test="1 -3 2" data-expected="2.000000 1.000000"><td>1 -3 2</td><td>两个实根</td><td>2.000000 1.000000</td></tr><tr data-equation-test="1 2 1" data-expected="-1.000000"><td>1 2 1</td><td>重根</td><td>-1.000000</td></tr><tr data-equation-test="1 2 5" data-expected="-1.000000+2.000000i -1.000000-2.000000i"><td>1 2 5</td><td>共轭复根</td><td>-1.000000+2.000000i<br>-1.000000-2.000000i</td></tr></table></div><div><div class="review-grid" id="equation-review"><button class="review" data-review="eq1" data-answer="标准形式是ax²+bx+c=0，其中a不等于0。">标准形式是什么？</button><button class="review" data-review="eq2" data-answer="判别式Δ=b²-4ac。">判别式是什么？</button><button class="review" data-review="eq3" data-answer="Δ大于0时有两个不同实根。">何时有两个实根？</button><button class="review" data-review="eq4" data-answer="Δ等于0时两个实根相等。">何时得到重根？</button><button class="review" data-review="eq5" data-answer="Δ小于0时得到一对共轭复根。">何时得到复根？</button><button class="review" data-review="eq6" data-answer="else属于最近且未配对的if。">else与谁配对？</button><button class="review" data-review="eq7" data-answer="只执行第一个条件成立的分支。">多分支执行几条路径？</button></div><div class="feedback" id="equation-review-feedback">点击问题查看答案。</div><pre class="code-block">gcc equation.c -o equation.exe
+.\equation.exe</pre></div></div></div></section>
+
+<section class="slide" data-slide data-section="switch-task"><div class="slide-inner"><div class="eyebrow">13 · 固定字符选项</div><h2>根据成绩等级输出分数范围</h2><div class="grid-2"><div class="card"><h3>任务</h3><p>输入一个字符等级，根据等级输出对应的分数范围。</p><table><tr><th>等级</th><th>分数范围</th></tr><tr><td>A</td><td>85～100</td></tr><tr><td>B</td><td>70～84</td></tr><tr><td>C</td><td>60～69</td></tr><tr><td>D</td><td>&lt;60</td></tr></table></div><div class="card accent"><h3>未列出的字符</h3><p>输入不是 A、B、C、D 时，输出：</p><pre class="terminal">Your score:enter data error!</pre><p class="small">输入约束：输入一个字符。</p></div></div></div></section>
+
+<section class="slide" data-slide data-section="why-switch"><div class="slide-inner"><div class="eyebrow">14 · 固定离散值</div><h2>多个相等判断可以写成 switch</h2><div class="grid-2"><pre class="code-block">if (grade == 'A')
+{
+    /* A的处理 */
+}
+else if (grade == 'B')
+{
+    /* B的处理 */
+}</pre><pre class="code-block">switch (grade)
+{
+case 'A':
+    /* A的处理 */
+    break;
+case 'B':
+    /* B的处理 */
+    break;
+}</pre></div><div class="rule"><code>switch</code> 适合把一个表达式的结果与多个固定、离散的常量比较。</div><p>范围判断、浮点近似判断或复杂逻辑条件仍应使用 <code>if</code>。</p></div></section>
+
+<section class="slide" data-slide data-section="switch-syntax"><div class="slide-inner"><div class="eyebrow">15 · 基本结构</div><h2>switch、case、break 与 default</h2><div class="grid-2"><pre class="code-block">switch (表达式)
+{
+case 常量1:
+    语句;
+    break;
+case 常量2:
+    语句;
+    break;
+default:
+    语句;
+}</pre><div class="card accent"><ul><li><code>switch</code>：计算一次表达式。</li><li><code>case</code>：标记一个固定匹配值。</li><li><code>break</code>：立即离开当前 <code>switch</code>。</li><li><code>default</code>：没有任何 <code>case</code> 匹配时执行。</li></ul></div></div></div></section>
+
+<section class="slide" data-slide data-section="case-constants"><div class="slide-inner"><div class="eyebrow">16 · 字符常量</div><h2>grade 与 'A' 的角色不同</h2><div class="grid-2"><div class="card"><pre class="code-block">char grade;
+scanf("%c", &amp;grade);</pre><p><code>grade</code> 是变量，运行时保存输入字符。</p></div><div class="card accent"><pre class="code-block">case 'A':
+case 'B':
+case 'C':
+case 'D':</pre><p><code>'A'</code> 等是字符常量。每个 <code>case</code> 值必须是常量且互不重复。</p></div></div><div class="button-row"><button data-case-kind="grade">grade</button><button data-case-kind="'A'">'A'</button><button data-case-kind="score + 1">score + 1</button></div><div class="feedback" id="case-feedback">选择一个写法，判断它能否作为本程序的case值。</div></div></section>
+
+<section class="slide" data-slide data-section="switch-match"><div class="slide-inner"><div class="eyebrow">17 · 匹配过程</div><h2>先计算表达式，再跳到匹配位置</h2><div class="path"><span class="node">grade = 'C'</span><span class="arrow">→</span><span class="node">计算 switch(grade)</span><span class="arrow">→</span><span class="node">跳到 case 'C'</span><span class="arrow">→</span><span class="node">执行并遇到 break</span></div><div class="grid-3"><div class="card"><h3>不会从A开始逐条判断</h3><p>匹配后直接跳到对应标签。</p></div><div class="card accent"><h3>case本身不是条件表达式</h3><p>它只是程序中的匹配入口。</p></div><div class="card"><h3>匹配后顺序执行</h3><p>直到遇到 <code>break</code> 或离开结构。</p></div></div></div></section>
+
+<section class="slide" data-slide data-section="break"><div class="slide-inner"><div class="eyebrow">18 · break</div><h2>break 防止继续进入后续 case</h2><div class="grid-2"><pre class="code-block">case 'B':
+    printf("70～84\n");
+    break;
+case 'C':
+    printf("60～69\n");
+    break;</pre><div class="card accent"><h3>输入 B 时</h3><ol><li>跳到 <code>case 'B'</code>。</li><li>输出 <code>70～84</code>。</li><li>执行 <code>break</code>。</li><li>离开整个 <code>switch</code>。</li></ol></div></div><div class="rule">这里的 <code>break</code> 只用于结束当前 <code>switch</code>；本课不讨论循环中的 <code>break</code>。</div></div></section>
+
+<section class="slide" data-slide data-section="default"><div class="slide-inner"><div class="eyebrow">19 · default</div><h2>没有 case 匹配时执行 default</h2><div class="grid-2"><div class="card"><pre class="code-block">default:
+    printf("enter data error!\n");</pre><p>输入 <code>X</code> 时，A、B、C、D 均不匹配，因此执行此处。</p></div><div class="card accent"><h3>规则</h3><ul><li><code>default</code> 可以省略。</li><li>本程序保留它，用于处理未列出的等级。</li><li>通常放在全部 <code>case</code> 之后，便于阅读。</li></ul></div></div><div class="feedback good">输入 X → Your score:enter data error!</div></div></section>
+
+<section class="slide" data-slide data-section="switch-program"><div class="slide-inner"><div class="eyebrow">20 · EX-C04-008</div><h2>成绩等级完整程序</h2><pre class="code-block dense" data-positive-program="grade-switch"><span class="code-line" data-code-line>#include &lt;stdio.h&gt;
+int main()
+{</span>
+<span class="code-line" data-code-line>    char grade;
+    scanf("%c", &amp;grade);
+    printf("Your score:");</span>
+<span class="code-line" data-code-line>    switch (grade)
+    {</span>
+<span class="code-line" data-code-line>    case 'A':
+        printf("85～100\n");
+        break;</span>
+<span class="code-line" data-code-line>    case 'B':
+        printf("70～84\n");
+        break;</span>
+<span class="code-line" data-code-line>    case 'C':
+        printf("60～69\n");
+        break;</span>
+<span class="code-line" data-code-line>    case 'D':
+        printf("&lt;60\n");
+        break;</span>
+<span class="code-line" data-code-line>    default:
+        printf("enter data error!\n");
+    }
+    return 0;
+}</span></pre></div></section>
+
+<section class="slide" data-slide data-section="switch-step-a"><div class="slide-inner"><div class="eyebrow">21 · 逐步执行 A</div><h2>匹配、输出、break、离开</h2><div class="button-row"><button id="grade-a-next">下一步</button><button class="secondary" id="grade-a-reset">重置</button></div><ol id="grade-a-steps"><li data-grade-a-step>读取字符 A，grade='A'</li><li data-grade-a-step>计算 switch(grade)</li><li data-grade-a-step>跳到 case 'A'</li><li data-grade-a-step>输出 85～100</li><li data-grade-a-step>遇到 break，离开 switch</li></ol><div class="grid-2"><div class="feedback" id="grade-a-feedback">点击“下一步”观察路径。</div><pre class="terminal" id="grade-a-output">Your score:</pre></div></div></section>
+
+<section class="slide" data-slide data-section="switch-executor"><div class="slide-inner"><div class="eyebrow">22 · 不同输入</div><h2>同一 switch 选择不同入口</h2><div class="button-row"><button data-grade-input="C">输入 C</button><button data-grade-input="D">输入 D</button><button data-grade-input="X">输入 X</button><button class="secondary" id="grade-reset">重置</button></div><div class="grid-2"><div class="card"><h3>路径</h3><div class="feedback" id="grade-path">选择一个字符。</div></div><div class="card accent"><h3>精确输出</h3><pre class="terminal" id="grade-output">Your score:</pre></div></div><table><tr><th>输入</th><th>匹配位置</th><th>输出内容</th></tr><tr><td>C</td><td>case 'C'</td><td>60～69</td></tr><tr><td>D</td><td>case 'D'</td><td>&lt;60</td></tr><tr><td>X</td><td>default</td><td>enter data error!</td></tr></table></div></section>
+
+<section class="slide" data-slide data-section="question-sc010"><div class="slide-inner"><div class="eyebrow">23 · QB-SC-010</div><h2>switch贯穿</h2><article class="question-card" data-question-id="QB-SC-010"><p class="question-text">若 <code>i=10</code>，执行无 <code>break</code> 的 <code>switch</code>：<code>case 10:i++; case 11:i++; default:i++;</code> 后，<code>i</code> 为（ ）。</p><div class="grid-2"><div><button class="option" data-question-option="A" data-correct="false" data-feedback="从case 10开始后会连续执行，i不会保持10。">A. 10</button><button class="option" data-question-option="B" data-correct="false" data-feedback="执行并未在第一次i++后停止。">B. 11</button></div><div><button class="option" data-question-option="C" data-correct="false" data-feedback="default也会继续执行，因此还要再增加1。">C. 12</button><button class="option" data-question-option="D" data-correct="true" data-feedback="从case 10进入后连续执行三次i++，结果为13。">D. 13</button></div></div><div class="feedback" id="question-feedback">选择一个答案。</div></article></div></section>
+
+<section class="slide" data-slide data-section="fallthrough"><div class="slide-inner"><div class="eyebrow">24 · 贯穿过程</div><h2>没有 break：从入口继续向下执行</h2><pre class="trace-code">i = 10;
+switch (i)
+{
+case 10:
+    i++;
+case 11:
+    i++;
+default:
+    i++;
+}</pre><div class="button-row"><button data-fallthrough-step="1">① case 10</button><button data-fallthrough-step="2">② case 11</button><button data-fallthrough-step="3">③ default</button><button class="secondary" id="fallthrough-reset">重置</button></div><div class="feedback" id="fallthrough-feedback">初始 i = 10。依次点击三个执行位置。</div><div class="rule">贯穿不是重新进行匹配，而是从已匹配的入口继续顺序执行后续语句。</div></div></section>
+
+<section class="slide" data-slide data-section="switch-errors"><div class="slide-inner"><div class="eyebrow">25 · 错误诊断</div><h2>case 与 break 的使用约束</h2><div class="grid-3"><div class="card error"><h3>漏写 break</h3><pre class="error-code">case 'A':
+    puts("A");
+case 'B':
+    puts("B");</pre><button data-switch-error="break">查看原因</button></div><div class="card error"><h3>重复 case</h3><pre class="error-code">case 'A':
+    puts("A1");
+case 'A':
+    puts("A2");</pre><button data-switch-error="duplicate">查看原因</button></div><div class="card error"><h3>变量作 case 值</h3><pre class="error-code">char target = 'A';
+case target:
+    puts("A");</pre><button data-switch-error="variable">查看原因</button></div></div><div class="feedback" id="switch-error-feedback">以上均为故意错误示例。选择一项查看正确规则。</div></div></section>
+
+<section class="slide" data-slide data-section="switch-review"><div class="slide-inner"><div class="eyebrow">26 · 测试与自检</div><h2>成绩等级程序</h2><div class="grid-2"><div><table><tr><th>输入</th><th>输出</th></tr><tr data-grade-test="A" data-expected="Your score:85～100"><td>A</td><td>Your score:85～100</td></tr><tr data-grade-test="B" data-expected="Your score:70～84"><td>B</td><td>Your score:70～84</td></tr><tr data-grade-test="C" data-expected="Your score:60～69"><td>C</td><td>Your score:60～69</td></tr><tr data-grade-test="D" data-expected="Your score:&lt;60"><td>D</td><td>Your score:&lt;60</td></tr><tr data-grade-test="X" data-expected="Your score:enter data error!"><td>X</td><td>Your score:enter data error!</td></tr></table><pre class="code-block">gcc grade.c -o grade.exe
+.\grade.exe</pre><div class="button-row"><a class="button-link" href="../../../例程/chapters/04-selection/ex_c04_008_4_6.c">打开 EX-C04-008</a><a class="button-link" href="../../../题库/编程题/qb_pg_001.md">打开 QB-PG-001</a></div></div><div><div class="review-grid" id="switch-review"><button class="review" data-review="sw1" data-answer="适合与多个固定离散常量比较。">switch适合什么判断？</button><button class="review" data-review="sw2" data-answer="case值必须是互不重复的常量。">case值有什么要求？</button><button class="review" data-review="sw3" data-answer="结束当前switch，防止贯穿。">break的作用是什么？</button><button class="review" data-review="sw4" data-answer="没有case匹配时执行。">default何时执行？</button><button class="review" data-review="sw5" data-answer="会继续执行后续case中的语句。">漏写break会怎样？</button><button class="review" data-review="sw6" data-answer="先计算switch表达式，再跳到匹配case。">switch怎样开始匹配？</button><button class="review" data-review="sw7" data-answer="范围或复杂逻辑条件通常使用if。">哪些情况不适合switch？</button></div><div class="feedback" id="switch-review-feedback">点击问题查看答案。</div></div></div></div></section>
+</main>
+<footer><div class="nav-buttons"><button id="prev" aria-label="上一页">← 上一页</button><button id="next" aria-label="下一页">下一页 →</button></div><div class="progress" aria-label="课件进度"><span id="progress"></span></div><div class="page"><span id="page-number">1</span> / 26 · Kevin@SUT</div></footer>
+<script>
+(function(){
+"use strict";
+var slides=Array.from(document.querySelectorAll("[data-slide]")),index=0;
+var prev=document.getElementById("prev"),next=document.getElementById("next"),progress=document.getElementById("progress"),page=document.getElementById("page-number");
+function show(n){index=Math.max(0,Math.min(slides.length-1,n));slides.forEach(function(s,i){s.classList.toggle("active",i===index);});page.textContent=String(index+1);progress.style.width=((index+1)/slides.length*100)+"%";prev.disabled=index===0;next.disabled=index===slides.length-1;}
+prev.addEventListener("click",function(){show(index-1);});next.addEventListener("click",function(){show(index+1);});
+document.addEventListener("keydown",function(e){if(["ArrowRight","PageDown"].includes(e.key))show(index+1);if(["ArrowLeft","PageUp"].includes(e.key))show(index-1);if(e.key==="Home")show(0);if(e.key==="End")show(slides.length-1);});
+function setFeedback(el,text,good){el.textContent=text;el.classList.toggle("good",good===true);el.classList.toggle("bad",good===false);}
+var state={"1,-3,2":"Δ=1>0：两个实根。","1,2,1":"Δ=0：重根。","1,2,5":"Δ=-16<0：共轭复根。"};
+document.querySelectorAll("[data-three-state]").forEach(function(b){b.addEventListener("click",function(){setFeedback(document.getElementById("state-feedback"),state[b.dataset.threeState],true);});});
+var eqData={
+"1,-3,2":[["读取a=1，b=-3，c=2","尚未输出"],["计算判别式d=1","尚未输出"],["d>0，选择两个实根分支","尚未输出"],["求得x1=2、x2=1","尚未输出"],["按六位小数输出两个根","2.000000 1.000000"],["程序正常结束","2.000000 1.000000"]],
+"1,2,1":[["读取a=1，b=2，c=1","尚未输出"],["计算判别式d=0","尚未输出"],["d接近0，选择重根分支","尚未输出"],["求得x=-1","尚未输出"],["按六位小数输出重根","-1.000000"],["程序正常结束","-1.000000"]],
+"1,2,5":[["读取a=1，b=2，c=5","尚未输出"],["计算判别式d=-16","尚未输出"],["d<0，选择共轭复根分支","尚未输出"],["求得实部-1、虚部2","尚未输出"],["按六位小数输出两个复根","-1.000000+2.000000i -1.000000-2.000000i"],["程序正常结束","-1.000000+2.000000i -1.000000-2.000000i"]]};
+var eqKey=null,eqStep=0;
+function renderEq(){var rows=document.querySelectorAll("[data-equation-step]");rows.forEach(function(r,i){r.style.color=i===eqStep-1?"#0b6e99":"";r.style.fontWeight=i===eqStep-1?"800":"";});if(!eqKey)return;var item=eqData[eqKey][Math.max(0,eqStep-1)];document.getElementById("equation-state").textContent=item[0];document.getElementById("equation-output").textContent=item[1];document.getElementById("equation-explain").textContent="第"+eqStep+"步 / 6步";}
+document.querySelectorAll("[data-equation-input]").forEach(function(b){b.addEventListener("click",function(){eqKey=b.dataset.equationInput;eqStep=1;renderEq();});});
+document.getElementById("equation-next").addEventListener("click",function(){if(!eqKey){setFeedback(document.getElementById("equation-state"),"请先选择一组系数。",false);return;}eqStep=Math.min(6,eqStep+1);renderEq();});
+document.getElementById("equation-reset").addEventListener("click",function(){eqKey=null;eqStep=0;document.getElementById("equation-state").textContent="先选择一组系数。";document.getElementById("equation-output").textContent="尚未输出";document.getElementById("equation-explain").textContent="执行器将显示每次计算与分支选择。";renderEq();});
+function traceGroup(attr,feedbackId,correct,explanation){document.querySelectorAll("["+attr+"]").forEach(function(b){b.addEventListener("click",function(){var ok=b.getAttribute(attr)===correct;setFeedback(document.getElementById(feedbackId),ok?explanation:"重新检查外层条件是否成立，以及最后一条printf是否位于分支之外。",ok);});});}
+traceGroup("data-trace-002","trace-002-feedback","C","a>b为假，整个嵌套分支跳过；最后仍输出over!。");
+traceGroup("data-trace-007","trace-007-feedback","A","a<b为假，整个内层if-else不执行，c保持0。");
+document.querySelectorAll("[data-case-kind]").forEach(function(b){b.addEventListener("click",function(){var value=b.dataset.caseKind,ok=value==="'A'";setFeedback(document.getElementById("case-feedback"),ok?"'A'是字符常量，可以作为case值。":value==="grade"?"grade是变量，不能作为case常量。":"score+1不是本程序需要的整型常量表达式。",ok);});});
+var gaStep=0,gaTexts=["读取A，grade保存字符'A'。","计算switch(grade)，结果是'A'。","直接跳到case 'A'。","printf输出85～100。","break结束switch，程序继续向后执行。"];
+function renderGA(){document.querySelectorAll("[data-grade-a-step]").forEach(function(r,i){r.style.color=i===gaStep-1?"#0b6e99":"";r.style.fontWeight=i===gaStep-1?"800":"";});document.getElementById("grade-a-feedback").textContent=gaStep?gaTexts[gaStep-1]:"点击“下一步”观察路径。";document.getElementById("grade-a-output").textContent=gaStep>=4?"Your score:85～100":"Your score:";}
+document.getElementById("grade-a-next").addEventListener("click",function(){gaStep=Math.min(5,gaStep+1);renderGA();});
+document.getElementById("grade-a-reset").addEventListener("click",function(){gaStep=0;renderGA();});
+var gradeData={C:["匹配case 'C'，输出后执行break。","Your score:60～69"],D:["匹配case 'D'，输出后执行break。","Your score:<60"],X:["没有case匹配，执行default。","Your score:enter data error!"]};
+document.querySelectorAll("[data-grade-input]").forEach(function(b){b.addEventListener("click",function(){var d=gradeData[b.dataset.gradeInput];setFeedback(document.getElementById("grade-path"),d[0],true);document.getElementById("grade-output").textContent=d[1];});});
+document.getElementById("grade-reset").addEventListener("click",function(){document.getElementById("grade-path").textContent="选择一个字符。";document.getElementById("grade-output").textContent="Your score:";});
+document.querySelectorAll("[data-question-option]").forEach(function(b){b.addEventListener("click",function(){var ok=b.dataset.correct==="true";b.classList.add(ok?"correct":"wrong");setFeedback(document.getElementById("question-feedback"),b.dataset.feedback,ok);});});
+var fall=10;
+document.querySelectorAll("[data-fallthrough-step]").forEach(function(b){b.addEventListener("click",function(){var expected=Number(b.dataset.fallthroughStep);if(fall!==9+expected){setFeedback(document.getElementById("fallthrough-feedback"),"请按①②③的顺序观察贯穿。",false);return;}fall++;setFeedback(document.getElementById("fallthrough-feedback"),"执行第"+expected+"次i++：i="+fall+"。没有break，继续向下。",true);});});
+document.getElementById("fallthrough-reset").addEventListener("click",function(){fall=10;setFeedback(document.getElementById("fallthrough-feedback"),"初始 i = 10。依次点击三个执行位置。");});
+var err={break:"漏写break会贯穿到后续case。正确做法是在需要结束分支的位置写break。",duplicate:"同一个switch中的case值必须互不重复，否则程序不能正确编译。",variable:"case后需要整型常量表达式，不能使用运行时变量target。"};
+document.querySelectorAll("[data-switch-error]").forEach(function(b){b.addEventListener("click",function(){setFeedback(document.getElementById("switch-error-feedback"),err[b.dataset.switchError],false);});});
+document.querySelectorAll("[data-review]").forEach(function(b){b.addEventListener("click",function(){var target=b.closest("#equation-review")?document.getElementById("equation-review-feedback"):document.getElementById("switch-review-feedback");b.classList.toggle("done");setFeedback(target,b.dataset.answer,true);});});
+show(0);
+})();
+</script>
+</body>
+</html>

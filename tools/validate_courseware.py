@@ -18,6 +18,7 @@ CW_L01 = ROOT / "课件" / "讲授" / "01-course-introduction-and-hello-world" /
 CW_L02 = ROOT / "课件" / "讲授" / "02-algorithms-and-program-logic" / "index.html"
 CW_L03 = ROOT / "课件" / "讲授" / "03-sequential-programming" / "index.html"
 CW_L04 = ROOT / "课件" / "讲授" / "04-selection-if" / "index.html"
+CW_L05 = ROOT / "课件" / "讲授" / "05-selection-nesting-and-switch" / "index.html"
 ALLOWED_EXTERNAL_HREFS = frozenset({"https://w3schools.org.cn/c/index.php"})
 
 REQUIRED_MARKERS = (
@@ -226,6 +227,8 @@ def target_for(course_id: str) -> Path:
         return CW_L03
     if course_id == "CW-L04":
         return CW_L04
+    if course_id == "CW-L05":
+        return CW_L05
     raise ValueError(f"unknown courseware id: {course_id}")
 
 
@@ -807,6 +810,261 @@ def validate_cw_l04(path: Path) -> list[str]:
     return failures
 
 
+def validate_cw_l05(path: Path) -> list[str]:
+    failures: list[str] = []
+    if not path.exists():
+        return [f"file not found: {path}"]
+
+    raw = path.read_bytes()
+    if raw.startswith(b"\xef\xbb\xbf"):
+        fail(failures, "UTF-8 BOM is not allowed")
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        return [f"invalid UTF-8: {exc}"]
+
+    if "\t" in text:
+        fail(failures, "tab characters are not allowed")
+    if "<html" not in text.lower() or "</html>" not in text.lower():
+        fail(failures, "document is not a complete HTML file")
+    if "overflow:hidden" not in text.replace(" ", ""):
+        fail(failures, "slide/page mode must hide page-level overflow")
+
+    required_markers = (
+        'data-courseware="c-freshman-interactive-html"',
+        'data-layout="slide-page"',
+        'data-course-id="CW-L05"',
+        'data-chapter="4"',
+        'data-routines="EX-C04-008"',
+        'data-questions="QB-PG-001,QB-TR-002,QB-TR-007,QB-SC-010"',
+        'data-lesson-variants="quadratic-equation-explicit-nested-selection,grade-range-switch"',
+        'data-attribution="Kevin@SUT"',
+        '<meta name="author" content="Kevin@SUT">',
+        '<meta name="copyright" content="Kevin@SUT">',
+        'data-programming-question-id="QB-PG-001"',
+        'data-trace-question-id="QB-TR-002"',
+        'data-trace-question-id="QB-TR-007"',
+        'data-positive-program="grade-switch"',
+        "data-code-line",
+        "active-code-line",
+    )
+    for marker in required_markers:
+        if marker not in text:
+            fail(failures, f"missing CW-L05 marker: {marker}")
+
+    for pattern in EXTERNAL_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            fail(failures, f"external or persistent dependency found: {pattern}")
+    for pattern in TEACHER_ONLY_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            fail(failures, f"teacher-only content found: {pattern}")
+    for phrase in CW_L02_STUDENT_FORBIDDEN:
+        if phrase in text:
+            fail(failures, f"student-facing teacher-prep phrase found: {phrase}")
+
+    if len(SLIDE_PATTERN.findall(text)) != 26:
+        fail(failures, f"CW-L05 expected 26 slides, found {len(SLIDE_PATTERN.findall(text))}")
+    if len(SECTION_BLOCK_PATTERN.findall(text)) != 26:
+        fail(failures, "CW-L05 must contain 26 complete section blocks")
+    if 'data-section="decision-tree"' in text:
+        fail(failures, "CW-L05 must not repeat the three-result table as a separate decision-tree page")
+    merged_match = re.search(
+        r'<section\b[^>]*data-section="quadratic-and-discriminant"[^>]*>(.*?)</section>',
+        text,
+        re.IGNORECASE | re.DOTALL,
+    )
+    merged_block = merged_match.group(1) if merged_match else ""
+    if 'data-formula="ax^2+bx+c=0"' not in merged_block or 'data-formula="Delta=b^2-4ac"' not in merged_block:
+        fail(failures, "CW-L05 page 3 must combine the standard form and discriminant")
+    if " / 26 · Kevin@SUT" not in text:
+        fail(failures, "CW-L05 footer total must be 26")
+    if ".code-block.equation-full{font-size:14.6px" not in text:
+        fail(failures, "CW-L05 page 8 must retain the projection-tested 14.6px program font")
+    if text.count("<details") != 0:
+        fail(failures, "CW-L05 must expose all knowledge and exercises directly")
+
+    validate_embedded_questions(text, failures, ("QB-SC-010",), "CW-L05")
+    if text.count('data-question-option="') != 4:
+        fail(failures, "CW-L05 must expose four options for QB-SC-010")
+
+    questions = scan_questions()
+    pg_source = questions["QB-PG-001"].text
+    pg_prompt_match = re.search(r"## 题目\s*(.*?)\s*### 输入格式", pg_source, re.DOTALL)
+    pg_block_match = re.search(
+        r'<section\b[^>]*data-programming-question-id="QB-PG-001"[^>]*>(.*?)</section>',
+        text,
+        re.IGNORECASE | re.DOTALL,
+    )
+    pg_prompt = normalize_visible_text(pg_prompt_match.group(1)) if pg_prompt_match else ""
+    pg_block = normalize_visible_text(pg_block_match.group(1)) if pg_block_match else ""
+    if not pg_prompt_match or not pg_block_match or pg_prompt not in pg_block:
+        fail(failures, "CW-L05 must visibly embed the QB-PG-001 prompt")
+    for marker in (
+        "三个实数 a b c。",
+        "按判别式输出两个实根、重根或共轭复根。",
+    ):
+        if marker not in pg_block:
+            fail(failures, f"QB-PG-001 visible contract is incomplete: {marker}")
+    for forbidden in ("数据范围与边界", "|a|>=1e-12"):
+        if forbidden in pg_block:
+            fail(failures, f"CW-L05 page 2 must not expose confusing boundary text: {forbidden}")
+
+    for question_id, expected_output in (("QB-TR-002", "over!"), ("QB-TR-007", "0")):
+        source = questions[question_id].text
+        source_code_match = re.search(r"```c\s*(.*?)```", source, re.DOTALL)
+        html_block_match = re.search(
+            rf'<section\b[^>]*data-trace-question-id="{question_id}"[^>]*>(.*?)</section>',
+            text,
+            re.IGNORECASE | re.DOTALL,
+        )
+        if not source_code_match or not html_block_match:
+            fail(failures, f"CW-L05 lacks complete trace question {question_id}")
+            continue
+        source_tokens = re.sub(r"\s+", "", source_code_match.group(1))
+        html_code_match = re.search(r'<pre\b[^>]*class="[^"]*trace-code[^"]*"[^>]*>(.*?)</pre>', html_block_match.group(1), re.DOTALL)
+        html_tokens = re.sub(r"\s+", "", html.unescape(re.sub(r"<[^>]+>", "", html_code_match.group(1)))) if html_code_match else ""
+        if source_tokens != html_tokens:
+            fail(failures, f"{question_id} program differs from the question bank")
+        if expected_output not in normalize_visible_text(html_block_match.group(1)):
+            fail(failures, f"{question_id} expected output is not represented")
+
+    positive_blocks = "\n".join(re.findall(
+        r'<pre\b[^>]*class="[^"]*code-block[^"]*"[^>]*>(.*?)</pre>',
+        text,
+        re.IGNORECASE | re.DOTALL,
+    ))
+    code_text = html.unescape(re.sub(r"<[^>]+>", "", positive_blocks))
+    for forbidden, label in (
+        (r"\bfor\s*\(", "for loop"),
+        (r"\bwhile\s*\(", "while loop"),
+        (r"\bdo\s*\{", "do loop"),
+        (r"\[[^\]]*\]", "array syntax"),
+        (r"\?[^:\n]+:", "conditional operator"),
+        (r"\breturn\s+1\s*;", "return 1"),
+    ):
+        if re.search(forbidden, code_text):
+            fail(failures, f"CW-L05 positive examples must not introduce {label}")
+    if re.search(r"if\s*\(\s*scanf|scanf\s*\([^;]+\)\s*[!=]=", code_text):
+        fail(failures, "CW-L05 must not check scanf return values")
+    if len(re.findall(r"\b(?:int|void|float|double|char)\s+(?!main\b)\w+\s*\([^;]*\)\s*\{", code_text)):
+        fail(failures, "CW-L05 must not introduce custom functions")
+
+    equation_program_match = re.search(
+        r'<section\b[^>]*data-section="equation-program"[^>]*>(.*?)</section>',
+        text,
+        re.IGNORECASE | re.DOTALL,
+    )
+    equation_program = equation_program_match.group(1) if equation_program_match else ""
+    equation_code_blocks = re.findall(
+        r'<pre\b[^>]*class="[^"]*code-block[^"]*"[^>]*>(.*?)</pre>',
+        equation_program,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if len(equation_code_blocks) != 1:
+        fail(failures, "CW-L05 page 8 must present the equation as one continuous code block")
+    for marker in ("/* 输入、判别式和两个实根 */", "/* 重根、复根和程序结束 */"):
+        if marker not in html.unescape(re.sub(r"<[^>]+>", "", equation_program)):
+            fail(failures, f"CW-L05 page 8 lacks section comment: {marker}")
+    if "program-pair" in equation_program:
+        fail(failures, "CW-L05 page 8 must not split the equation program into two panels")
+
+    for marker in (
+        'scanf("%lf %lf %lf", &a, &b, &c);',
+        "d = b * b - 4.0 * a * c;",
+        "if (d > 1e-12)",
+        "else if (fabs(d) <= 1e-12)",
+        "x1 = (-b + sqrt(d)) / (2.0 * a);",
+        "imag_part = sqrt(-d) / fabs(2.0 * a);",
+        'scanf("%c", &grade);',
+        "switch (grade)",
+        "case 'A':",
+        "case 'B':",
+        "case 'C':",
+        "case 'D':",
+        "default:",
+    ):
+        if marker not in code_text:
+            fail(failures, f"CW-L05 positive program is incomplete: {marker}")
+
+    grade_program_match = re.search(
+        r'<pre\b[^>]*data-positive-program="grade-switch"[^>]*>(.*?)</pre>',
+        text,
+        re.IGNORECASE | re.DOTALL,
+    )
+    grade_code = html.unescape(re.sub(r"<[^>]+>", "", grade_program_match.group(1))) if grade_program_match else ""
+    if len(re.findall(r"\bcase\s+'[A-D]'\s*:", grade_code)) != 4:
+        fail(failures, "CW-L05 grade switch must contain exactly case A-D")
+    if len(re.findall(r"\bbreak\s*;", grade_code)) != 4:
+        fail(failures, "CW-L05 grade switch must contain four break statements")
+    if len(re.findall(r"\bdefault\s*:", grade_code)) != 1:
+        fail(failures, "CW-L05 grade switch must contain one default label")
+
+    counts = (
+        ('data-equation-input="', 3, "equation stepper inputs"),
+        ("data-equation-step", 6, "equation steps"),
+        ('data-trace-002="', 4, "QB-TR-002 options"),
+        ('data-trace-007="', 4, "QB-TR-007 options"),
+        ("data-grade-a-step", 5, "grade A steps"),
+        ('data-grade-input="', 3, "grade executor inputs"),
+        ('data-fallthrough-step="', 3, "fallthrough steps"),
+        ('data-switch-error="', 3, "switch diagnosis cases"),
+        ('data-equation-test="', 3, "equation tests"),
+        ('data-grade-test="', 5, "grade tests"),
+        ('data-review="', 14, "review questions"),
+    )
+    for marker, expected, label in counts:
+        actual = text.count(marker) if marker.endswith('"') else len(re.findall(r"\b" + re.escape(marker) + r"(?:\s|>)", text))
+        if actual != expected:
+            fail(failures, f"CW-L05 expected {expected} {label}, found {actual}")
+
+    fixtures = (
+        'data-equation-test="1 2 1" data-expected="-1.000000"',
+        'data-equation-test="1 -3 2" data-expected="2.000000 1.000000"',
+        'data-equation-test="1 2 5" data-expected="-1.000000+2.000000i -1.000000-2.000000i"',
+        'data-grade-test="A" data-expected="Your score:85～100"',
+        'data-grade-test="B" data-expected="Your score:70～84"',
+        'data-grade-test="C" data-expected="Your score:60～69"',
+        'data-grade-test="D" data-expected="Your score:&lt;60"',
+        'data-grade-test="X" data-expected="Your score:enter data error!"',
+    )
+    for fixture in fixtures:
+        if fixture not in text:
+            fail(failures, f"CW-L05 deterministic fixture is missing: {fixture}")
+
+    for marker in (
+        "判别式对应三种结果",
+        "else 与最近且尚未配对的 if 配对",
+        "贯穿不是重新进行匹配",
+        "以上均为故意错误示例",
+        "输入约束：三个系数均符合规定的实数格式。",
+    ):
+        if marker not in normalize_visible_text(text):
+            fail(failures, f"CW-L05 student explanation is incomplete: {marker}")
+    for marker in (
+        'data-formula="ax^2+bx+c=0"',
+        'data-formula="Delta=b^2-4ac"',
+        'data-formula="x12=(-b+-sqrt(Delta))/(2a)"',
+        'data-formula="x=-b/(2a)"',
+        'data-formula="x12=-b/(2a)+-sqrt(-Delta)/abs(2a)i"',
+        'class="fraction"',
+    ):
+        if marker not in text:
+            fail(failures, f"CW-L05 mathematical formula markup is incomplete: {marker}")
+    if "退化" in normalize_visible_text(text):
+        fail(failures, "CW-L05 must not introduce degenerate-equation handling")
+    if ".nav-buttons button" not in text or "white-space:nowrap" not in text.replace(" ", ""):
+        fail(failures, "CW-L05 navigation buttons must not wrap")
+    for command in (
+        "gcc equation.c -o equation.exe\n.\\equation.exe",
+        "gcc grade.c -o grade.exe\n.\\grade.exe",
+    ):
+        if command not in text:
+            fail(failures, f"CW-L05 beginner command is missing: {command.splitlines()[0]}")
+
+    check_links(text, path, failures, require_optional_external=False)
+    return failures
+
+
 def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
     if course_id == "CW-L02":
         return validate_cw_l02(path)
@@ -814,6 +1072,8 @@ def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
         return validate_cw_l03(path)
     if course_id == "CW-L04":
         return validate_cw_l04(path)
+    if course_id == "CW-L05":
+        return validate_cw_l05(path)
     failures: list[str] = []
     if not path.exists():
         return [f"file not found: {path}"]
@@ -906,7 +1166,7 @@ def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--id", default="CW-L01", help="courseware id: CW-L01, CW-L02, CW-L03, or CW-L04")
+    parser.add_argument("--id", default="CW-L01", help="courseware id: CW-L01, CW-L02, CW-L03, CW-L04, or CW-L05")
     parser.add_argument("--path", type=Path, help="explicit HTML path for local validation")
     args = parser.parse_args()
 
@@ -923,7 +1183,7 @@ def main() -> int:
             print(f"- {item}")
         return 1
 
-    slide_count = 12 if args.id == "CW-L01" else 26 if args.id == "CW-L04" else 25
+    slide_count = 12 if args.id == "CW-L01" else 26 if args.id in {"CW-L04", "CW-L05"} else 25
     optional_external = 1 if args.id == "CW-L01" else 0
     print(f"COURSEWARE VALIDATION PASS: {args.id}, slides={slide_count}, offline-core=ok, optional_external={optional_external}, links=ok, text_encoding=UTF-8, bom=utf8-no-bom")
     return 0
