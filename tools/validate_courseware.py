@@ -34,6 +34,7 @@ CW_L12 = ROOT / "课件" / "讲授" / "12-pointer-model-and-arrays" / "index.htm
 CW_L13 = ROOT / "课件" / "讲授" / "13-pointer-parameters-and-strings" / "index.html"
 CW_L14 = ROOT / "课件" / "讲授" / "14-structures" / "index.html"
 CW_L15 = ROOT / "课件" / "讲授" / "15-structure-arrays-and-pointers" / "index.html"
+CW_L16 = ROOT / "课件" / "讲授" / "16-file-input-and-output" / "index.html"
 ALLOWED_EXTERNAL_HREFS = frozenset({"https://w3schools.org.cn/c/index.php"})
 
 REQUIRED_MARKERS = (
@@ -264,6 +265,8 @@ def target_for(course_id: str) -> Path:
         return CW_L14
     if course_id == "CW-L15":
         return CW_L15
+    if course_id == "CW-L16":
+        return CW_L16
     raise ValueError(f"unknown courseware id: {course_id}")
 
 
@@ -3356,6 +3359,277 @@ def validate_cw_l15(path: Path) -> list[str]:
     return failures
 
 
+def validate_cw_l16(path: Path) -> list[str]:
+    failures: list[str] = []
+    if not path.exists():
+        return [f"file not found: {path}"]
+    raw = path.read_bytes()
+    if raw.startswith(b"\xef\xbb\xbf"):
+        fail(failures, "UTF-8 BOM is not allowed")
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        return [f"invalid UTF-8: {exc}"]
+    if "\t" in text:
+        fail(failures, "tab characters are not allowed")
+
+    required = (
+        'data-course-id="CW-L16"',
+        'data-chapter="10"',
+        'data-routines="EX-C10-001,EX-C10-002"',
+        'data-questions="QB-FB-019,QB-SC-029,QB-SC-030,QB-SC-031,QB-SC-050,QB-SC-060"',
+        'data-lesson-variants="character-file-write,character-file-copy"',
+        'data-positive-program="character-file-write"',
+        'data-positive-program="character-file-copy"',
+        'data-fill-question-id="QB-FB-019"',
+        '<meta name="author" content="Kevin@SUT">',
+        '<meta name="copyright" content="Kevin@SUT">',
+        'data-attribution="Kevin@SUT"',
+        "active-code-line",
+        "虚拟文件",
+    )
+    for marker in required:
+        if marker not in text:
+            fail(failures, f"missing CW-L16 marker: {marker}")
+    for pattern in EXTERNAL_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            fail(failures, f"external or persistent dependency found: {pattern}")
+    for pattern in TEACHER_ONLY_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            fail(failures, f"teacher-only content found: {pattern}")
+    for phrase in CW_L02_STUDENT_FORBIDDEN:
+        if phrase in text:
+            fail(failures, f"student-facing teacher-prep phrase found: {phrase}")
+    if len(SLIDE_PATTERN.findall(text)) != 36:
+        fail(failures, "CW-L16 must contain exactly 36 slides")
+    if text.count("<details") != 0:
+        fail(failures, "CW-L16 must expose all exercises directly")
+    if "feof" in text:
+        fail(failures, "CW-L16 must not introduce feof outside the historical exam scope")
+    if " / 36" not in text:
+        fail(failures, "CW-L16 footer total must be 36")
+
+    choice_ids = (
+        "QB-SC-029", "QB-SC-030", "QB-SC-031", "QB-SC-050", "QB-SC-060",
+    )
+    choice_text = "".join(
+        match.group(0)
+        for match in QUESTION_BLOCK_PATTERN.finditer(text)
+        if match.group("id") in choice_ids
+    )
+    validate_embedded_questions(choice_text, failures, choice_ids, "CW-L16")
+    if text.count('data-question-option="') != 20:
+        fail(failures, "CW-L16 must expose twenty choice options")
+
+    questions = scan_questions()
+    fill_prompt = re.search(
+        r"## 题目\s*(.*?)\s*## 常见失分点",
+        questions["QB-FB-019"].text,
+        re.DOTALL,
+    )
+    fill_block = re.search(
+        r'<article\b[^>]*data-fill-question-id="QB-FB-019"[^>]*>(.*?)</article>',
+        text,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if (
+        not fill_prompt
+        or not fill_block
+        or "输入字符直到 #，将此前字符逐个写入临时文件并检查文件打开结果。"
+        not in normalize_visible_text(fill_block.group(1))
+    ):
+        fail(failures, "CW-L16 must visibly embed the QB-FB-019 prompt")
+    if fill_block:
+        fill_visible = normalize_visible_text(fill_block.group(1))
+        for marker in ("qb_fb_019.tmp", "以写方式打开", "FILE * fp", "〔1〕", "〔2〕", "〔3〕", "〔4〕", "fclose(fp)"):
+            if marker not in fill_visible:
+                fail(failures, f"CW-L16 QB-FB-019 program is incomplete: {marker}")
+
+    program_blocks = {
+        match.group("id"): html.unescape(re.sub(r"<[^>]+>", "", match.group("body")))
+        for match in re.finditer(
+            r'<pre\b[^>]*data-positive-program="(?P<id>[^"]+)"[^>]*>(?P<body>.*?)</pre>',
+            text,
+            re.IGNORECASE | re.DOTALL,
+        )
+    }
+    if set(program_blocks) != {"character-file-write", "character-file-copy"}:
+        fail(failures, "CW-L16 must contain exactly the two declared positive programs")
+    validate_cw_l16_programs(text, program_blocks, failures)
+    check_links(text, path, failures, require_optional_external=False)
+    return failures
+
+
+def validate_cw_l16_programs(
+    text: str,
+    program_blocks: dict[str, str],
+    failures: list[str],
+) -> None:
+    code_text = "\n".join(program_blocks.values())
+    for forbidden, label in (
+        (r'"[rwa]\+?b"', "binary file mode"),
+        (r"\b(?:fread|fwrite|fseek|ftell|rewind|tmpfile|remove|rename)\s*\(", "binary, random, or file-management API"),
+        (r"\b(?:FileReader|FileWriter|showOpenFilePicker|showSaveFilePicker)\b", "browser file API"),
+        (r"\bexit\s*\(", "exit call"),
+    ):
+        if re.search(forbidden, code_text):
+            fail(failures, f"CW-L16 positive programs must not introduce {label}")
+    if re.search(r"while\s*\(\s*!\s*feof\s*\(", code_text):
+        fail(failures, "CW-L16 positive programs must not use feof as a loop condition")
+
+    writer = program_blocks.get("character-file-write", "")
+    for marker in (
+        "FILE *fp;", "int ch;", 'fopen("output.txt", "w")', "fp == NULL",
+        "ch = getchar();", "ch != '#' && ch != EOF", "fputc(ch, fp);",
+        "fclose(fp);", "return 1;",
+    ):
+        if marker not in writer:
+            fail(failures, f"CW-L16 writer program is incomplete: {marker}")
+
+    copier = program_blocks.get("character-file-copy", "")
+    for marker in (
+        "FILE *in;", "FILE *out;", "int ch;", 'fopen("source.txt", "r")',
+        'fopen("copy.txt", "w")', "in == NULL", "out == NULL",
+        "while ((ch = fgetc(in)) != EOF)", "fputc(ch, out);",
+        "fclose(in);", "fclose(out);", 'printf("copied\\n");',
+        'printf("cannot open source\\n");', 'printf("cannot open copy\\n");',
+    ):
+        if marker not in copier:
+            fail(failures, f"CW-L16 copier program is incomplete: {marker}")
+    out_failure = re.search(
+        r"if\s*\(out\s*==\s*NULL\)\s*\{(?P<body>.*?)\}",
+        copier,
+        re.DOTALL,
+    )
+    if not out_failure or "fclose(in);" not in out_failure.group("body"):
+        fail(failures, "CW-L16 copier must close the source when the target open fails")
+
+    visible = normalize_visible_text(text)
+    for marker in (
+        "文件流指针", "打开模式", "NULL", "EOF", "文本文件",
+        'fprintf(fp, "Hello\\n")', 'fopen("log.txt", "a")',
+        "字符、空格、换行和顺序", "浏览器仅模拟文件状态",
+    ):
+        if marker not in text and marker not in visible:
+            fail(failures, f"CW-L16 student explanation is incomplete: {marker}")
+    counts = (
+        ('data-fill="', 4, "fill controls"),
+        ('data-open-state="', 3, "open-state controls"),
+        ('data-write-error="', 4, "write diagnosis cases"),
+        ('data-write-case="', 4, "write behavior cases"),
+        ('data-copy-preview="', 4, "copy preview states"),
+        ('data-copy-error="', 4, "copy diagnosis cases"),
+        ('data-copy-case="', 4, "copy behavior cases"),
+        ('data-review>', 14, "review questions"),
+    )
+    for marker, expected, label in counts:
+        actual = text.count(marker)
+        if actual != expected:
+            fail(failures, f"CW-L16 expected {expected} {label}, found {actual}")
+    for control in (
+        "write-next", "write-play", "write-reset", "copy-next", "copy-play",
+        "copy-reset", "missing-source", "missing-reset",
+    ):
+        if f'id="{control}"' not in text:
+            fail(failures, f"CW-L16 interaction control is missing: {control}")
+    for command in (
+        "gcc file_write.c -o file_write.exe\n.\\file_write.exe",
+        "gcc file_copy.c -o file_copy.exe\n.\\file_copy.exe",
+    ):
+        if command not in text:
+            fail(failures, f"CW-L16 beginner command is missing: {command.splitlines()[0]}")
+    compile_cw_l16_programs(program_blocks, failures)
+
+
+def compile_cw_l16_programs(
+    program_blocks: dict[str, str],
+    failures: list[str],
+) -> None:
+    gcc = shutil.which("gcc")
+    if not gcc:
+        fail(failures, "CW-L16 MinGW GCC was not found")
+        return
+    machine = subprocess.run(
+        [gcc, "-dumpmachine"], text=True, encoding="utf-8", errors="replace",
+        capture_output=True, check=False,
+    )
+    if machine.returncode != 0 or "mingw" not in machine.stdout.lower():
+        fail(failures, f"CW-L16 compiler is not MinGW GCC: {machine.stdout.strip()}")
+        return
+    with tempfile.TemporaryDirectory(prefix="cw-l16-validation-") as temp_name:
+        temp_dir = Path(temp_name)
+        executables: dict[str, Path] = {}
+        for program_id, source_text in program_blocks.items():
+            source = temp_dir / f"{program_id}.c"
+            executable = temp_dir / f"{program_id}.exe"
+            source.write_text(source_text, encoding="utf-8", newline="\n")
+            build = subprocess.run(
+                [gcc, "-std=c11", "-Wall", "-Wextra", "-Wpedantic", "-Werror", str(source), "-o", str(executable)],
+                text=True, encoding="utf-8", errors="replace", capture_output=True, check=False,
+            )
+            if build.returncode != 0:
+                fail(failures, f"CW-L16 {program_id} compile failed: {build.stderr.strip()}")
+            else:
+                executables[program_id] = executable
+
+        writer = executables.get("character-file-write")
+        if writer:
+            writer_cases = (
+                ("abc#\n", "abc"),
+                ("Hello C#\n", "Hello C"),
+                ("#\n", ""),
+                ("A\nB#\n", "A\nB"),
+            )
+            for case_index, (stdin_text, expected_file) in enumerate(writer_cases):
+                case_dir = temp_dir / f"writer-{case_index}"
+                case_dir.mkdir()
+                result = subprocess.run(
+                    [str(writer)], cwd=case_dir, input=stdin_text, text=True,
+                    encoding="utf-8", errors="replace", capture_output=True,
+                    check=False, timeout=10,
+                )
+                output_path = case_dir / "output.txt"
+                actual_file = output_path.read_text(encoding="utf-8") if output_path.exists() else None
+                if result.returncode != 0 or result.stdout or actual_file != expected_file:
+                    fail(
+                        failures,
+                        f"CW-L16 writer case {case_index + 1} mismatch: exit={result.returncode}, stdout={result.stdout!r}, file={actual_file!r}",
+                    )
+
+        copier = executables.get("character-file-copy")
+        if copier:
+            for case_index, source_text in enumerate(("C language\n", "", "ABC\n123\n")):
+                case_dir = temp_dir / f"copier-{case_index}"
+                case_dir.mkdir()
+                (case_dir / "source.txt").write_text(source_text, encoding="utf-8", newline="")
+                result = subprocess.run(
+                    [str(copier)], cwd=case_dir, text=True, encoding="utf-8",
+                    errors="replace", capture_output=True, check=False, timeout=10,
+                )
+                target_path = case_dir / "copy.txt"
+                actual_file = target_path.read_text(encoding="utf-8") if target_path.exists() else None
+                if result.returncode != 0 or result.stdout.replace("\r\n", "\n") != "copied\n" or actual_file != source_text:
+                    fail(
+                        failures,
+                        f"CW-L16 copier case {case_index + 1} mismatch: exit={result.returncode}, stdout={result.stdout!r}, file={actual_file!r}",
+                    )
+            missing_dir = temp_dir / "copier-missing"
+            missing_dir.mkdir()
+            result = subprocess.run(
+                [str(copier)], cwd=missing_dir, text=True, encoding="utf-8",
+                errors="replace", capture_output=True, check=False, timeout=10,
+            )
+            if (
+                result.returncode != 1
+                or result.stdout.replace("\r\n", "\n") != "cannot open source\n"
+                or (missing_dir / "copy.txt").exists()
+            ):
+                fail(
+                    failures,
+                    f"CW-L16 missing-source behavior mismatch: exit={result.returncode}, stdout={result.stdout!r}, target_exists={(missing_dir / 'copy.txt').exists()}",
+                )
+
+
 def validate_cw_l15_programs(
     text: str,
     program_blocks: dict[str, str],
@@ -3542,6 +3816,8 @@ def compile_cw_l13_programs(
 
 
 def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
+    if course_id == "CW-L16":
+        return validate_cw_l16(path)
     if course_id == "CW-L15":
         return validate_cw_l15(path)
     if course_id == "CW-L14":
@@ -3662,7 +3938,7 @@ def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--id", default="CW-L01", help="courseware id: CW-L01 through CW-L15")
+    parser.add_argument("--id", default="CW-L01", help="courseware id: CW-L01 through CW-L16")
     parser.add_argument("--path", type=Path, help="explicit HTML path for local validation")
     args = parser.parse_args()
 
@@ -3679,7 +3955,7 @@ def main() -> int:
             print(f"- {item}")
         return 1
 
-    slide_count = 35 if args.id == "CW-L15" else 36 if args.id in {"CW-L12", "CW-L13", "CW-L14"} else 34 if args.id in {"CW-L09", "CW-L11"} else 32 if args.id == "CW-L10" else 12 if args.id == "CW-L01" else 30 if args.id in {"CW-L07", "CW-L08"} else 28 if args.id == "CW-L06" else 26 if args.id in {"CW-L04", "CW-L05"} else 25
+    slide_count = 35 if args.id == "CW-L15" else 36 if args.id in {"CW-L12", "CW-L13", "CW-L14", "CW-L16"} else 34 if args.id in {"CW-L09", "CW-L11"} else 32 if args.id == "CW-L10" else 12 if args.id == "CW-L01" else 30 if args.id in {"CW-L07", "CW-L08"} else 28 if args.id == "CW-L06" else 26 if args.id in {"CW-L04", "CW-L05"} else 25
     optional_external = 1 if args.id == "CW-L01" else 0
     print(f"COURSEWARE VALIDATION PASS: {args.id}, slides={slide_count}, offline-core=ok, optional_external={optional_external}, links=ok, text_encoding=UTF-8, bom=utf8-no-bom")
     return 0

@@ -1,6 +1,6 @@
 # 讲授课
 
-共16次讲授课、32学时。每次2课时、90分钟，只深讲1–2个程序。CW-L01已完成PPTX与HTML并通过校验；CW-L02、CW-L03均已完成25页学生端HTML；CW-L04、CW-L05均已完成26页学生端HTML；CW-L06已完成28页，CW-L07、CW-L08均已完成30页，CW-L09与CW-L11均已完成34页，CW-L10已完成32页，CW-L12至CW-L14均已完成36页，CW-L15已完成35页学生端HTML。
+共16次讲授课、32学时。每次2课时、90分钟，只深讲1–2个程序。CW-L01至CW-L16的学生端HTML均已完成并通过校验；其中CW-L01还包含课程引入PPTX。
 
 | ID | 章节 | 主题 | 核心程序 | 状态 |
 |---|---|---|---|---|
@@ -19,7 +19,7 @@
 | [CW-L13](13-pointer-parameters-and-strings/README.md) | 第8章 | 指针参数与字符串复制：交换数值与复制字符 | `QB-TR-028`、`QB-PG-017` | ready |
 | [CW-L14](14-structures/README.md) | 第9章 | 结构体：学生记录与成绩排序 | `EX-C09-002`、`QB-PG-030` | ready |
 | [CW-L15](15-structure-arrays-and-pointers/README.md) | 第9章 | 结构体数组与指针：选择排序和成员访问 | `QB-PG-031`、`QB-TR-012` | ready |
-| [CW-L16](16-file-input-and-output/README.md) | 第10章 | 文件打开、读写、关闭与错误处理 | `QB-PG-042`（题库待补） | planned |
+| [CW-L16](16-file-input-and-output/README.md) | 第10章 | 文件输入输出：逐字符写入与文件复制 | `QB-FB-019`、`EX-C10-002` | ready |
 
 ## 状态约定
 

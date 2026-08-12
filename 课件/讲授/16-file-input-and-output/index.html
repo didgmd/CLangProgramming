@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="Kevin@SUT">
+<meta name="copyright" content="Kevin@SUT">
+<title>CW-L16 文件输入输出：逐字符写入与文件复制</title>
+<style>
+/* Projection mode uses overflow: hidden; the narrow layout restores scrolling. */
+:root{--ink:#10243a;--muted:#52677b;--paper:#f5f8fb;--panel:#fff;--cyan:#0f7f8d;--amber:#c56b16;--line:#cbd8e5;--code:#0b1726;--good:#155e35;--bad:#9f2d2d}*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:"Microsoft YaHei",Arial,sans-serif}body{display:grid;grid-template-rows:1fr 64px;overflow:hidden}.deck{position:relative;min-height:0}.slide{display:none;height:100%;padding:22px 40px}.slide.active{display:block}.slide-inner{height:100%;max-width:1220px;margin:auto;display:flex;flex-direction:column;gap:11px}.eyebrow{color:var(--cyan);font-weight:800;letter-spacing:.08em}h1{font-size:43px;margin:4px 0 8px}h2{font-size:31px;margin:0}h3{font-size:21px;margin:0 0 7px}p,li,td,th,button{font-size:18px;line-height:1.45}.lead{font-size:22px;color:var(--muted)}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:15px;min-height:0}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.card,.question,.state,.feedback,.terminal{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px}.rule,.card strong{color:var(--cyan)}pre{margin:0;background:var(--code);color:#eef7ff;border-radius:12px;padding:13px;font:17px/1.42 Consolas,monospace;white-space:pre-wrap}.code-dense{font-size:12px;line-height:1.13}.compact p,.compact li,.compact button,.compact td,.compact th{font-size:16px}.feedback{min-height:56px;color:var(--muted)}.feedback.good{background:#dff3e7;color:var(--good);border-color:#8ccba4}.feedback.bad{background:#fde8e8;color:var(--bad);border-color:#e8a0a0}.button-row,.options{display:flex;flex-wrap:wrap;gap:8px}.options{flex-direction:column}button{border:1px solid #9fb4c8;background:#fff;color:var(--ink);border-radius:10px;padding:8px 13px;cursor:pointer;text-align:left}button:hover,button:focus-visible{outline:3px solid #78d4dd;outline-offset:1px}button.primary{background:var(--cyan);color:#fff;border-color:var(--cyan)}.flow{display:flex;align-items:stretch;justify-content:center;gap:7px}.flow .card{flex:1;text-align:center}.arrow{align-self:center;font-size:25px;color:var(--cyan)}.file-view{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:start}.file-box{min-height:105px;background:#fff;border:2px solid var(--line);border-radius:12px;padding:10px;white-space:pre-wrap;font:18px/1.4 Consolas,monospace}.file-box.active{border-color:var(--amber);box-shadow:0 0 0 3px #ffd79a}.char-strip{display:flex;flex-wrap:wrap;gap:6px}.char-cell{min-width:64px;background:#fff;border:2px solid var(--line);border-radius:10px;padding:8px;text-align:center}.char-cell.active{border-color:var(--amber);background:#fff4df}table{width:100%;border-collapse:collapse;background:#fff}th,td{border:1px solid var(--line);padding:7px;text-align:left}th{background:#e9f3f6}.note{border-left:5px solid var(--amber);background:#fff4df;padding:9px 13px}.danger{border-left-color:var(--bad);background:#fff0f0}.nav{display:flex;align-items:center;gap:12px;padding:8px 22px;background:#0b1726;color:#fff}.nav button{font-size:17px;padding:7px 13px}.progress{height:8px;background:#30465d;flex:1;border-radius:9px;overflow:hidden}.progress span{display:block;height:100%;background:#31c6d4;width:0}.counter{min-width:120px;text-align:center}.footer{font-size:14px;color:#c8d6e4}.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.review-item.done{background:#dff3e7;color:#155e35;border-color:#78b994}.active-code-line{outline:3px solid var(--amber)}.hidden-marker{display:none}@media(max-width:850px){html,body{overflow:auto}body{display:block}.slide{min-height:100vh;height:auto;padding:18px}.grid-2,.grid-3,.review-grid,.file-view{grid-template-columns:1fr}.flow{flex-direction:column}.arrow{transform:rotate(90deg)}h1{font-size:35px}h2{font-size:27px}}
+</style>
+</head>
+<body data-courseware="c-freshman-interactive-html" data-layout="slide-page" data-course-id="CW-L16" data-chapter="10" data-routines="EX-C10-001,EX-C10-002" data-questions="QB-FB-019,QB-SC-029,QB-SC-030,QB-SC-031,QB-SC-050,QB-SC-060" data-lesson-variants="character-file-write,character-file-copy" data-attribution="Kevin@SUT">
+<main class="deck" data-deck data-interaction="ask-wait-reveal">
+<span class="hidden-marker" data-section="objectives"></span><span class="hidden-marker" data-section="concept"></span><span class="hidden-marker" data-section="interaction"></span><span class="hidden-marker" data-section="quiz"></span><span class="hidden-marker" data-section="exercise"></span><span class="hidden-marker" data-section="summary"></span><span class="hidden-marker" data-code-line></span>
+
+<section class="slide active" data-slide><div class="slide-inner"><div class="eyebrow">01 · 学习目标</div><h1>文件输入输出</h1><p class="lead">建立文件流，按顺序写入和读取字符，并在程序结束前正确关闭文件。</p><div class="grid-2"><div class="card"><h3>逐字符写入</h3><ul><li>声明<code>FILE *</code></li><li>选择文件打开模式</li><li>检查<code>NULL</code></li><li>使用<code>fputc()</code></li></ul></div><div class="card"><h3>逐字符复制</h3><ul><li>管理两个文件流</li><li>使用<code>fgetc()</code></li><li>识别<code>EOF</code></li><li>验证文件内容一致</li></ul></div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">02 · 数据保存</div><h2><code>printf()</code>与<code>fprintf()</code>的输出目标不同</h2><div class="grid-2"><div class="card"><h3>标准输出</h3><pre>printf("Hello\n");</pre><p>文字写到标准输出，通常显示在终端窗口中。</p></div><div class="card"><h3>文件输出</h3><pre>fprintf(fp, "Hello\n");</pre><p>文字按相同格式写入已打开的文件流<code>fp</code>。</p></div></div><p class="rule"><code>fprintf()</code>比<code>printf()</code>多一个文件流参数，用它指定输出目标。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">03 · 文件操作顺序</div><h2>先打开并检查，再读写，最后关闭</h2><div class="flow"><div class="card"><strong>1 声明</strong><br><code>FILE *fp</code></div><span class="arrow">→</span><div class="card"><strong>2 打开</strong><br><code>fopen()</code></div><span class="arrow">→</span><div class="card"><strong>3 检查</strong><br><code>fp==NULL</code></div><span class="arrow">→</span><div class="card"><strong>4 读写</strong><br><code>fgetc/fputc</code></div><span class="arrow">→</span><div class="card"><strong>5 关闭</strong><br><code>fclose()</code></div></div><p class="note">只有打开成功后，文件流才可用于后续读写。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">04 · 文件流指针</div><h2><code>FILE *fp;</code>保存文件流的管理位置</h2><table><tr><th>部分</th><th>含义</th></tr><tr><td><code>FILE</code></td><td><code>stdio.h</code>提供的文件流类型</td></tr><tr><td><code>*</code></td><td>声明<code>fp</code>为指针变量</td></tr><tr><td><code>fp</code></td><td>后续传给文件读写和关闭函数</td></tr></table><p class="rule"><code>FILE *</code>用于管理文件流，不直接保存文件中的字符内容。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">05 · QB-SC-029</div><h2>文件指针的正确定义</h2><article class="question" data-question-id="QB-SC-029"><p class="question-text">正确定义文件指针 <code>fp</code> 的语句是（ ）。</p><div class="options"><button data-question-option="A" data-correct="false" data-feedback="FILE fp声明的是FILE对象，不是文件指针">A. FILE fp;</button><button data-question-option="B" data-correct="false" data-feedback="标准库类型名区分大小写，应写FILE">B. file *fp;</button><button data-question-option="C" data-correct="true" data-feedback="FILE是标准库类型，星号使fp成为文件指针">C. FILE *fp;</button><button data-question-option="D" data-correct="false" data-feedback="类型名大小写和指针星号都不正确">D. file fp;</button></div><div class="feedback" aria-live="polite">选择一个定义，查看类型名和星号是否正确。</div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">06 · 打开文件</div><h2><code>fopen()</code>需要文件名和打开模式</h2><pre>fp = fopen("output.txt", "w");</pre><div class="grid-3"><div class="card"><h3><code>"output.txt"</code></h3><p>要打开的文件名。</p></div><div class="card"><h3><code>"w"</code></h3><p>以写方式打开文本文件。</p></div><div class="card"><h3>返回值</h3><p>成功时得到文件指针，失败时得到<code>NULL</code>。</p></div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">07 · 文本文件模式</div><h2><code>"r"</code>、<code>"w"</code>和<code>"a"</code>决定操作方式</h2><table><tr><th>模式</th><th>主要用途</th><th>文件不存在</th><th>文件已存在</th></tr><tr><td><code>"r"</code></td><td>读取</td><td>打开失败</td><td>保留原内容</td></tr><tr><td><code>"w"</code></td><td>写入</td><td>创建文件</td><td>清空原内容</td></tr><tr><td><code>"a"</code></td><td>追加</td><td>创建文件</td><td>从末尾继续写</td></tr></table><p class="rule">程序一需要重新写入文件，因此使用<code>"w"</code>。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">08 · QB-SC-030</div><h2>只写方式使用哪种模式</h2><article class="question" data-question-id="QB-SC-030"><p class="question-text">只写方式打开文本文件应使用的模式是（ ）。</p><div class="options"><button data-question-option="A" data-correct="false" data-feedback="r表示只读，不允许写入">A. r</button><button data-question-option="B" data-correct="true" data-feedback="w表示写入，会创建文件或清空已有文件">B. w</button><button data-question-option="C" data-correct="false" data-feedback="r+表示读写，并且要求文件已经存在">C. r+</button><button data-question-option="D" data-correct="false" data-feedback="rb表示以二进制方式只读">D. rb</button></div><div class="feedback" aria-live="polite">根据“只写文本文件”判断打开模式。</div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">09 · QB-SC-031</div><h2>Windows路径中的反斜杠需要转义</h2><article class="question" data-question-id="QB-SC-031"><p class="question-text">要表示路径 <code>D:\program\file.txt</code>，正确的 C 字符串是（ ）。</p><div class="options"><button data-question-option="A" data-correct="false" data-feedback="单个反斜杠会开始转义序列，不能原样表示路径">A. "D:\program\file.txt"</button><button data-question-option="B" data-correct="true" data-feedback="C字符串用两个反斜杠表示路径中的一个反斜杠">B. "D:\\program\\file.txt"</button><button data-question-option="C" data-correct="false" data-feedback="第二个目录分隔符仍是未转义的反斜杠">C. "D:/program\file.txt"</button><button data-question-option="D" data-correct="false" data-feedback="冒号不能代替目录分隔符">D. "D:program:file.txt"</button></div><div class="feedback" aria-live="polite">判断字符串中的每个反斜杠是否被正确表示。</div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">10 · 打开结果</div><h2>文件打开成功与失败走不同路径</h2><div class="button-row"><button data-open-state="success">模拟打开成功</button><button data-open-state="failure">模拟打开失败</button><button data-open-state="reset">重置</button></div><div class="grid-2"><div class="state" id="open-state">尚未调用<code>fopen()</code>。</div><div class="feedback" id="open-feedback" aria-live="polite">选择一种结果，查看<code>fp</code>的状态和后续操作。</div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">11 · QB-FB-019</div><h2>逐字符写文件：补全四个空</h2><article class="question" data-fill-question-id="QB-FB-019"><p class="question-text">输入字符直到 <code>#</code>，将此前字符逐个写入临时文件并检查文件打开结果。</p><p><strong>目标文件名：</strong><code>qb_fb_019.tmp</code>；以写方式打开。输入以<code>#</code>结束，程序无标准输出。</p><pre>#include &lt;stdio.h&gt;
+int main(void)
+{
+    FILE * fp = /*〔1〕*/;
+    if ( /*〔2〕*/ )
+        return 1;
+    int ch;
+    while ( /*〔3〕*/ )
+    /*〔4〕*/;
+    fclose(fp);
+    return 0;
+}</pre><div class="button-row"><button data-fill="1">揭示第1空</button><button data-fill="2">揭示第2空</button><button data-fill="3">揭示第3空</button><button data-fill="4">揭示第4空</button></div><div class="feedback" id="fill-feedback" aria-live="polite">选择一个空位，查看答案及其作用。</div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">12 · 四个关键位置</div><h2>打开、检查、读取和写入形成完整逻辑</h2><table><tr><th>空位</th><th>答案</th><th>作用</th></tr><tr><td>〔1〕</td><td><code>fopen("qb_fb_019.tmp", "w")</code></td><td>打开输出文件</td></tr><tr><td>〔2〕</td><td><code>fp==NULL</code></td><td>识别打开失败</td></tr><tr><td>〔3〕</td><td><code>(ch=getchar())!='#'&amp;&amp;ch!=EOF</code></td><td>读取并判断结束条件</td></tr><tr><td>〔4〕</td><td><code>fputc(ch,fp)</code></td><td>写入当前字符</td></tr></table></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">13 · 文件写入函数</div><h2>打开、写入和关闭分别由文件函数完成</h2><div class="grid-3"><div class="card"><h3><code>fopen()</code></h3><p>按指定模式打开文件，成功时返回文件指针。</p></div><div class="card"><h3><code>fputc(ch, fp)</code></h3><p>把一个字符写入指定文件流。</p></div><div class="card"><h3><code>fclose(fp)</code></h3><p>关闭已经成功打开的文件流。</p></div></div><p class="rule">三个函数依次对应“打开—写入—关闭”，都需要正确使用文件流<code>fp</code>。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">14 · QB-SC-060</div><h2>向文件写入一个字符</h2><article class="question" data-question-id="QB-SC-060"><p class="question-text">向已打开的文本文件写入一个字符可使用（ ）。</p><div class="options"><button data-question-option="A" data-correct="true" data-feedback="fputc把一个字符写入指定文件流">A. fputc</button><button data-question-option="B" data-correct="false" data-feedback="fopen负责打开文件，不负责写入字符">B. fopen</button><button data-question-option="C" data-correct="false" data-feedback="fclose负责关闭文件流">C. fclose</button><button data-question-option="D" data-correct="false" data-feedback="rewind用于把文件位置移回开头">D. rewind</button></div><div class="feedback" aria-live="polite">选择与“写入一个字符”相符的文件函数。</div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">15 · 写入执行器</div><h2>输入<code>abc#</code>时，结束符不写入文件</h2><div class="button-row"><button class="primary" id="write-next">读取下一字符</button><button id="write-play">完整执行</button><button id="write-reset">重置</button></div><div class="file-view"><div class="state" id="write-state">等待读取第一个字符。</div><div class="file-box active" id="write-file">output.txt：空</div></div><div class="char-strip" id="write-chars"></div><div class="feedback" id="write-feedback" aria-live="polite">文件已经用<code>"w"</code>模式成功打开。</div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">16 · 完整程序</div><h2>逐字符写入文本文件</h2><pre class="code-dense" data-positive-program="character-file-write">#include &lt;stdio.h&gt;
+
+int main()
+{
+    FILE *fp;
+    int ch;
+
+    fp = fopen("output.txt", "w");
+
+    if (fp == NULL)
+    {
+        return 1;
+    }
+
+    ch = getchar();
+
+    while (ch != '#' &amp;&amp; ch != EOF)
+    {
+        fputc(ch, fp);
+        ch = getchar();
+    }
+
+    fclose(fp);
+
+    return 0;
+}</pre><p class="note">输入约束：示例输入以<code>#</code>结束；浏览器仅模拟文件状态，不会创建真实文件。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">17 · 错误诊断</div><h2>文件写入前后必须保持状态有效</h2><div class="button-row"><button data-write-error="null">未检查NULL</button><button data-write-error="mode">模式写成r</button><button data-write-error="sentinel">写入#</button><button data-write-error="close">遗漏fclose</button></div><div class="feedback" id="write-error-feedback" aria-live="polite">选择一个故意错误，查看原因和正确规则。</div><p class="note danger">以上项目只用于错误诊断，不是可运行正例。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">18 · 写文件总结</div><h2>打开成功后，字符才可以写入文件流</h2><div class="grid-2"><div><div class="button-row"><button data-write-case="abc">abc#</button><button data-write-case="hello">Hello C#</button><button data-write-case="empty">#</button><button data-write-case="lines">A\nB#</button></div><div class="feedback" id="write-case-feedback">选择一组标准输入，查看文件的精确内容。</div><pre>gcc file_write.c -o file_write.exe
+.\file_write.exe</pre></div><div class="review-grid"><button class="review-item" data-review>FILE *声明文件流指针</button><button class="review-item" data-review>w模式写入文件</button><button class="review-item" data-review>NULL表示打开失败</button><button class="review-item" data-review>int可以保存EOF</button><button class="review-item" data-review>getchar读取键盘字符</button><button class="review-item" data-review>fputc写入文件字符</button><button class="review-item" data-review>fclose关闭文件流</button></div></div><p><a href="../../../题库/程序填空/qb_fb_019.md">QB-FB-019</a> · <a href="../../../题库/选择题/qb_sc_029.md">QB-SC-029</a> · <a href="../../../题库/选择题/qb_sc_030.md">QB-SC-030</a> · <a href="../../../题库/选择题/qb_sc_031.md">QB-SC-031</a> · <a href="../../../题库/选择题/qb_sc_060.md">QB-SC-060</a> · <a href="../../../例程/chapters/10-files/ex_c10_001_10_1.c">EX-C10-001</a></p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">19 · 文件复制任务</div><h2>把<code>source.txt</code>逐字符复制为<code>copy.txt</code></h2><div class="grid-2"><div class="file-box">source.txt
+C language\n</div><div class="file-box">copy.txt
+C language\n</div></div><ul><li>源文件已经存在，以只读方式打开。</li><li>目标文件以写方式建立。</li><li>字符、空格、换行和顺序必须完全一致。</li><li>成功后标准输出显示<code>copied</code>。</li></ul></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">20 · 两个文件流</div><h2><code>in</code>负责读取，<code>out</code>负责写入</h2><div class="flow"><div class="card"><strong>source.txt</strong><br>已有内容</div><span class="arrow">→</span><div class="card"><strong>FILE *in</strong><br><code>"r"</code></div><span class="arrow">→</span><div class="card"><strong>字符 ch</strong></div><span class="arrow">→</span><div class="card"><strong>FILE *out</strong><br><code>"w"</code></div><span class="arrow">→</span><div class="card"><strong>copy.txt</strong></div></div><p class="rule">每个文件流都有独立的打开模式、当前位置和关闭操作。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">21 · QB-SC-050</div><h2>一个程序可以管理多个文件流</h2><article class="question" data-question-id="QB-SC-050"><p class="question-text">关于文件指针，正确的是（ ）。</p><div class="options"><button data-question-option="A" data-correct="false" data-feedback="一个程序可以同时定义多个文件指针">A. 一个程序只能有一个</button><button data-question-option="B" data-correct="true" data-feedback="多个FILE *可以分别管理不同文件流">B. 可以定义多个</button><button data-question-option="C" data-correct="false" data-feedback="文件指针可以作为标准库文件函数的参数">C. 不能作为参数</button><button data-question-option="D" data-correct="false" data-feedback="文件指针可用于读文件或写文件，能力由打开模式决定">D. 只能读文件</button></div><div class="feedback" aria-live="polite">结合复制程序中的<code>in</code>和<code>out</code>作答。</div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">22 · 读取、写入与追加模式</div><h2><code>r</code>、<code>w</code>和<code>a</code>对已有文件的处理不同</h2><table><tr><th>语句</th><th>文件不存在</th><th>文件已存在</th></tr><tr><td><code>fopen("source.txt", "r")</code></td><td>返回<code>NULL</code></td><td>从文件开头读取</td></tr><tr><td><code>fopen("copy.txt", "w")</code></td><td>创建空文件</td><td>清空原内容后写入</td></tr><tr><td><code>fopen("log.txt", "a")</code></td><td>创建空文件</td><td>从文件末尾追加内容</td></tr></table><p class="note">复制程序的源文件使用<code>r</code>，目标文件使用<code>w</code>；需要保留旧内容并继续写入时才使用<code>a</code>。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">23 · 读取一个字符</div><h2><code>fgetc(in)</code>返回字符值或<code>EOF</code></h2><div class="grid-2"><div class="card"><h3>读取成功</h3><pre>ch = fgetc(in);</pre><p><code>ch</code>保存当前字符的值，文件位置向后移动。</p></div><div class="card"><h3>到达文件末尾</h3><pre>ch == EOF</pre><p>没有新的字符可处理，复制循环结束。</p></div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">24 · 返回值类型</div><h2><code>ch</code>使用<code>int</code>才能可靠区分字符和<code>EOF</code></h2><div class="grid-2"><div class="card"><h3>普通字符</h3><p><code>fgetc()</code>把无符号字符值转换为<code>int</code>返回。</p></div><div class="card"><h3>文件结束</h3><p><code>EOF</code>是一个负的整数常量，不是文件中的普通字符。</p></div></div><pre>int ch;
+ch = fgetc(in);</pre><p class="rule">先用<code>int</code>接收返回值，判断不是<code>EOF</code>后再把它作为字符处理。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">25 · 推荐读取循环</div><h2>每次读取后立即判断结果</h2><pre>while ((ch = fgetc(in)) != EOF)
+{
+    fputc(ch, out);
+}</pre><div class="flow"><div class="card"><strong>读取</strong><br><code>fgetc(in)</code></div><span class="arrow">→</span><div class="card"><strong>判断</strong><br><code>ch != EOF</code></div><span class="arrow">→</span><div class="card"><strong>写入</strong><br><code>fputc(ch,out)</code></div><span class="arrow">↺</span></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">26 · 读取循环</div><h2>赋值、判断和写入按固定顺序重复</h2><pre>while ((ch = fgetc(in)) != EOF)
+{
+    fputc(ch, out);
+}</pre><div class="flow"><div class="card"><strong>1 读取</strong><br><code>ch=fgetc(in)</code></div><span class="arrow">→</span><div class="card"><strong>2 判断</strong><br><code>ch!=EOF</code></div><span class="arrow">→</span><div class="card"><strong>3 写入</strong><br><code>fputc(ch,out)</code></div><span class="arrow">↺</span></div><p class="rule">只有本次读取确实得到字符时，循环体才把它写入目标文件。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">27 · 写入当前字符</div><h2><code>fputc(ch, out)</code>把读取结果送入目标文件</h2><div class="file-view"><div class="state"><code>ch = 'A'</code><br><code>out</code>指向<code>copy.txt</code></div><div class="file-box active">copy.txt
+A</div></div><p class="rule">只有当<code>ch != EOF</code>时才执行写入；<code>EOF</code>本身不是待复制的字符。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">28 · 复制状态</div><h2>源文件位置前进，目标文件内容同步增长</h2><div class="button-row"><button data-copy-preview="0">初始</button><button data-copy-preview="3">复制ABC</button><button data-copy-preview="4">复制换行</button><button data-copy-preview="8">全部复制</button></div><div class="grid-2"><div class="file-box" id="preview-source">source.txt：ABC\n123\n</div><div class="file-box active" id="preview-copy">copy.txt：空</div></div><div class="feedback" id="preview-feedback">选择复制进度，观察源位置与目标内容。</div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">29 · 第二次打开失败</div><h2>目标文件打开失败时，先关闭已经打开的源文件</h2><pre>out = fopen("copy.txt", "w");
+
+if (out == NULL)
+{
+    fclose(in);
+    printf("cannot open copy\n");
+    return 1;
+}</pre><p class="rule">离开程序路径前释放已经成功取得的文件资源。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">30 · 完整程序</div><h2>逐字符复制文本文件</h2><pre class="code-dense" data-positive-program="character-file-copy">#include &lt;stdio.h&gt;
+
+int main()
+{
+    FILE *in;
+    FILE *out;
+    int ch;
+
+    in = fopen("source.txt", "r");
+
+    if (in == NULL)
+    {
+        printf("cannot open source\n");
+        return 1;
+    }
+
+    out = fopen("copy.txt", "w");
+
+    if (out == NULL)
+    {
+        fclose(in);
+        printf("cannot open copy\n");
+        return 1;
+    }
+
+    while ((ch = fgetc(in)) != EOF)
+    {
+        fputc(ch, out);
+    }
+
+    fclose(in);
+    fclose(out);
+    printf("copied\n");
+
+    return 0;
+}</pre></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">31 · 复制执行器</div><h2>逐字符观察读取、判断和写入</h2><div class="button-row"><button class="primary" id="copy-next">复制下一字符</button><button id="copy-play">完整执行</button><button id="copy-reset">重置</button></div><div class="grid-2"><div class="file-box" id="copy-source">source.txt：ABC\n123\n</div><div class="file-box active" id="copy-target">copy.txt：空</div></div><div class="feedback" id="copy-feedback" aria-live="polite">两个文件均已打开，等待第一次调用<code>fgetc()</code>。</div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">32 · 空文件路径</div><h2>第一次读取就是<code>EOF</code>，循环执行0次</h2><div class="flow"><div class="card"><strong>source.txt</strong><br>空文件</div><span class="arrow">→</span><div class="card"><strong>fgetc(in)</strong><br><code>EOF</code></div><span class="arrow">→</span><div class="card"><strong>循环条件</strong><br>假</div><span class="arrow">→</span><div class="card"><strong>copy.txt</strong><br>保持为空</div></div><p class="rule">空文件是正常输入状态，不等于文件打开失败。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">33 · 源文件不存在</div><h2><code>"r"</code>模式打开失败后立即结束</h2><div class="button-row"><button id="missing-source">模拟源文件不存在</button><button id="missing-reset">重置</button></div><div class="grid-2"><div class="state" id="missing-state"><code>source.txt</code>存在状态尚未设置。</div><div class="terminal" id="missing-output">标准输出：等待执行</div></div><div class="feedback" id="missing-feedback">失败路径不会继续打开<code>copy.txt</code>。</div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">34 · 内容验证</div><h2>复制正确要求每一个字符都一致</h2><div class="grid-2"><div class="file-box">source.txt
+ABC
+123
+</div><div class="file-box">copy.txt
+ABC
+123
+</div></div><table><tr><th>检查项</th><th>要求</th></tr><tr><td>字符</td><td><code>A B C 1 2 3</code>均存在</td></tr><tr><td>空格</td><td>数量和位置保持一致</td></tr><tr><td>换行</td><td>仍位于相同位置</td></tr><tr><td>顺序</td><td>不增加、不遗漏、不重排</td></tr></table></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">35 · 错误诊断</div><h2>打开模式、返回类型和关闭路径必须一致</h2><div class="button-row"><button data-copy-error="modes">交换r与w</button><button data-copy-error="char">使用char ch</button><button data-copy-error="eof">把EOF写入文件</button><button data-copy-error="close">遗漏一个fclose</button></div><div class="feedback" id="copy-error-feedback" aria-live="polite">选择一个故意错误，查看其影响和修正方法。</div><p class="note danger">以上项目只用于错误诊断，不是可运行正例。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">36 · 全课总结</div><h2>文件操作始终遵循打开、检查、读写和关闭</h2><div class="grid-2"><div><div class="button-row"><button data-copy-case="text">C language</button><button data-copy-case="empty">空文件</button><button data-copy-case="lines">两行文本</button><button data-copy-case="missing">源文件不存在</button></div><div class="feedback" id="copy-case-feedback">选择一种虚拟文件状态，查看标准输出和目标文件结果。</div><pre>gcc file_copy.c -o file_copy.exe
+.\file_copy.exe</pre></div><div class="review-grid"><button class="review-item" data-review>FILE *管理文件流</button><button class="review-item" data-review>r要求源文件存在</button><button class="review-item" data-review>w创建或清空文件</button><button class="review-item" data-review>fgetc返回字符或EOF</button><button class="review-item" data-review>fputc写入一个字符</button><button class="review-item" data-review>直接检查读取返回值</button><button class="review-item" data-review>关闭每个已打开文件</button></div></div><p><a href="../../../题库/选择题/qb_sc_050.md">QB-SC-050</a> · <a href="../../../例程/chapters/10-files/ex_c10_002_10_2.c">EX-C10-002</a></p></div></section>
+</main>
+
+<nav class="nav" aria-label="课件导航"><button id="prev" aria-label="上一页">← 上一页</button><button id="next" aria-label="下一页">下一页 →</button><div class="progress" aria-hidden="true"><span id="progress-bar"></span></div><div class="counter"><span id="page-number">1</span> / 36</div><div class="footer">CW-L16 · Kevin@SUT</div></nav>
+<script>
+const slides=Array.from(document.querySelectorAll('[data-slide]'));let current=0;function showSlide(index){current=Math.max(0,Math.min(slides.length-1,index));slides.forEach(function(slide,i){slide.classList.toggle('active',i===current);});document.getElementById('page-number').textContent=String(current+1);document.getElementById('progress-bar').style.width=((current+1)/slides.length*100)+'%';}document.getElementById('prev').onclick=function(){showSlide(current-1);};document.getElementById('next').onclick=function(){showSlide(current+1);};document.addEventListener('keydown',function(event){if(event.key==='ArrowRight'||event.key==='PageDown')showSlide(current+1);if(event.key==='ArrowLeft'||event.key==='PageUp')showSlide(current-1);if(event.key==='Home')showSlide(0);if(event.key==='End')showSlide(slides.length-1);});
+document.querySelectorAll('[data-question-option]').forEach(function(button){button.onclick=function(){const feedback=button.closest('.question').querySelector('.feedback');feedback.className='feedback '+(button.dataset.correct==='true'?'good':'bad');feedback.textContent=(button.dataset.correct==='true'?'正确。':'不正确。')+button.dataset.feedback+'。';};});
+const openStates={success:['fopen()返回有效文件指针，fp != NULL。','可以继续调用fputc()写入并最终关闭文件。','good'],failure:['fopen()返回NULL。','不能进行文件读写，程序从错误路径结束。','bad'],reset:['尚未调用fopen()。','选择一种结果，查看fp的状态和后续操作。','']};document.querySelectorAll('[data-open-state]').forEach(function(button){button.onclick=function(){const item=openStates[button.dataset.openState];document.getElementById('open-state').textContent=item[0];const f=document.getElementById('open-feedback');f.className='feedback '+item[2];f.textContent=item[1];};});
+const fills={1:'第1空：fopen("qb_fb_019.tmp", "w")。以写方式打开临时文本文件。',2:'第2空：fp==NULL。打开失败时不能继续使用文件流。',3:"第3空：(ch=getchar())!='#'&&ch!=EOF。读取字符，并在#或输入结束时停止。",4:'第4空：fputc(ch,fp)。把当前字符写入fp管理的文件。'};document.querySelectorAll('[data-fill]').forEach(function(button){button.onclick=function(){const f=document.getElementById('fill-feedback');f.className='feedback good';f.textContent=fills[button.dataset.fill];};});
+function shownChar(ch){return ch==='\n'?'\\n':ch;}const writeInput=['a','b','c','#'];let writeStep=0;function renderWrite(){const file=writeInput.slice(0,Math.min(writeStep,3)).join('');const currentChar=writeStep===0?'尚未读取':shownChar(writeInput[Math.min(writeStep-1,3)]);document.getElementById('write-state').textContent='ch：'+currentChar;document.getElementById('write-file').textContent='output.txt：'+(file||'空');document.getElementById('write-chars').innerHTML=writeInput.map(function(ch,i){return '<div class="char-cell '+(i===writeStep-1?'active':'')+'">'+shownChar(ch)+'</div>';}).join('');document.getElementById('write-feedback').textContent=writeStep===0?'文件已经用"w"模式成功打开。':writeStep<=3?'当前字符不是#，已写入文件。':'读到#，循环结束；#不写入文件，随后关闭文件。';}document.getElementById('write-next').onclick=function(){writeStep=Math.min(4,writeStep+1);renderWrite();};document.getElementById('write-play').onclick=function(){writeStep=4;renderWrite();};document.getElementById('write-reset').onclick=function(){writeStep=0;renderWrite();};renderWrite();
+const writeErrors={null:'若fopen()失败，fp为NULL。继续调用fputc()会使用无效文件流；必须先检查。',mode:'"r"是读取模式，不能用于本程序写入。应使用"w"。',sentinel:'应先判断ch不是#再调用fputc()，否则结束标志也会进入文件。',close:'写入完成后必须调用fclose(fp)，完成文件流关闭和缓冲数据提交。'};document.querySelectorAll('[data-write-error]').forEach(function(button){button.onclick=function(){const f=document.getElementById('write-error-feedback');f.className='feedback bad';f.textContent=writeErrors[button.dataset.writeError];};});
+const writeCases={abc:'输入abc#；output.txt精确内容为abc。',hello:'输入Hello C#；空格也是普通字符，文件内容为Hello C。',empty:'第一个字符就是#；循环执行0次，output.txt为空。',lines:'输入A、换行、B、#；output.txt包含A\\nB，换行保留。'};document.querySelectorAll('[data-write-case]').forEach(function(button){button.onclick=function(){const f=document.getElementById('write-case-feedback');f.className='feedback good';f.textContent=writeCases[button.dataset.writeCase];};});
+const previewText='ABC\n123\n';document.querySelectorAll('[data-copy-preview]').forEach(function(button){button.onclick=function(){const n=Number(button.dataset.copyPreview);document.getElementById('preview-source').textContent='source.txt：'+previewText+'当前位置：'+n;document.getElementById('preview-copy').textContent='copy.txt：'+(previewText.slice(0,n)||'空');document.getElementById('preview-feedback').textContent=n===previewText.length?'全部字符复制完成，下一次fgetc()得到EOF。':'已经复制'+n+'个字符，换行也按原位置保存。';};});
+let copyStep=0;function renderCopy(){const copied=previewText.slice(0,copyStep);document.getElementById('copy-source').textContent='source.txt：'+previewText+'当前位置：'+copyStep;document.getElementById('copy-target').textContent='copy.txt：'+(copied||'空');document.getElementById('copy-feedback').textContent=copyStep===0?'两个文件均已打开，等待第一次调用fgetc()。':copyStep===previewText.length?'全部字符已写入；下一次读取得到EOF，关闭两个文件并输出copied。':'读到'+shownChar(previewText[copyStep-1])+'并写入目标文件，当前位置继续向后。';}document.getElementById('copy-next').onclick=function(){copyStep=Math.min(previewText.length,copyStep+1);renderCopy();};document.getElementById('copy-play').onclick=function(){copyStep=previewText.length;renderCopy();};document.getElementById('copy-reset').onclick=function(){copyStep=0;renderCopy();};renderCopy();
+document.getElementById('missing-source').onclick=function(){document.getElementById('missing-state').textContent='fopen("source.txt", "r")返回NULL。';document.getElementById('missing-output').textContent='标准输出：cannot open source';const f=document.getElementById('missing-feedback');f.className='feedback bad';f.textContent='程序返回1，不再打开copy.txt，因此不会创建目标文件。';};document.getElementById('missing-reset').onclick=function(){document.getElementById('missing-state').textContent='source.txt存在状态尚未设置。';document.getElementById('missing-output').textContent='标准输出：等待执行';const f=document.getElementById('missing-feedback');f.className='feedback';f.textContent='失败路径不会继续打开copy.txt。';};
+const copyErrors={modes:'若用"w"打开source.txt，源内容会先被清空；若用"r"打开copy.txt，则不能写入。源用"r"，目标用"w"。',char:'fgetc()需要用int接收，才能区分全部字符值与EOF。',eof:'必须先判断读取结果不是EOF，再调用fputc()；EOF不是要复制到文件中的普通字符。',close:'in和out是两个独立文件流；每个成功打开的文件流都要在相应路径关闭。'};document.querySelectorAll('[data-copy-error]').forEach(function(button){button.onclick=function(){const f=document.getElementById('copy-error-feedback');f.className='feedback bad';f.textContent=copyErrors[button.dataset.copyError];};});
+const copyCases={text:'source.txt内容为C language\\n；输出copied，copy.txt逐字符完全相同。',empty:'源文件为空；输出copied，复制循环执行0次，copy.txt为空。',lines:'源文件为ABC\\n123\\n；输出copied，两个换行在目标文件中保持不变。',missing:'source.txt不存在；输出cannot open source，程序返回1，不创建copy.txt。'};document.querySelectorAll('[data-copy-case]').forEach(function(button){button.onclick=function(){const f=document.getElementById('copy-case-feedback');f.className='feedback good';f.textContent=copyCases[button.dataset.copyCase];};});
+document.querySelectorAll('[data-review]').forEach(function(button){button.onclick=function(){button.classList.toggle('done');};});showSlide(0);
+</script>
+</body>
+</html>
