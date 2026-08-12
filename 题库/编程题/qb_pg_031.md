@@ -2,7 +2,7 @@
 id: QB-PG-031
 category: 编程题
 chapters: 9
-concepts: 结构体、选择排序
+concepts: 结构体、结构体数组、选择排序、结构体整体赋值
 difficulty: 综合
 minutes: 20
 related_routines: 无
@@ -54,16 +54,21 @@ legacy_features: 无
 
 
 
-围绕“结构体选择排序”检查输入合法性、临界值、数组或循环边界，并严格匹配题目规定的输出格式。
+- 每一趟开始时都要将最高成绩下标初始化为当前起始位置；
+- 内层循环从当前起始位置的后一条记录开始；
+- 降序排列应选择剩余记录中的最高成绩；
+- 一趟查找结束后再交换记录，不能在查找过程中反复交换；
+- 交换时必须移动完整结构体，不能只交换成绩；
+- 5条记录只需执行4趟选择。
 
 <details>
 <summary>参考答案与解析</summary>
 
-**解题思路：** 每轮选择剩余记录中的最低成绩并交换完整记录。
+**解题思路：** 每轮在尚未确定的记录中寻找最高成绩的下标，再把完整记录交换到当前起始位置。
 
 **评分建议：** 输入与边界处理2分，核心算法5分，正确输出2分，代码规范1分。
 
-**正常与边界测试：** 使用已降序数据和含相同成绩的数据检查完整记录交换。
+**正常与边界测试：** 使用已降序、已升序和含相同成绩的数据检查下标更新、降序方向和完整记录交换。题目没有规定相同成绩记录的先后顺序。
 
 ### 完整参考程序
 
@@ -77,32 +82,40 @@ struct Student
 };
 int main(void)
 {
-    struct Student a[5];
-    for (int i = 0; i < 5; i++)
+    struct Student students[5];
+    struct Student temp;
+    int i, j, k;
+
+    for (i = 0; i < 5; i++)
     {
-        if (scanf("%d%lf", &a[i].id, &a[i].score) != 2)
+        if (scanf("%d %lf", &students[i].id, &students[i].score) != 2)
         {
             return 1;
         }
     }
-    for (int i = 0; i < 4; i++)
+
+    for (i = 0; i < 4; i++)
     {
-        int k = i;
-        for (int j = i + 1; j < 5; j++)
+        k = i;
+
+        for (j = i + 1; j < 5; j++)
         {
-            if (a[j].score > a[k].score)
+            if (students[j].score > students[k].score)
             {
                 k = j;
             }
         }
-        struct Student t = a[i];
-        a[i] = a[k];
-        a[k] = t;
+
+        temp = students[i];
+        students[i] = students[k];
+        students[k] = temp;
     }
-    for (int i = 0; i < 5; i++)
+
+    for (i = 0; i < 5; i++)
     {
-        printf("%d %.1f\n", a[i].id, a[i].score);
+        printf("%d %.1f\n", students[i].id, students[i].score);
     }
+
     return 0;
 }
 ```

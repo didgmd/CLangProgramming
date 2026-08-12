@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="Kevin@SUT">
+<meta name="copyright" content="Kevin@SUT">
+<title>CW-L15 结构体数组与指针：选择排序和成员访问</title>
+<style>
+:root{--ink:#10243a;--muted:#52677b;--paper:#f5f8fb;--panel:#fff;--cyan:#0f7f8d;--amber:#c56b16;--line:#cbd8e5;--code:#0b1726;--good:#155e35;--bad:#9f2d2d}*{box-sizing:border-box}html,body{margin:0;height:100%;overflow: hidden;background:var(--paper);color:var(--ink);font-family:"Microsoft YaHei",Arial,sans-serif}body{display:grid;grid-template-rows:1fr 64px}.deck{position:relative;min-height:0}.slide{display:none;height:100%;padding:22px 40px}.slide.active{display:block}.slide-inner{height:100%;max-width:1220px;margin:auto;display:flex;flex-direction:column;gap:11px}.eyebrow{color:var(--cyan);font-weight:800;letter-spacing:.08em}h1{font-size:43px;margin:4px 0 8px}h2{font-size:31px;margin:0}h3{font-size:21px;margin:0 0 7px}p,li,td,th,button{font-size:18px;line-height:1.45}.lead{font-size:22px;color:var(--muted)}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:15px;min-height:0}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.card,.question,.state,.feedback,.terminal{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px}.rule,.card strong{color:var(--cyan)}pre{margin:0;background:var(--code);color:#eef7ff;border-radius:12px;padding:13px;font:17px/1.42 Consolas,monospace;white-space:pre-wrap}.code-small{font-size:14px}.compact p,.compact li,.compact button,.compact td,.compact th{font-size:16px}.feedback{min-height:56px;color:var(--muted)}.feedback.good{background:#dff3e7;color:var(--good);border-color:#8ccba4}.feedback.bad{background:#fde8e8;color:var(--bad);border-color:#e8a0a0}.button-row,.options{display:flex;flex-wrap:wrap;gap:8px}.options{flex-direction:column}button{border:1px solid #9fb4c8;background:#fff;color:var(--ink);border-radius:10px;padding:8px 13px;cursor:pointer;text-align:left}button:hover,button:focus-visible{outline:3px solid #78d4dd;outline-offset:1px}button.primary{background:var(--cyan);color:#fff;border-color:var(--cyan)}.record-list{display:grid;gap:6px}.record-row{display:grid;grid-template-columns:80px 1fr 120px;gap:6px;align-items:center;background:#fff;border:2px solid var(--line);border-radius:12px;padding:7px 10px}.record-row.active{border-color:var(--amber);box-shadow:0 0 0 3px #ffd79a}.record-row.locked{background:#dff3e7;border-color:#78b994}.memory{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}.cell{min-width:112px;background:#fff;border:2px solid var(--line);border-radius:12px;padding:9px;text-align:center}.cell.active{border-color:var(--amber);box-shadow:0 0 0 3px #ffd79a}.char-strip{display:flex;justify-content:center;gap:6px}.char-cell{min-width:76px;background:#fff;border:2px solid var(--line);border-radius:10px;padding:8px;text-align:center}.char-cell.active{border-color:var(--amber);background:#fff4df}.arrow{font-size:26px;color:var(--cyan)}table{width:100%;border-collapse:collapse;background:#fff}th,td{border:1px solid var(--line);padding:7px;text-align:left}th{background:#e9f3f6}.note{border-left:5px solid var(--amber);background:#fff4df;padding:9px 13px}.danger{border-left-color:var(--bad);background:#fff0f0}.nav{display:flex;align-items:center;gap:12px;padding:8px 22px;background:#0b1726;color:#fff}.nav button{font-size:17px;padding:7px 13px}.progress{height:8px;background:#30465d;flex:1;border-radius:9px;overflow:hidden}.progress span{display:block;height:100%;background:#31c6d4;width:0}.counter{min-width:120px;text-align:center}.footer{font-size:14px;color:#c8d6e4}.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.review-item.done{background:#dff3e7;color:#155e35;border-color:#78b994}.review-item.done strong,.review-item.done code{color:#155e35}.hidden-marker{display:none}@media(max-width:850px){html,body{overflow:auto}body{display:block}.slide{min-height:100vh;height:auto;padding:18px}.grid-2,.grid-3,.review-grid{grid-template-columns:1fr}h1{font-size:35px}h2{font-size:27px}}
+.active-code-line{outline:3px solid var(--amber)}.code-dense{font-size:12px;line-height:1.12}
+</style>
+</head>
+<body data-courseware="c-freshman-interactive-html" data-layout="slide-page" data-course-id="CW-L15" data-chapter="9" data-routines="EX-C09-004,EX-C09-005" data-questions="QB-PG-031,QB-TR-012,QB-SC-026,QB-SC-027" data-lesson-variants="student-record-selection-sort,structure-pointer-string-trace" data-attribution="Kevin@SUT">
+<main class="deck" data-deck data-interaction="ask-wait-reveal">
+<span class="hidden-marker" data-section="objectives"></span><span class="hidden-marker" data-section="concept"></span><span class="hidden-marker" data-section="interaction"></span><span class="hidden-marker" data-section="quiz"></span><span class="hidden-marker" data-section="exercise"></span><span class="hidden-marker" data-section="summary"></span><span class="hidden-marker" data-code-line></span>
+
+<section class="slide active" data-slide><div class="slide-inner"><div class="eyebrow">01 · 学习目标</div><h1>结构体数组与指针</h1><p class="lead">用选择排序保持整条记录的对应关系，用结构体指针准确访问成员。</p><div class="grid-2"><div class="card"><h3>结构体数组</h3><ul><li>查找最高成绩记录</li><li>保存并更新记录下标</li><li>交换完整结构体</li></ul></div><div class="card"><h3>结构体指针</h3><ul><li>建立变量与指针的指向关系</li><li>区分<code>.</code>和<code>-&gt;</code></li><li>推导字符指针成员表达式</li></ul></div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">02 · QB-PG-031</div><h2>结构体选择排序</h2><article class="question" data-programming-question-id="QB-PG-031"><p class="question-text">输入5名学生的学号和成绩，使用选择排序按成绩降序排列。</p><div class="grid-2"><div class="card"><p><strong>输入格式：</strong>输入5组记录，每组包含一个整数型学号和一个实数成绩。</p><p><strong>输入约束：</strong>题目保证输入格式合法。</p><p><strong>输出格式：</strong>按成绩从高到低输出5行，每行为“学号 成绩”，成绩保留1位小数。</p><p><strong>边界：</strong>固定处理5条记录；交换时必须移动完整结构体。</p></div><div class="card"><pre>输入
+1 82
+2 75
+3 90
+4 68
+5 88
+
+输出
+3 90.0
+5 88.0
+1 82.0
+2 75.0
+4 68.0</pre></div></div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">03 · 选择排序</div><h2>每一趟确定一个位置</h2><div class="grid-3"><div class="card"><h3>查找</h3><p>在尚未确定的记录中找到最高成绩。</p></div><div class="card"><h3>记住</h3><p>用下标<code>k</code>保存最高成绩记录的位置。</p></div><div class="card"><h3>交换</h3><p>查找结束后，把完整记录放到当前起始位置。</p></div></div><p class="rule">降序选择排序从左向右逐个确定最高成绩记录。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">04 · 两种排序过程</div><h2>冒泡排序与选择排序的交换时机不同</h2><table><tr><th>方法</th><th>一趟中的比较</th><th>交换方式</th><th>一趟结束后</th></tr><tr><td>冒泡排序</td><td>反复比较相邻记录</td><td>一趟中可能多次交换</td><td>一条记录到达末端</td></tr><tr><td>选择排序</td><td>查找未确定区间中的最高成绩</td><td>查找结束后交换一次</td><td>一条记录到达左端</td></tr></table><p class="note">本课只改变排序过程；结构体记录和整体交换规则与上一课相同。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">05 · 三个下标</div><h2><code>i</code>、<code>j</code>和<code>k</code>承担不同职责</h2><div class="grid-3"><button data-index-role="i"><h3><code>i</code></h3><p>本趟准备确定的位置</p></button><button data-index-role="j"><h3><code>j</code></h3><p>当前正在检查的位置</p></button><button data-index-role="k"><h3><code>k</code></h3><p>当前最高成绩的位置</p></button></div><div class="feedback" id="index-role-feedback">选择一个下标，查看它在一趟查找中的状态变化。</div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">06 · 初始化最高下标</div><h2>每一趟都从<code>k = i</code>开始</h2><pre>for (i = 0; i &lt; 4; i++)
+{
+    k = i;
+    /* 从 i 后面继续查找 */
+}</pre><div class="grid-2"><div class="card"><h3>第0趟</h3><p><code>i=0</code>，先令<code>k=0</code>。</p></div><div class="card"><h3>第1趟</h3><p><code>i=1</code>，必须重新令<code>k=1</code>。</p></div></div><p class="rule"><code>k</code>只表示本趟尚未确定区间中的最高成绩位置。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">07 · 第一趟查找</div><h2>只更新最高成绩下标，不立即交换</h2><div class="record-list" id="search-records"></div><div class="button-row"><button class="primary" id="search-next">检查下一条</button><button id="search-reset">重置</button></div><div class="feedback" id="search-feedback">初始状态：i=0，k=0，当前最高成绩为82.0。</div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">08 · 查找阶段</div><h2>发现更高成绩时只执行<code>k = j</code></h2><pre>for (j = i + 1; j &lt; 5; j++)
+{
+    if (students[j].score &gt; students[k].score)
+    {
+        k = j;
+    }
+}</pre><p class="rule">比较的是成绩成员，保存的是整条记录的下标。</p><p class="note danger">若在内层循环中立即交换，程序就不再是这里讲解的选择排序过程。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">09 · 整体交换</div><h2>查找结束后交换两条完整记录</h2><pre>temp = students[i];
+students[i] = students[k];
+students[k] = temp;</pre><div class="memory"><div class="cell"><strong>students[i]</strong><br>1 / 82.0</div><span class="arrow">⇄</span><div class="cell"><strong>students[k]</strong><br>3 / 90.0</div></div><p class="rule">结构体整体赋值会同时移动学号和成绩，二者不会错配。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">10 · 第一趟结果</div><h2>最高成绩记录被放到下标0</h2><div class="grid-2"><div class="card"><h3>交换前</h3><pre>1 82.0
+2 75.0
+3 90.0
+4 68.0
+5 88.0</pre></div><div class="card"><h3>交换后</h3><pre>3 90.0  ← 已确定
+2 75.0
+1 82.0
+4 68.0
+5 88.0</pre></div></div><p class="rule">下一趟从下标1开始，不再检查已经确定的下标0。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">11 · 四趟状态</div><h2>左侧已确定区域逐趟增长</h2><div class="record-list" id="pass-records"></div><div class="button-row"><button class="primary" id="pass-next">完成下一趟</button><button id="pass-play">完成全部4趟</button><button id="pass-reset">重置</button></div><div class="feedback" id="pass-feedback">排序尚未开始，全部5条记录都属于未确定区域。</div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">12 · 循环边界</div><h2>5条记录只需要4趟</h2><table><tr><th>表达式</th><th>范围</th><th>作用</th></tr><tr><td><code>i &lt; 4</code></td><td><code>i=0…3</code></td><td>前4个位置依次确定后，最后一个自然确定</td></tr><tr><td><code>j = i + 1</code></td><td>从当前位置后一条开始</td><td>不与自身重复比较</td></tr><tr><td><code>j &lt; 5</code></td><td>最大下标为4</td><td>不会访问<code>students[5]</code></td></tr></table></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">13 · 完整程序</div><h2>结构体数组选择排序</h2><pre class="code-dense" data-positive-program="student-record-selection-sort">#include &lt;stdio.h&gt;
+struct Student
+{
+    int id;
+    double score;
+};
+int main()
+{
+    struct Student students[5];
+    struct Student temp;
+    int i, j, k;
+    for (i = 0; i &lt; 5; i++)
+    {
+        scanf("%d %lf", &amp;students[i].id, &amp;students[i].score);
+    }
+    for (i = 0; i &lt; 4; i++)
+    {
+        k = i;
+        for (j = i + 1; j &lt; 5; j++)
+        {
+            if (students[j].score &gt; students[k].score)
+            {
+                k = j;
+            }
+        }
+        temp = students[i];
+        students[i] = students[k];
+        students[k] = temp;
+    }
+    for (i = 0; i &lt; 5; i++)
+    {
+        printf("%d %.1f\n", students[i].id, students[i].score);
+    }
+    return 0;
+}</pre><p>输入约束：5组学号和成绩均符合题目规定格式。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">14 · 第一趟执行器</div><h2>比较完成后才交换</h2><div class="button-row"><button class="primary" id="selection-next">执行下一步</button><button id="selection-play">完整执行第一趟</button><button id="selection-reset">重置</button></div><div class="grid-2"><div class="state" id="selection-state">准备执行<code>i=0; k=0;</code></div><div class="terminal" id="selection-detail">当前最高成绩：尚未建立</div></div><div class="record-list" id="selection-records"></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">15 · 全部趟数执行器</div><h2>每趟只锁定一个左侧位置</h2><div class="record-list" id="all-pass-records"></div><div class="button-row"><button class="primary" id="all-pass-next">下一趟</button><button id="all-pass-play">完成排序</button><button id="all-pass-reset">重置</button></div><div class="feedback" id="all-pass-feedback">选择排序尚未开始。</div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">16 · 错误诊断</div><h2>选择排序必须保持查找、交换和边界一致</h2><div class="button-row"><button data-selection-error="reset">k未重置</button><button data-selection-error="direction">比较方向写反</button><button data-selection-error="early">边找边交换</button><button data-selection-error="field">只交换成绩</button><button data-selection-error="boundary">循环越界</button></div><div class="feedback" id="selection-error-feedback">选择一个故意错误示例，查看原因和正确规则。</div><p class="note danger">以上项目只用于错误诊断，不是可运行正例。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">17 · 前半部分总结</div><h2>查找最高下标，再交换完整记录</h2><div class="grid-2"><div><div class="button-row"><button data-selection-case="descending">降序输入</button><button data-selection-case="ascending">升序输入</button><button data-selection-case="equal">含相同成绩</button></div><div class="feedback" id="selection-case-feedback">选择一组输入数据，查看排序后的精确输出。</div><pre>gcc student_selection.c -o student_selection.exe
+.\student_selection.exe</pre></div><div class="card"><div class="review-grid"><button class="review-item" data-review>i确定当前位置</button><button class="review-item" data-review>j检查后续记录</button><button class="review-item" data-review>k保存最高下标</button><button class="review-item" data-review>每趟重新令k=i</button><button class="review-item" data-review>查找结束后交换</button><button class="review-item" data-review>交换完整结构体</button><button class="review-item" data-review>5条记录执行4趟</button></div><p><a href="../../../题库/编程题/qb_pg_031.md">QB-PG-031</a> · <a href="../../../例程/chapters/09-user-defined-types/ex_c09_004_9_4.c">EX-C09-004</a></p></div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">18 · QB-TR-012</div><h2>结构体指针字符串：输出是什么</h2><article class="question" data-trace-question-id="QB-TR-012"><p class="question-text">写出程序的准确输出：</p><pre>#include &lt;stdio.h&gt;
+int main(void)
+{
+    struct S
+    {
+        int id;
+        double score;
+        const char * name;
+    }
+    s = {1, 89.5, "Wang"}, * p = &amp;s;
+    printf("%c,%s\n", * p-&gt;name, &amp;p-&gt;name[2]);
+    return 0;
+}</pre><p>本题程序不读取外部输入。请写出程序运行后的精确输出。</p><div class="button-row"><button data-trace-prediction="A">A. Wang,ng</button><button data-trace-prediction="B">B. W,ng</button><button data-trace-prediction="C">C. W,n</button><button data-trace-prediction="D">D. 1,89.5</button></div><div class="feedback" id="trace-prediction-feedback">先分别计算两个输出表达式，再选择答案。</div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">19 · 结构体变量</div><h2><code>s</code>保存三个成员</h2><pre>struct S s = {1, 89.5, "Wang"};</pre><div class="grid-3"><div class="card"><h3><code>s.id</code></h3><p>整数1</p></div><div class="card"><h3><code>s.score</code></h3><p>浮点数89.5</p></div><div class="card"><h3><code>s.name</code></h3><p>字符串<code>"Wang"</code>首字符的位置</p></div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">20 · 结构体指针</div><h2><code>struct S *p = &amp;s;</code></h2><table><tr><th>代码部分</th><th>含义</th></tr><tr><td><code>struct S *</code></td><td>指向<code>struct S</code>对象的指针类型</td></tr><tr><td><code>p</code></td><td>结构体指针变量</td></tr><tr><td><code>&amp;s</code></td><td>结构体变量<code>s</code>的地址</td></tr><tr><td><code>p = &amp;s</code></td><td>使<code>p</code>指向<code>s</code></td></tr></table></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">21 · 指向关系</div><h2>指针保存位置，箭头连接完整记录</h2><div class="memory"><div class="cell"><strong>p</strong><br>保存s的位置</div><span class="arrow">→</span><div class="card"><h3>结构体变量 s</h3><p><code>id = 1</code></p><p><code>score = 89.5</code></p><p><code>name → "Wang"</code></p></div></div><p class="rule">通过<code>p</code>可以访问它所指结构体中的成员。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">22 · QB-SC-026</div><h2>结构体变量如何访问成员</h2><article class="question" data-question-id="QB-SC-026"><p class="question-text">访问结构体变量的成员应使用（ ）。</p><div class="options"><button data-question-option="A" data-correct="true" data-feedback="点运算符用于结构体变量访问成员">A. .</button><button data-question-option="B" data-correct="false" data-feedback="&amp;是取地址运算符，不是成员访问运算符">B. &amp;</button><button data-question-option="C" data-correct="false" data-feedback="*用于解引用指针，不能单独替代成员访问">C. *</button><button data-question-option="D" data-correct="false" data-feedback="箭头运算符用于结构体指针，不用于结构体变量">D. -&gt;</button></div><div class="feedback" aria-live="polite">判断点号左侧是结构体变量还是结构体指针。</div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">23 · 点号与箭头</div><h2>左侧对象不同，成员访问形式不同</h2><div class="grid-2"><div class="card"><h3>结构体变量</h3><pre>s.id
+s.score
+s.name</pre><p>使用点运算符<code>.</code>。</p></div><div class="card"><h3>结构体指针</h3><pre>p-&gt;id
+p-&gt;score
+p-&gt;name</pre><p>使用箭头运算符<code>-&gt;</code>。</p></div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">24 · 两种等价形式</div><h2><code>p-&gt;id</code>等价于<code>(*p).id</code></h2><div class="grid-2"><div class="card"><pre>p-&gt;id</pre><p>直接通过结构体指针访问成员。</p></div><div class="card"><pre>(*p).id</pre><p>先用<code>*p</code>得到所指结构体，再使用点号。</p></div></div><p class="note"><code>*p</code>必须加括号。<code>*p.id</code>会先尝试计算<code>p.id</code>，但<code>p</code>是指针，不能使用点号。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">25 · QB-SC-027</div><h2>结构体指针如何访问成员</h2><article class="question" data-question-id="QB-SC-027"><p class="question-text">若 <code>struct S s,*p=&amp;s;</code>，访问成员 <code>x</code> 的正确写法是（ ）。</p><div class="options"><button data-question-option="A" data-correct="false" data-feedback="p是结构体指针，不能使用点号访问成员">A. p.x</button><button data-question-option="B" data-correct="true" data-feedback="结构体指针p使用箭头运算符访问成员x">B. p-&gt;x</button><button data-question-option="C" data-correct="false" data-feedback="缺少括号；等价形式应写成(*p).x">C. *p.x</button><button data-question-option="D" data-correct="false" data-feedback="&amp;p.x既错误使用点号，也不是访问成员值的写法">D. &amp;p.x</button></div><div class="feedback" aria-live="polite">结构体指针使用箭头运算符，或先解引用并加括号。</div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">26 · 字符指针成员</div><h2><code>name</code>保存字符串首字符的位置</h2><pre>const char *name;</pre><div class="grid-2"><div class="card"><h3><code>const char *</code></h3><p>指向只读字符数据的指针类型。</p></div><div class="card"><h3><code>name = "Wang"</code></h3><p><code>name</code>指向字符串的首字符<code>'W'</code>。</p></div></div><p class="rule">本题只读取字符串内容，不修改字符，也不进行动态内存管理。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">27 · 字符位置</div><h2><code>"Wang"</code>包含4个可见字符和结束符</h2><div class="char-strip"><div class="char-cell"><strong>0</strong><br>W</div><div class="char-cell"><strong>1</strong><br>a</div><div class="char-cell"><strong>2</strong><br>n</div><div class="char-cell"><strong>3</strong><br>g</div><div class="char-cell"><strong>4</strong><br>\0</div></div><p class="note"><code>p-&gt;name</code>与下标0的首字符位置相同。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">28 · 先访问成员</div><h2><code>p-&gt;name[0]</code>取得首字符</h2><div class="grid-3"><div class="card"><h3>第一步</h3><p><code>p</code>指向结构体变量<code>s</code>。</p></div><div class="card"><h3>第二步</h3><p><code>p-&gt;name</code>取得字符指针成员。</p></div><div class="card"><h3>第三步</h3><p><code>[0]</code>取得字符<code>'W'</code>。</p></div></div><pre>p-&gt;name[0]    /* 'W' */</pre></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">29 · 首字符表达式</div><h2><code>*p-&gt;name</code>得到字符<code>'W'</code></h2><div class="memory"><div class="cell"><code>p-&gt;name</code><br>首字符位置</div><span class="arrow">→</span><div class="cell active"><code>*p-&gt;name</code><br>字符 W</div></div><p class="rule"><code>-&gt;</code>先访问<code>name</code>成员，一元<code>*</code>再读取该位置的字符。</p><pre>*p-&gt;name == p-&gt;name[0]</pre></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">30 · 后缀位置</div><h2><code>&amp;p-&gt;name[2]</code>指向字符<code>'n'</code></h2><div class="char-strip"><div class="char-cell">0<br>W</div><div class="char-cell">1<br>a</div><div class="char-cell active">2<br>n</div><div class="char-cell">3<br>g</div><div class="char-cell">4<br>\0</div></div><div class="grid-2"><div class="card"><h3><code>p-&gt;name[2]</code></h3><p>字符<code>'n'</code>。</p></div><div class="card"><h3><code>&amp;p-&gt;name[2]</code></h3><p>从字符<code>'n'</code>开始的位置，按字符串输出得到<code>"ng"</code>。</p></div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">31 · 组合输出</div><h2>两个表达式分别匹配<code>%c</code>和<code>%s</code></h2><table><tr><th>格式</th><th>表达式</th><th>结果</th></tr><tr><td><code>%c</code></td><td><code>*p-&gt;name</code></td><td><code>W</code></td></tr><tr><td>普通字符</td><td>格式串中的逗号</td><td><code>,</code></td></tr><tr><td><code>%s</code></td><td><code>&amp;p-&gt;name[2]</code></td><td><code>ng</code></td></tr></table><div class="terminal">W,ng</div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">32 · 表达式执行器</div><h2>逐步计算原题输出</h2><div class="button-row"><button class="primary" id="pointer-next">执行下一步</button><button id="pointer-play">完整执行</button><button id="pointer-reset">重置</button></div><div class="grid-2"><div class="state" id="pointer-state">等待初始化结构体变量。</div><div class="terminal" id="pointer-output">输出：等待执行</div></div><div class="char-strip" id="pointer-chars"></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">33 · 改变字符串内容</div><h2>相同表达式从不同字符串中取得首字符和后缀</h2><div class="button-row"><button data-name-case="Wang">Wang</button><button data-name-case="Chen">Chen</button><button data-name-case="Alice">Alice</button></div><div class="char-strip" id="name-case-strip"></div><div class="feedback" id="name-case-feedback">选择一个字符串，查看<code>*p-&gt;name</code>和<code>&amp;p-&gt;name[2]</code>的结果。</div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">34 · 错误诊断</div><h2>对象类型、括号和输出格式必须匹配</h2><div class="button-row"><button data-pointer-error="dot">对指针使用点号</button><button data-pointer-error="paren">漏写括号</button><button data-pointer-error="format">字符传给%s</button><button data-pointer-error="suffix">后缀起点错误</button></div><div class="feedback" id="pointer-error-feedback">选择一个故意错误示例，查看正确写法和原因。</div><p class="note danger">以上项目只用于错误诊断，不是可运行正例。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">35 · 全课总结</div><h2>完整记录用整体交换，结构体指针用箭头访问成员</h2><div class="grid-2"><div class="card"><div class="review-grid"><button class="review-item" data-review>每趟初始化k=i</button><button class="review-item" data-review>查找最高成绩下标</button><button class="review-item" data-review>交换完整学生记录</button><button class="review-item" data-review>p=&amp;s建立指向关系</button><button class="review-item" data-review>结构体变量使用点号</button><button class="review-item" data-review>结构体指针使用箭头</button><button class="review-item" data-review>Wang程序输出W,ng</button></div></div><div><pre data-positive-program="structure-pointer-string-trace">#include &lt;stdio.h&gt;
+
+struct S
+{
+    int id;
+    double score;
+    const char *name;
+};
+
+int main()
+{
+    struct S s = {1, 89.5, "Wang"};
+    struct S *p = &amp;s;
+
+    printf("%c,%s\n", *p-&gt;name, &amp;p-&gt;name[2]);
+
+    return 0;
+}</pre><pre>gcc structure_pointer.c -o structure_pointer.exe
+.\structure_pointer.exe</pre><p><a href="../../../题库/读程序写结果/qb_tr_012.md">QB-TR-012</a> · <a href="../../../题库/选择题/qb_sc_026.md">QB-SC-026</a> · <a href="../../../题库/选择题/qb_sc_027.md">QB-SC-027</a> · <a href="../../../例程/chapters/09-user-defined-types/ex_c09_005_9_5.c">EX-C09-005</a></p></div></div></div></section>
+</main>
+
+<nav class="nav" aria-label="课件导航"><button id="prev" aria-label="上一页">← 上一页</button><button id="next" aria-label="下一页">下一页 →</button><div class="progress" aria-hidden="true"><span id="progress-bar"></span></div><div class="counter"><span id="page-number">1</span> / 35</div><div class="footer">CW-L15 · Kevin@SUT</div></nav>
+<script>
+const slides=Array.from(document.querySelectorAll('[data-slide]'));let current=0;function showSlide(index){current=Math.max(0,Math.min(slides.length-1,index));slides.forEach(function(slide,i){slide.classList.toggle('active',i===current);});document.getElementById('page-number').textContent=String(current+1);document.getElementById('progress-bar').style.width=((current+1)/slides.length*100)+'%';}document.getElementById('prev').onclick=function(){showSlide(current-1);};document.getElementById('next').onclick=function(){showSlide(current+1);};document.addEventListener('keydown',function(event){if(event.key==='ArrowRight'||event.key==='PageDown')showSlide(current+1);if(event.key==='ArrowLeft'||event.key==='PageUp')showSlide(current-1);if(event.key==='Home')showSlide(0);if(event.key==='End')showSlide(slides.length-1);});
+document.querySelectorAll('[data-question-option]').forEach(function(button){button.onclick=function(){const feedback=button.closest('.question').querySelector('.feedback');feedback.className='feedback '+(button.dataset.correct==='true'?'good':'bad');feedback.textContent=(button.dataset.correct==='true'?'正确。':'不正确。')+button.dataset.feedback+'。';};});
+const roles={i:'i在一趟结束后增加1，表示下一个需要确定的位置。',j:'j从i+1开始逐条检查尚未确定的记录。',k:'k只在发现更高成绩时更新，始终指向本趟当前最高成绩记录。'};document.querySelectorAll('[data-index-role]').forEach(function(button){button.onclick=function(){document.getElementById('index-role-feedback').textContent=roles[button.dataset.indexRole];};});
+const sample=[[1,82],[2,75],[3,90],[4,68],[5,88]];function recordHtml(records,active,locked){return records.map(function(r,index){const classes=['record-row'];if(active.indexOf(index)>=0)classes.push('active');if(locked.indexOf(index)>=0)classes.push('locked');return '<div class="'+classes.join(' ')+'"><span>下标'+index+'</span><strong>学号 '+r[0]+'</strong><span>'+r[1].toFixed(1)+'</span></div>';}).join('');}
+let searchStep=0;function renderSearch(){let k=0;for(let j=1;j<=searchStep;j++){if(sample[j][1]>sample[k][1])k=j;}document.getElementById('search-records').innerHTML=recordHtml(sample,searchStep===0?[0]:[k,searchStep],[]);document.getElementById('search-feedback').textContent=searchStep===0?'初始状态：i=0，k=0，当前最高成绩为82.0。':searchStep<4?'检查下标'+searchStep+'后，k='+k+'，当前最高成绩为'+sample[k][1].toFixed(1)+'。':'查找结束：k=2，随后交换students[0]和students[2]。';}document.getElementById('search-next').onclick=function(){searchStep=Math.min(4,searchStep+1);renderSearch();};document.getElementById('search-reset').onclick=function(){searchStep=0;renderSearch();};renderSearch();
+function selectionAfterPass(count){const a=sample.map(function(r){return r.slice();});for(let i=0;i<count;i++){let k=i;for(let j=i+1;j<5;j++){if(a[j][1]>a[k][1])k=j;}const t=a[i];a[i]=a[k];a[k]=t;}return a;}let passStep=0;function renderPass(target,feedback){const locked=[];for(let i=0;i<passStep;i++)locked.push(i);document.getElementById(target).innerHTML=recordHtml(selectionAfterPass(passStep),[],locked);document.getElementById(feedback).textContent=passStep===0?'排序尚未开始，全部记录都属于未确定区域。':passStep===4?'4趟完成，记录已经按成绩降序排列。':'第'+passStep+'趟完成，左侧'+passStep+'条记录已经确定。';}document.getElementById('pass-next').onclick=function(){passStep=Math.min(4,passStep+1);renderPass('pass-records','pass-feedback');};document.getElementById('pass-play').onclick=function(){passStep=4;renderPass('pass-records','pass-feedback');};document.getElementById('pass-reset').onclick=function(){passStep=0;renderPass('pass-records','pass-feedback');};renderPass('pass-records','pass-feedback');
+const selectionSteps=[['建立本趟状态','i=0，k=0，当前最高成绩82.0'],['检查j=1','75.0不高于82.0，k仍为0'],['检查j=2','90.0高于82.0，更新k=2'],['检查j=3','68.0不高于90.0，k仍为2'],['检查j=4','88.0不高于90.0，k仍为2'],['交换完整记录','交换students[0]和students[2]，第一趟结束']];let selectionStep=0;function renderSelection(){const done=Math.max(0,selectionStep-1);let records=sample;let active=[];if(selectionStep===0)active=[];else if(selectionStep<5)active=[0,selectionStep];else if(selectionStep===5)active=[0,2];else{records=selectionAfterPass(1);active=[0];}document.getElementById('selection-records').innerHTML=recordHtml(records,active,selectionStep===6?[0]:[]);document.getElementById('selection-state').textContent=selectionStep===0?'准备执行i=0; k=0;':selectionSteps[done][0];document.getElementById('selection-detail').textContent=selectionStep===0?'当前最高成绩：尚未建立':selectionSteps[done][1];}document.getElementById('selection-next').onclick=function(){selectionStep=Math.min(6,selectionStep+1);renderSelection();};document.getElementById('selection-play').onclick=function(){selectionStep=6;renderSelection();};document.getElementById('selection-reset').onclick=function(){selectionStep=0;renderSelection();};renderSelection();
+let allPass=0;function renderAllPass(){const locked=[];for(let i=0;i<allPass;i++)locked.push(i);document.getElementById('all-pass-records').innerHTML=recordHtml(selectionAfterPass(allPass),[],locked);document.getElementById('all-pass-feedback').textContent=allPass===0?'选择排序尚未开始。':allPass===4?'4趟完成：90.0、88.0、82.0、75.0、68.0。':'第'+allPass+'趟结束，下标'+(allPass-1)+'的记录已经确定。';}document.getElementById('all-pass-next').onclick=function(){allPass=Math.min(4,allPass+1);renderAllPass();};document.getElementById('all-pass-play').onclick=function(){allPass=4;renderAllPass();};document.getElementById('all-pass-reset').onclick=function(){allPass=0;renderAllPass();};renderAllPass();
+const selectionErrors={reset:'若下一趟不重新执行k=i，k可能仍指向已经确定的左侧记录。正确规则：每趟开始先令k=i。',direction:'降序应在students[j].score > students[k].score时更新k；写成小于号会选择最低成绩。',early:'选择排序的内层循环只更新k。必须等待查找结束后，再交换students[i]和students[k]。',field:'只交换score会把成绩配给错误学号。必须使用struct Student临时变量交换完整记录。',boundary:'合法下标为0至4。内层使用j<5，不能访问students[5]。'};document.querySelectorAll('[data-selection-error]').forEach(function(button){button.onclick=function(){const f=document.getElementById('selection-error-feedback');f.className='feedback bad';f.textContent=selectionErrors[button.dataset.selectionError];};});
+const selectionCases={descending:'输入成绩：95.0、90.0、85.0、80.0、75.0；排序后输出顺序不变：1、2、3、4、5。',ascending:'输入成绩：60.0、70.0、80.0、90.0、100.0；排序后输出学号顺序：5、4、3、2、1。',equal:'输入含两个95.0和两个80.0；本程序排序后输出学号顺序：2、5、3、1、4。'};document.querySelectorAll('[data-selection-case]').forEach(function(button){button.onclick=function(){const f=document.getElementById('selection-case-feedback');f.className='feedback good';f.textContent=selectionCases[button.dataset.selectionCase];};});
+const predictions={A:['bad','Wang不是%c的结果；%c只输出一个字符。'],B:['good','正确。*p->name得到W，&p->name[2]按字符串输出ng。'],C:['bad','%s会从下标2连续输出到\\0，不只输出字符n。'],D:['bad','printf的两个实参访问name成员，没有输出id和score。']};document.querySelectorAll('[data-trace-prediction]').forEach(function(button){button.onclick=function(){const item=predictions[button.dataset.tracePrediction];const f=document.getElementById('trace-prediction-feedback');f.className='feedback '+item[0];f.textContent=item[1];};});
+function charHtml(value,active){return Array.from(value+'\0').map(function(ch,index){const shown=ch==='\0'?'\\0':ch;return '<div class="char-cell '+(index===active?'active':'')+'"><strong>'+index+'</strong><br>'+shown+'</div>';}).join('');}let pointerStep=0;const pointerStates=[['等待初始化结构体变量。','输出：等待执行',-1],['建立s：id=1，score=89.5，name指向Wang。','输出：等待执行',-1],['执行p=&s：p指向结构体变量s。','输出：等待执行',-1],['计算p->name：得到字符串首字符位置。','输出：等待执行',0],['计算*p->name：读取首字符W。','待输出：W',0],['计算&p->name[2]：得到后缀ng的起点。','待输出：W,ng',2],['执行printf：按%c、逗号和%s组合结果。','输出：W,ng',2]];function renderPointer(){const state=pointerStates[pointerStep];document.getElementById('pointer-state').textContent=state[0];document.getElementById('pointer-output').textContent=state[1];document.getElementById('pointer-chars').innerHTML=charHtml('Wang',state[2]);}document.getElementById('pointer-next').onclick=function(){pointerStep=Math.min(pointerStates.length-1,pointerStep+1);renderPointer();};document.getElementById('pointer-play').onclick=function(){pointerStep=pointerStates.length-1;renderPointer();};document.getElementById('pointer-reset').onclick=function(){pointerStep=0;renderPointer();};renderPointer();
+document.querySelectorAll('[data-name-case]').forEach(function(button){button.onclick=function(){const value=button.dataset.nameCase;document.getElementById('name-case-strip').innerHTML=charHtml(value,2);const first=value[0];const suffix=value.slice(2);const f=document.getElementById('name-case-feedback');f.className='feedback good';f.textContent='*p->name得到字符'+first+'；&p->name[2]按字符串输出'+suffix+'；组合输出为'+first+','+suffix+'。';};});
+const pointerErrors={dot:'p是结构体指针，p.name错误。应写p->name，或写成(*p).name。',paren:'*p.id会先计算p.id，但p不是结构体变量。等价形式必须写成(*p).id。',format:'p->name[2]是单个字符，不能作为%s的字符串起点。若要输出后缀，应传入&p->name[2]。',suffix:'下标决定后缀起点。下标2对应n，因此后缀是ng；下标1则会得到ang。'};document.querySelectorAll('[data-pointer-error]').forEach(function(button){button.onclick=function(){const f=document.getElementById('pointer-error-feedback');f.className='feedback bad';f.textContent=pointerErrors[button.dataset.pointerError];};});
+document.querySelectorAll('[data-review]').forEach(function(button){button.onclick=function(){button.classList.toggle('done');};});showSlide(0);
+</script>
+</body>
+</html>
