@@ -150,7 +150,12 @@ BEHAVIOR_FIXTURES: dict[str, list[BehaviorFixture]] = {
         ("21\n", "invalid\n"),
     ],
     "QB-PG-021": [("1 2 3 4 5 6 7 8 9\n", "1 4 7\n2 5 8\n3 6 9\n")],
-    "QB-PG-038": [("hello world\n", "11\n"), ("\n", "0\n")],
+    "QB-PG-038": [
+        ("hello world\n", "11\n"),
+        ("\n", "0\n"),
+        ("A\n", "1\n"),
+        ("a" * 99 + "\n", "99\n"),
+    ],
 }
 
 

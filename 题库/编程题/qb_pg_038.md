@@ -45,44 +45,44 @@ hello world
 
 
 
-围绕“指针法求字符串长度”检查输入合法性、临界值、数组或循环边界，并严格匹配题目规定的输出格式。
+保留指向首字符的指针，只移动遍历指针；同时处理换行符和 `\0`，且不要把结束标志计入长度。计算指针差时注意相减方向，并严格匹配输出格式。
 
 <details>
 <summary>参考答案与解析</summary>
 
-**解题思路：** 用指针从首字符移动到 `\0`，指针差即长度。
+**解题思路：** 用 `start` 保留首字符位置，移动 `p` 直到遇到换行符或 `\0`，此时 `p - start` 即字符串长度。
 
 **评分建议：** 输入与边界处理2分，核心算法5分，正确输出2分，代码规范1分。
 
-**正常与边界测试：** `hello world`；空行。
+**正常与边界测试：** `hello world`；空行；单字符；99个字符。
 
 ### 完整参考程序
 
 <!-- reference-c:start -->
 ```c
 #include <stdio.h>
-static int length(const char * s)
-{
-    const char * p = s;
-    while (* p)
-    {
-        p++;
-    }
-    return(int) (p - s);
-}
+
 int main(void)
 {
-    char s[128];
-    if (!fgets(s, sizeof s, stdin))
+    char s[100];
+    char *start;
+    char *p;
+
+    if (fgets(s, sizeof s, stdin) == NULL)
     {
         return 1;
     }
-    int n = length(s);
-    if (n > 0 && s[n - 1] == '\n')
+
+    start = s;
+    p = s;
+
+    while (*p != '\0' && *p != '\n')
     {
-        n--;
+        p++;
     }
-    printf("%d\n", n);
+
+    printf("%d\n", (int)(p - start));
+
     return 0;
 }
 ```
