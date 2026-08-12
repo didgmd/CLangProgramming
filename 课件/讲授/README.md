@@ -1,6 +1,6 @@
 # 讲授课
 
-共16次讲授课、32学时。每次2课时、90分钟，只深讲1–2个程序。CW-L01已完成PPTX与HTML并通过校验；CW-L02、CW-L03均已完成25页学生端HTML；CW-L04、CW-L05均已完成26页学生端HTML；CW-L06已完成28页，CW-L07、CW-L08均已完成30页，CW-L09与CW-L11均已完成34页，CW-L10已完成32页，CW-L12、CW-L13均已完成36页学生端HTML。
+共16次讲授课、32学时。每次2课时、90分钟，只深讲1–2个程序。CW-L01已完成PPTX与HTML并通过校验；CW-L02、CW-L03均已完成25页学生端HTML；CW-L04、CW-L05均已完成26页学生端HTML；CW-L06已完成28页，CW-L07、CW-L08均已完成30页，CW-L09与CW-L11均已完成34页，CW-L10已完成32页，CW-L12至CW-L14均已完成36页学生端HTML。
 
 | ID | 章节 | 主题 | 核心程序 | 状态 |
 |---|---|---|---|---|
@@ -17,7 +17,7 @@
 | [CW-L11](11-recursion/README.md) | 第7章 | 递归：阶乘与斐波那契数列 | `QB-PG-018`、`QB-PG-015` | ready |
 | [CW-L12](12-pointer-model-and-arrays/README.md) | 第8章 | 指针与数组：指向关系和字符串长度 | `EX-C08-002`、`QB-PG-038` | ready |
 | [CW-L13](13-pointer-parameters-and-strings/README.md) | 第8章 | 指针参数与字符串复制：交换数值与复制字符 | `QB-TR-028`、`QB-PG-017` | ready |
-| [CW-L14](14-structures/README.md) | 第9章 | 结构体定义、成员和记录 | `QB-PG-030` | planned |
+| [CW-L14](14-structures/README.md) | 第9章 | 结构体：学生记录与成绩排序 | `EX-C09-002`、`QB-PG-030` | ready |
 | [CW-L15](15-structure-arrays-and-pointers/README.md) | 第9章 | 结构体数组、排序与结构体指针 | `QB-PG-031` | planned |
 | [CW-L16](16-file-input-and-output/README.md) | 第10章 | 文件打开、读写、关闭与错误处理 | `QB-PG-042`（题库待补） | planned |
 

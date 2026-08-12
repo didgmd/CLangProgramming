@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="Kevin@SUT">
+<meta name="copyright" content="Kevin@SUT">
+<title>CW-L14 结构体：学生记录与成绩排序</title>
+<style>
+:root{--ink:#10243a;--muted:#52677b;--paper:#f5f8fb;--panel:#fff;--cyan:#0f7f8d;--amber:#c56b16;--line:#cbd8e5;--code:#0b1726;--good:#155e35;--bad:#9f2d2d}*{box-sizing:border-box}html,body{margin:0;height:100%;overflow: hidden;background:var(--paper);color:var(--ink);font-family:"Microsoft YaHei",Arial,sans-serif}body{display:grid;grid-template-rows:1fr 64px}.deck{position:relative;min-height:0}.slide{display:none;height:100%;padding:22px 40px}.slide.active{display:block}.slide-inner{height:100%;max-width:1220px;margin:auto;display:flex;flex-direction:column;gap:11px}.eyebrow{color:var(--cyan);font-weight:800;letter-spacing:.08em}h1{font-size:43px;margin:4px 0 8px}h2{font-size:31px;margin:0}h3{font-size:21px;margin:0 0 7px}p,li,td,th,button{font-size:18px;line-height:1.45}.lead{font-size:22px;color:var(--muted)}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:15px;min-height:0}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.card,.question,.state,.feedback,.terminal{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px}.rule,.card strong{color:var(--cyan)}pre{margin:0;background:var(--code);color:#eef7ff;border-radius:12px;padding:13px;font:17px/1.42 Consolas,monospace;white-space:pre-wrap}.code-small{font-size:14px}.active-code-line{outline:3px solid var(--amber)}.compact p,.compact li,.compact button,.compact td,.compact th{font-size:16px}.feedback{min-height:56px;color:var(--muted)}.feedback.good{background:#dff3e7;color:var(--good);border-color:#8ccba4}.feedback.bad{background:#fde8e8;color:var(--bad);border-color:#e8a0a0}.button-row,.options{display:flex;flex-wrap:wrap;gap:8px}.options{flex-direction:column}button{border:1px solid #9fb4c8;background:#fff;color:var(--ink);border-radius:10px;padding:8px 13px;cursor:pointer;text-align:left}button:hover,button:focus-visible{outline:3px solid #78d4dd;outline-offset:1px}button.primary{background:var(--cyan);color:#fff;border-color:var(--cyan)}.record-list{display:grid;gap:6px}.record-row{display:grid;grid-template-columns:120px 1fr 120px;gap:6px;align-items:center;background:#fff;border:2px solid var(--line);border-radius:12px;padding:7px 10px}.record-row.active{border-color:var(--amber);box-shadow:0 0 0 3px #ffd79a}.memory{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}.cell{min-width:120px;background:#fff;border:2px solid var(--line);border-radius:12px;padding:10px;text-align:center}.cell.active{border-color:var(--amber);box-shadow:0 0 0 3px #ffd79a}.arrow{font-size:26px;color:var(--cyan)}table{width:100%;border-collapse:collapse;background:#fff}th,td{border:1px solid var(--line);padding:7px;text-align:left}th{background:#e9f3f6}.note{border-left:5px solid var(--amber);background:#fff4df;padding:9px 13px}.danger{border-left-color:var(--bad);background:#fff0f0}.nav{display:flex;align-items:center;gap:12px;padding:8px 22px;background:#0b1726;color:#fff}.nav button{font-size:17px;padding:7px 13px}.progress{height:8px;background:#30465d;flex:1;border-radius:9px;overflow:hidden}.progress span{display:block;height:100%;background:#31c6d4;width:0}.counter{min-width:120px;text-align:center}.footer{font-size:14px;color:#c8d6e4}.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.review-item.done{background:#dff3e7;color:#155e35;border-color:#78b994}.review-item.done strong,.review-item.done code{color:#155e35}.hidden-marker{display:none}@media(max-width:850px){html,body{overflow:auto}body{display:block}.slide{min-height:100vh;height:auto;padding:18px}.grid-2,.grid-3,.review-grid{grid-template-columns:1fr}h1{font-size:35px}h2{font-size:27px}}
+</style>
+</head>
+<body data-courseware="c-freshman-interactive-html" data-layout="slide-page" data-course-id="CW-L14" data-chapter="9" data-routines="EX-C09-001,EX-C09-002" data-questions="QB-PG-030,QB-SC-025,QB-SC-028,QB-SC-056,QB-TF-010" data-lesson-variants="compare-two-student-records,student-record-bubble-sort" data-attribution="Kevin@SUT">
+<main class="deck" data-deck data-interaction="ask-wait-reveal">
+<span class="hidden-marker" data-section="objectives"></span><span class="hidden-marker" data-section="concept"></span><span class="hidden-marker" data-section="interaction"></span><span class="hidden-marker" data-section="quiz"></span><span class="hidden-marker" data-section="exercise"></span><span class="hidden-marker" data-section="summary"></span><span class="hidden-marker" data-code-line></span>
+
+<section class="slide active" data-slide><div class="slide-inner"><div class="eyebrow">01 · 学习目标</div><h1>结构体：学生记录与成绩排序</h1><p class="lead">把属于同一对象的多项数据组合成完整记录，并始终保持成员之间的对应关系。</p><div class="grid-2"><div class="card"><h3>学生记录</h3><ul><li>定义结构体类型</li><li>声明并初始化结构体变量</li><li>使用<code>.</code>访问不同成员</li></ul></div><div class="card"><h3>记录排序</h3><ul><li>建立固定长度结构体数组</li><li>按照成绩成员比较</li><li>整体交换两条记录</li></ul></div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">02 · 学生记录比较</div><h2>输入两名学生，输出成绩较高的完整记录</h2><div class="grid-2"><div class="card"><p><strong>输入：</strong>两行，每行依次为学号、姓名、成绩。</p><p><strong>约束：</strong>姓名不含空白字符，长度不超过19；输入格式合法。</p><p><strong>输出：</strong>成绩较高者的完整记录；相同则按原顺序输出两条记录。</p></div><div class="card"><pre>输入
+1001 Alice 86.5
+1002 Bob 92
+
+输出
+1002 Bob 92.0</pre></div></div><div class="button-row"><button data-compare-case="second">第二名较高</button><button data-compare-case="first">第一名较高</button><button data-compare-case="equal">成绩相同</button></div><div class="feedback" id="compare-case-feedback">选择一组数据，查看精确输出。</div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">03 · 一条完整记录</div><h2>相关数据应作为一个整体保存</h2><div class="grid-2"><div class="card"><h3>分散的变量</h3><pre>int id;
+char name[20];
+double score;</pre><p>变量之间没有显式标明“属于同一名学生”。</p></div><div class="card"><h3>结构体记录</h3><pre>struct Student
+{
+    int id;
+    char name[20];
+    double score;
+};</pre><p>三个成员共同描述一名学生。</p></div></div><p class="rule">结构体把具有逻辑联系、但类型可以不同的数据组合成一条记录。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">04 · 定义结构体类型</div><h2><code>struct Student</code>规定一条记录的组成</h2><pre>struct Student
+{
+    int id;
+    char name[20];
+    double score;
+};</pre><div class="grid-3"><div class="card"><h3><code>Student</code></h3><p>结构体标记，与<code>struct</code>共同构成类型名。</p></div><div class="card"><h3>花括号</h3><p>列出该类型包含的全部成员。</p></div><div class="card"><h3>末尾分号</h3><p>结构体类型定义结束后不可遗漏。</p></div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">05 · 三个层次</div><h2>类型、变量和成员表示不同概念</h2><table><tr><th>层次</th><th>示例</th><th>含义</th></tr><tr><td>结构体类型</td><td><code>struct Student</code></td><td>规定记录的成员组成</td></tr><tr><td>结构体变量</td><td><code>student1</code></td><td>按该类型建立的一条具体记录</td></tr><tr><td>结构体成员</td><td><code>id</code>、<code>name</code>、<code>score</code></td><td>记录内部的各项数据</td></tr></table><p class="note">类型是规则，变量是具体记录，成员是记录内部的数据项。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">06 · QB-SC-025</div><h2>定义结构体类型使用哪个关键字</h2><article class="question" data-question-id="QB-SC-025"><p class="question-text">定义结构体类型使用的关键字是（ ）。</p><div class="options"><button data-question-option="A" data-correct="true" data-feedback="struct用于声明结构体类型">A. struct</button><button data-question-option="B" data-correct="false" data-feedback="union用于声明联合体类型">B. union</button><button data-question-option="C" data-correct="false" data-feedback="enum用于声明枚举类型">C. enum</button><button data-question-option="D" data-correct="false" data-feedback="typedef用于为已有类型定义别名">D. typedef</button></div><div class="feedback" aria-live="polite">选择一个选项，查看规则说明。</div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">07 · 成员类型</div><h2>一条记录可以组合不同类型的数据</h2><div class="grid-3"><div class="card"><h3><code>int id</code></h3><p>整数成员，保存学号。</p></div><div class="card"><h3><code>char name[20]</code></h3><p>字符数组成员，保存不含空白的姓名。</p></div><div class="card"><h3><code>double score</code></h3><p>浮点成员，保存成绩。</p></div></div><p class="rule">成员类型由数据含义决定，不要求所有成员属于同一种类型。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">08 · QB-SC-056</div><h2>结构体成员可以使用哪些类型</h2><article class="question" data-question-id="QB-SC-056"><p class="question-text">结构体成员（ ）。</p><div class="options"><button data-question-option="A" data-correct="false" data-feedback="不同成员可以采用不同的合法类型">A. 必须同一类型</button><button data-question-option="B" data-correct="false" data-feedback="字符数组也可以作为结构体成员">B. 只能基本类型</button><button data-question-option="C" data-correct="true" data-feedback="成员类型由每项数据的含义决定">C. 可以是多种合法类型</button><button data-question-option="D" data-correct="false" data-feedback="Student中的name就是数组成员">D. 不能是数组</button></div><div class="feedback" aria-live="polite">结合Student中的三个成员判断。</div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">09 · QB-TF-010</div><h2>成员是否必须全部是基本数据类型</h2><article class="question" data-true-false="QB-TF-010"><p class="question-text">判断下列说法是否正确：结构体成员必须全部是基本数据类型。</p><div class="button-row"><button data-tf-answer="true">正确</button><button data-tf-answer="false">错误</button></div><div class="feedback" aria-live="polite">使用<code>char name[20]</code>作为反例进行判断。</div></article><p class="note"><code>name</code>是数组成员，因此“必须全部是基本数据类型”这一绝对表述不成立。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">10 · 声明结构体变量</div><h2>同一类型可以建立多条相互独立的记录</h2><pre>struct Student student1;
+struct Student student2;</pre><div class="grid-2"><div class="record-row"><span>1001</span><strong>Alice</strong><span>86.5</span></div><div class="record-row"><span>1002</span><strong>Bob</strong><span>92.0</span></div></div><p class="rule">修改<code>student1.score</code>不会自动修改<code>student2.score</code>。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">11 · QB-SC-028</div><h2>花括号后声明的是结构体变量</h2><article class="question" data-question-id="QB-SC-028"><p class="question-text">声明 <code>struct stu{int a;float b;} stutype;</code> 后，<code>stutype</code> 是（ ）。</p><div class="options"><button data-question-option="A" data-correct="false" data-feedback="stutype是程序员声明的名称，不是C关键字">A. 关键字</button><button data-question-option="B" data-correct="false" data-feedback="stu才是结构体标记">B. 结构体标记</button><button data-question-option="C" data-correct="true" data-feedback="花括号后的stutype是struct stu类型的变量">C. 结构体变量</button><button data-question-option="D" data-correct="false" data-feedback="a和b才是结构体成员名">D. 成员名</button></div><div class="feedback" aria-live="polite">先找到花括号定义的类型，再判断花括号后的名称。</div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">12 · 访问成员</div><h2>结构体变量使用点运算符访问成员</h2><div class="grid-3"><button data-member="id"><code>student1.id</code></button><button data-member="name"><code>student1.name</code></button><button data-member="score"><code>student1.score</code></button></div><div class="feedback" id="member-feedback">选择一个成员表达式，查看它访问的数据。</div><pre>结构体变量名.成员名</pre><p class="rule">点号左侧是结构体变量，右侧是该类型中已经定义的成员名。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">13 · 初始化记录</div><h2>初始化列表按成员定义顺序提供初值</h2><pre>struct Student student =
+{
+    1001,
+    "Alice",
+    86.5
+};</pre><table><tr><th>初始化值</th><th>对应成员</th><th>结果</th></tr><tr><td><code>1001</code></td><td><code>id</code></td><td>student.id为1001</td></tr><tr><td><code>"Alice"</code></td><td><code>name</code></td><td>student.name保存Alice</td></tr><tr><td><code>86.5</code></td><td><code>score</code></td><td>student.score为86.5</td></tr></table></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">14 · 读取成员</div><h2>每个成员按照自身类型选择格式</h2><pre>scanf(
+    "%d %19s %lf",
+    &amp;student1.id,
+    student1.name,
+    &amp;student1.score
+);</pre><table><tr><th>成员</th><th>格式</th><th>读取位置</th></tr><tr><td><code>id</code></td><td><code>%d</code></td><td><code>&amp;student1.id</code></td></tr><tr><td><code>name</code></td><td><code>%19s</code></td><td><code>student1.name</code></td></tr><tr><td><code>score</code></td><td><code>%lf</code></td><td><code>&amp;student1.score</code></td></tr></table><p>输入约束：姓名不含空白字符，所有数据符合规定格式。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">15 · 比较成绩成员</div><h2>三个互斥结果分别对应不同输出</h2><div class="grid-3"><div class="card"><h3><code>&gt;</code></h3><p>第一名成绩较高，输出<code>student1</code>。</p></div><div class="card"><h3><code>&lt;</code></h3><p>第二名成绩较高，输出<code>student2</code>。</p></div><div class="card"><h3><code>==</code></h3><p>成绩相同，按输入顺序输出两条记录。</p></div></div><p class="rule">比较依据是成绩成员，输出对象仍是包含学号、姓名和成绩的完整记录。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">16 · 完整程序</div><h2>比较两条学生记录</h2><pre class="code-small" data-positive-program="compare-student-records">#include &lt;stdio.h&gt;
+
+struct Student
+{
+    int id;
+    char name[20];
+    double score;
+};
+
+int main()
+{
+    struct Student student1;
+    struct Student student2;
+
+    scanf("%d %19s %lf", &amp;student1.id, student1.name, &amp;student1.score);
+    scanf("%d %19s %lf", &amp;student2.id, student2.name, &amp;student2.score);
+
+    if (student1.score &gt; student2.score)
+    {
+        printf("%d %s %.1f\n", student1.id, student1.name, student1.score);
+    }
+    else if (student1.score &lt; student2.score)
+    {
+        printf("%d %s %.1f\n", student2.id, student2.name, student2.score);
+    }
+    else
+    {
+        printf("%d %s %.1f\n", student1.id, student1.name, student1.score);
+        printf("%d %s %.1f\n", student2.id, student2.name, student2.score);
+    }
+
+    return 0;
+}</pre></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">17 · 记录比较执行器</div><h2>从读取成员到选择完整输出记录</h2><div class="button-row"><button class="primary" id="compare-next">执行下一步</button><button id="compare-play">完整执行</button><button id="compare-reset">重置</button></div><div class="grid-2"><div class="state" id="compare-state">等待读取第一条记录。</div><div class="terminal" id="compare-output">输出：等待执行</div></div><div class="record-list" id="compare-records"></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">18 · 前半部分总结</div><h2>结构体变量表示一条完整记录</h2><div class="grid-2"><div><div class="button-row"><button data-record-error="struct">遗漏struct</button><button data-record-error="dot">遗漏点号</button><button data-record-error="name">姓名位置错误</button><button data-record-error="format">格式不匹配</button><button data-record-error="mixed">混用记录成员</button></div><div class="feedback" id="record-error-feedback">选择一个诊断项，查看原因和正确写法。</div><p class="note danger">错误写法只用于诊断，不是可运行正例。</p></div><div class="card"><div class="review-grid"><button class="review-item" data-review>类型规定成员组成</button><button class="review-item" data-review>变量表示具体记录</button><button class="review-item" data-review>成员类型可以不同</button><button class="review-item" data-review>使用点号访问成员</button><button class="review-item" data-review>初始化值按成员顺序对应</button><button class="review-item" data-review>格式与成员类型匹配</button><button class="review-item" data-review>输出保持记录完整</button></div><pre>gcc student_compare.c -o student_compare.exe
+.\student_compare.exe</pre><p><a href="../../../例程/chapters/09-user-defined-types/ex_c09_002_9_2.c">EX-C09-002</a></p></div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">19 · QB-PG-030</div><h2>结构体冒泡排序</h2><article class="question" data-programming-question-id="QB-PG-030"><p class="question-text">输入5名学生的学号和成绩，使用冒泡排序按成绩降序排列。</p><div class="grid-2"><div class="card"><p><strong>输入格式：</strong>输入5组记录，每组包含一个整数型学号和一个实数成绩。</p><p><strong>输出格式：</strong>按成绩从高到低输出5行，每行为“学号 成绩”，成绩保留1位小数。</p><p><strong>边界：</strong>固定处理5条记录；交换时必须移动完整结构体。</p></div><div class="card"><pre>输入
+1 82
+2 75
+3 90
+4 68
+5 88
+
+输出
+3 90.0
+5 88.0
+1 82.0
+2 75.0
+4 68.0</pre></div></div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">20 · 结构体数组</div><h2><code>students[5]</code>保存5条同类型记录</h2><pre>struct Student students[5];</pre><div class="record-list"><div class="record-row"><span>[0]</span><strong>students[0]</strong><span>一条记录</span></div><div class="record-row"><span>[1]</span><strong>students[1]</strong><span>一条记录</span></div><div class="record-row"><span>…</span><strong>…</strong><span>…</span></div><div class="record-row"><span>[4]</span><strong>students[4]</strong><span>一条记录</span></div></div><p class="rule">数组元素的类型是<code>struct Student</code>，所以每个元素都包含学号和成绩两个成员。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">21 · 五条记录</div><h2>数组下标确定记录，成员名确定记录中的数据</h2><table><tr><th>数组元素</th><th>学号成员</th><th>成绩成员</th></tr><tr><td><code>students[0]</code></td><td><code>students[0].id</code></td><td><code>students[0].score</code></td></tr><tr><td><code>students[1]</code></td><td><code>students[1].id</code></td><td><code>students[1].score</code></td></tr><tr><td><code>students[i]</code></td><td><code>students[i].id</code></td><td><code>students[i].score</code></td></tr></table><p class="note">先用下标选择一条记录，再用点号选择该记录中的成员。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">22 · 记录与成员</div><h2><code>students[i]</code>和<code>students[i].score</code>不是同一层次</h2><div class="grid-2"><div class="card"><h3><code>students[i]</code></h3><p>一条完整的<code>struct Student</code>记录，包含学号和成绩。</p></div><div class="card"><h3><code>students[i].score</code></h3><p>该记录中的一个<code>double</code>成员。</p></div></div><p class="rule">排序时比较单个成绩成员，交换时移动完整记录。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">23 · 逐条读取</div><h2>循环变量<code>i</code>选择当前记录</h2><pre>for (i = 0; i &lt; 5; i++)
+{
+    scanf(
+        "%d %lf",
+        &amp;students[i].id,
+        &amp;students[i].score
+    );
+}</pre><div class="button-row"><button data-read-record="0">i=0</button><button data-read-record="1">i=1</button><button data-read-record="2">i=2</button><button data-read-record="3">i=3</button><button data-read-record="4">i=4</button></div><div class="feedback" id="read-record-feedback">选择一次循环，查看数据写入哪条记录。</div><p>输入约束：5组学号和成绩均符合规定格式。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">24 · 读取后的数组</div><h2>每一行都保持学号与成绩的对应关系</h2><div class="record-list"><div class="record-row"><span>下标0</span><strong>学号1</strong><span>82.0</span></div><div class="record-row"><span>下标1</span><strong>学号2</strong><span>75.0</span></div><div class="record-row"><span>下标2</span><strong>学号3</strong><span>90.0</span></div><div class="record-row"><span>下标3</span><strong>学号4</strong><span>68.0</span></div><div class="record-row"><span>下标4</span><strong>学号5</strong><span>88.0</span></div></div><p class="rule">排序改变记录在数组中的位置，但不能拆散一条记录内部的成员。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">25 · 相邻记录比较</div><h2>冒泡排序比较相邻记录的成绩成员</h2><pre>students[i].score
+students[i + 1].score</pre><div class="memory"><div class="cell active">学号1<br><strong>82.0</strong></div><div class="arrow">比较成绩</div><div class="cell active">学号2<br><strong>75.0</strong></div></div><p>82.0不小于75.0，降序排列时这两条记录不交换。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">26 · 降序比较条件</div><h2>左侧成绩较小时交换两条记录</h2><pre>if (students[i].score
+    &lt; students[i + 1].score)
+{
+    /* 交换完整记录 */
+}</pre><div class="grid-2"><div class="card"><h3>条件为假</h3><p>左侧成绩不小于右侧，顺序符合降序要求。</p></div><div class="card"><h3>条件为真</h3><p>右侧成绩更高，应把右侧完整记录移到左边。</p></div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">27 · 结构体整体赋值</div><h2>结构体变量可以作为一个整体复制</h2><pre>temp = students[i];</pre><div class="memory"><div class="cell">students[i]<br>学号2 / 75.0</div><div class="arrow">整条复制 →</div><div class="cell active">temp<br>学号2 / 75.0</div></div><p class="rule">赋值同时复制该记录的所有成员，不需要分别复制<code>id</code>和<code>score</code>。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">28 · 整条记录交换</div><h2>三次整体赋值保持成员对应</h2><pre>temp = students[i];
+students[i] = students[i + 1];
+students[i + 1] = temp;</pre><table><tr><th>步骤</th><th>左侧记录</th><th>右侧记录</th><th>temp</th></tr><tr><td>开始</td><td>2 / 75.0</td><td>3 / 90.0</td><td>—</td></tr><tr><td>保存左侧</td><td>2 / 75.0</td><td>3 / 90.0</td><td>2 / 75.0</td></tr><tr><td>覆盖左侧</td><td>3 / 90.0</td><td>3 / 90.0</td><td>2 / 75.0</td></tr><tr><td>完成交换</td><td>3 / 90.0</td><td>2 / 75.0</td><td>2 / 75.0</td></tr></table></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">29 · 为什么不能只交换成绩</div><h2>成员被拆开后，记录表达的对象就会改变</h2><div class="grid-2"><div class="card"><h3>错误：只交换成绩</h3><table><tr><td>学号2</td><td>90.0</td></tr><tr><td>学号3</td><td>75.0</td></tr></table><p>成绩错误地归到了另一名学生。</p></div><div class="card"><h3>正确：交换完整记录</h3><table><tr><td>学号3</td><td>90.0</td></tr><tr><td>学号2</td><td>75.0</td></tr></table><p>每个学号仍与原成绩对应。</p></div></div><p class="rule">排序改变记录次序，不改变记录内部成员之间的关系。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">30 · 第一趟冒泡</div><h2>较低成绩逐步向数组右侧移动</h2><div class="button-row"><button class="primary" id="pass-next">比较下一对</button><button id="pass-play">完成第一趟</button><button id="pass-reset">重置</button></div><div class="record-list" id="pass-records"></div><div class="feedback" id="pass-feedback">第一趟开始，准备比较下标0和1。</div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">31 · 循环边界</div><h2>5条记录最多执行4趟</h2><table><tr><th>外层j</th><th>内层条件</th><th>比较次数</th><th>已就位区域</th></tr><tr><td>0</td><td><code>i &lt; 4</code></td><td>4</td><td>最右1条</td></tr><tr><td>1</td><td><code>i &lt; 3</code></td><td>3</td><td>最右2条</td></tr><tr><td>2</td><td><code>i &lt; 2</code></td><td>2</td><td>最右3条</td></tr><tr><td>3</td><td><code>i &lt; 1</code></td><td>1</td><td>全部有序</td></tr></table><p class="note"><code>i + 1</code>的最大下标为4，不会访问不存在的<code>students[5]</code>。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">32 · 完整程序</div><h2>按成绩降序排列5条完整记录</h2><pre class="code-small" data-positive-program="student-record-bubble-sort">#include &lt;stdio.h&gt;
+
+struct Student
+{
+    int id;
+    double score;
+};
+
+int main()
+{
+    struct Student students[5];
+    struct Student temp;
+    int i, j;
+
+    for (i = 0; i &lt; 5; i++)
+    {
+        scanf("%d %lf", &amp;students[i].id, &amp;students[i].score);
+    }
+
+    for (j = 0; j &lt; 4; j++)
+    {
+        for (i = 0; i &lt; 4 - j; i++)
+        {
+            if (students[i].score &lt; students[i + 1].score)
+            {
+                temp = students[i];
+                students[i] = students[i + 1];
+                students[i + 1] = temp;
+            }
+        }
+    }
+
+    for (i = 0; i &lt; 5; i++)
+    {
+        printf("%d %.1f\n", students[i].id, students[i].score);
+    }
+
+    return 0;
+}</pre></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">33 · 第一趟执行器</div><h2>每次高亮两条相邻记录并决定是否整体交换</h2><div class="button-row"><button class="primary" id="bubble-next">执行下一次比较</button><button id="bubble-reset">重置</button></div><div class="record-list" id="bubble-records"></div><div class="feedback" id="bubble-feedback">准备比较第一对相邻记录。</div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">34 · 全部趟数</div><h2>每完成一趟，右侧增加一条已就位记录</h2><div class="button-row"><button class="primary" id="sort-next">完成下一趟</button><button id="sort-play">完成全部排序</button><button id="sort-reset">重置</button></div><div class="record-list" id="sort-records"></div><div class="feedback" id="sort-feedback">尚未开始排序。</div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">35 · 相同成绩与错误诊断</div><h2>严格小于号不会交换成绩相同的相邻记录</h2><div class="grid-2"><div><div class="record-list"><div class="record-row"><span>学号2</span><strong>95.0</strong><span>先出现</span></div><div class="record-row"><span>学号5</span><strong>95.0</strong><span>后出现</span></div></div><p class="note">两条记录成绩相等，条件为假，原有先后顺序保留。</p></div><div><div class="button-row"><button data-sort-error="score-only">只交换成绩</button><button data-sort-error="direction">比较方向错误</button><button data-sort-error="temp-type">临时变量类型错误</button><button data-sort-error="member">成员名错误</button><button data-sort-error="boundary">循环越界</button></div><div class="feedback" id="sort-error-feedback">选择一个错误，查看原因与修正方式。</div></div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">36 · 全课总结</div><h2>比较成员，交换记录，保持数据关系完整</h2><div class="grid-2"><div><div class="button-row"><button data-sort-case="sample">题面样例</button><button data-sort-case="descending">已有序</button><button data-sort-case="ascending">升序输入</button><button data-sort-case="equal">相同成绩</button></div><div class="feedback" id="sort-case-feedback">选择一组测试，查看精确输出。</div><div class="review-grid"><button class="review-item" data-review>结构体组合不同类型成员</button><button class="review-item" data-review>点号访问变量成员</button><button class="review-item" data-review>数组元素是一条完整记录</button><button class="review-item" data-review>比较成绩成员</button><button class="review-item" data-review>整体赋值复制所有成员</button><button class="review-item" data-review>交换完整记录</button><button class="review-item" data-review>相同成绩保持原顺序</button></div></div><div class="card"><h3>编译与运行</h3><pre>gcc student_sort.c -o student_sort.exe
+.\student_sort.exe</pre><p><a href="../../../题库/编程题/qb_pg_030.md">QB-PG-030</a> · <a href="../../../例程/chapters/09-user-defined-types/ex_c09_001_9_1.c">EX-C09-001</a> · <a href="../../../例程/chapters/09-user-defined-types/ex_c09_002_9_2.c">EX-C09-002</a></p><p class="rule">浏览器中的执行器是确定性状态模拟；真实程序请使用MinGW GCC编译运行。</p></div></div></div></section>
+</main>
+
+<nav class="nav" aria-label="课件导航"><button id="prev">上一页</button><button id="next">下一页</button><div class="progress" aria-hidden="true"><span id="progress"></span></div><div class="counter"><span id="current">1</span> / 36</div><div class="footer">CW-L14 · Kevin@SUT</div></nav>
+
+<script>
+const slides=[...document.querySelectorAll('[data-slide]')];let current=0;
+function showSlide(index){current=Math.max(0,Math.min(slides.length-1,index));slides.forEach(function(slide,i){slide.classList.toggle('active',i===current);});document.getElementById('current').textContent=current+1;document.getElementById('progress').style.width=((current+1)/slides.length*100)+'%';}
+document.getElementById('prev').onclick=function(){showSlide(current-1);};document.getElementById('next').onclick=function(){showSlide(current+1);};addEventListener('keydown',function(event){if(['ArrowRight','PageDown'].includes(event.key))showSlide(current+1);if(['ArrowLeft','PageUp'].includes(event.key))showSlide(current-1);if(event.key==='Home')showSlide(0);if(event.key==='End')showSlide(slides.length-1);});
+const answers={'QB-SC-025':{right:'A',why:'struct用于声明结构体类型。'},'QB-SC-056':{right:'C',why:'结构体可以组合多种合法类型；Student同时包含整数、字符数组和浮点成员。'},'QB-SC-028':{right:'C',why:'花括号定义struct stu类型，花括号后的stutype是该类型的结构体变量。'}};
+document.querySelectorAll('[data-question-id]').forEach(function(box){box.querySelectorAll('[data-question-option]').forEach(function(button){button.onclick=function(){const item=answers[box.dataset.questionId];const ok=button.dataset.questionOption===item.right;const feedback=box.querySelector('.feedback');feedback.className='feedback '+(ok?'good':'bad');feedback.textContent=(ok?'正确。':'不正确。')+item.why;};});});
+document.querySelectorAll('[data-tf-answer]').forEach(function(button){button.onclick=function(){const ok=button.dataset.tfAnswer==='false';const feedback=button.closest('article').querySelector('.feedback');feedback.className='feedback '+(ok?'good':'bad');feedback.textContent=(ok?'正确。':'不正确。')+'char name[20]是数组成员，已经说明结构体成员不必全部是基本数据类型变量。';};});
+const compareCases={second:'1001 Alice 86.5；1002 Bob 92.0。第二名较高，输出：1002 Bob 92.0',first:'1001 Alice 95.0；1002 Bob 88.0。第一名较高，输出：1001 Alice 95.0',equal:'两人成绩均为90.0，按输入顺序输出：1001 Alice 90.0；1002 Bob 90.0'};
+document.querySelectorAll('[data-compare-case]').forEach(function(button){button.onclick=function(){const feedback=document.getElementById('compare-case-feedback');feedback.className='feedback good';feedback.textContent=compareCases[button.dataset.compareCase];};});
+const memberText={id:'student1.id访问整数型学号成员。',name:'student1.name访问字符数组姓名成员。',score:'student1.score访问double型成绩成员。'};document.querySelectorAll('[data-member]').forEach(function(button){button.onclick=function(){const feedback=document.getElementById('member-feedback');feedback.className='feedback good';feedback.textContent=memberText[button.dataset.member];};});
+let compareStep=0;const compareStates=[['等待读取第一条记录。','输出：等待执行'],['读取student1：1001 Alice 86.5。','输出：等待执行'],['读取student2：1002 Bob 92.0。','输出：等待执行'],['比较86.5与92.0，第二名成绩较高。','输出：等待执行'],['输出第二条完整记录。','输出：1002 Bob 92.0']];
+function renderCompare(){document.getElementById('compare-state').textContent=compareStates[compareStep][0];document.getElementById('compare-output').textContent=compareStates[compareStep][1];const rows=[];if(compareStep>=1)rows.push('<div class="record-row"><span>1001</span><strong>Alice</strong><span>86.5</span></div>');if(compareStep>=2)rows.push('<div class="record-row'+(compareStep===3?' active':'')+'"><span>1002</span><strong>Bob</strong><span>92.0</span></div>');document.getElementById('compare-records').innerHTML=rows.join('');}
+document.getElementById('compare-next').onclick=function(){compareStep=Math.min(4,compareStep+1);renderCompare();};document.getElementById('compare-play').onclick=function(){compareStep=4;renderCompare();};document.getElementById('compare-reset').onclick=function(){compareStep=0;renderCompare();};renderCompare();
+const recordErrors={struct:'声明变量时应写struct Student student1；本课没有使用typedef，不能只写Student。',dot:'访问结构体变量成员时必须写student1.score，不能省略点号。',name:'字符数组成员应写student1.name，不按普通整数成员的方式再写&。',format:'double成员使用scanf读取时应配合%lf，不能使用不匹配格式。',mixed:'输出一条记录时，学号、姓名和成绩必须来自同一个结构体变量。'};document.querySelectorAll('[data-record-error]').forEach(function(button){button.onclick=function(){const feedback=document.getElementById('record-error-feedback');feedback.className='feedback bad';feedback.textContent=recordErrors[button.dataset.recordError];};});
+const sampleRecords=[[1,82],[2,75],[3,90],[4,68],[5,88]];
+function recordHtml(records,active){return records.map(function(r,i){return '<div class="record-row'+(active.includes(i)?' active':'')+'"><span>学号'+r[0]+'</span><strong>'+r[1].toFixed(1)+'</strong><span>下标'+i+'</span></div>';}).join('');}
+document.querySelectorAll('[data-read-record]').forEach(function(button){button.onclick=function(){const i=Number(button.dataset.readRecord);const feedback=document.getElementById('read-record-feedback');feedback.className='feedback good';feedback.textContent='i='+i+'时，学号写入students['+i+'].id，成绩写入students['+i+'].score。';};});
+function firstPassState(step){const a=sampleRecords.map(function(r){return r.slice();});for(let i=0;i<step;i++){if(a[i][1]<a[i+1][1]){const t=a[i];a[i]=a[i+1];a[i+1]=t;}}return a;}
+let passStep=0;function renderPass(){const records=firstPassState(passStep);document.getElementById('pass-records').innerHTML=recordHtml(records,passStep<4?[passStep,passStep+1]:[4]);document.getElementById('pass-feedback').textContent=passStep<4?'已完成'+passStep+'次比较；下一对下标为'+passStep+'和'+(passStep+1)+'。':'第一趟完成，最低成绩68.0移动到最右侧。';}
+document.getElementById('pass-next').onclick=function(){passStep=Math.min(4,passStep+1);renderPass();};document.getElementById('pass-play').onclick=function(){passStep=4;renderPass();};document.getElementById('pass-reset').onclick=function(){passStep=0;renderPass();};renderPass();
+let bubbleStep=0;function renderBubble(){const records=firstPassState(bubbleStep);document.getElementById('bubble-records').innerHTML=recordHtml(records,bubbleStep<4?[bubbleStep,bubbleStep+1]:[4]);document.getElementById('bubble-feedback').textContent=bubbleStep<4?'下一次比较下标'+bubbleStep+'和'+(bubbleStep+1)+'，只比较score，必要时整体交换记录。':'第一趟完成：最低成绩记录已经到达最右侧。';}
+document.getElementById('bubble-next').onclick=function(){bubbleStep=Math.min(4,bubbleStep+1);renderBubble();};document.getElementById('bubble-reset').onclick=function(){bubbleStep=0;renderBubble();};renderBubble();
+function afterPass(count){const a=sampleRecords.map(function(r){return r.slice();});for(let j=0;j<count;j++){for(let i=0;i<4-j;i++){if(a[i][1]<a[i+1][1]){const t=a[i];a[i]=a[i+1];a[i+1]=t;}}}return a;}let sortPass=0;function renderSort(){const active=[];for(let i=0;i<sortPass;i++)active.push(4-i);document.getElementById('sort-records').innerHTML=recordHtml(afterPass(sortPass),active);document.getElementById('sort-feedback').textContent=sortPass===0?'尚未开始排序。':sortPass===4?'4趟完成，5条记录已经按成绩降序排列。':'第'+sortPass+'趟完成，右侧'+sortPass+'条记录已经就位。';}
+document.getElementById('sort-next').onclick=function(){sortPass=Math.min(4,sortPass+1);renderSort();};document.getElementById('sort-play').onclick=function(){sortPass=4;renderSort();};document.getElementById('sort-reset').onclick=function(){sortPass=0;renderSort();};renderSort();
+const sortErrors={'score-only':'只交换score会把成绩归给错误学号。临时变量和三次赋值都必须使用struct Student完整记录。',direction:'降序排列应在左侧成绩小于右侧时交换；写成大于号会得到升序。','temp-type':'temp必须是struct Student，才能保存学号和成绩组成的完整记录。',member:'结构体成员必须使用类型定义中存在的名称，本题为id和score。',boundary:'内层必须满足i<4-j，才能保证students[i+1]最大访问到students[4]。'};document.querySelectorAll('[data-sort-error]').forEach(function(button){button.onclick=function(){const feedback=document.getElementById('sort-error-feedback');feedback.className='feedback bad';feedback.textContent=sortErrors[button.dataset.sortError];};});
+const sortCases={sample:'3 90.0 / 5 88.0 / 1 82.0 / 2 75.0 / 4 68.0',descending:'1 95.0 / 2 90.0 / 3 85.0 / 4 80.0 / 5 75.0',ascending:'5 100.0 / 4 90.0 / 3 80.0 / 2 70.0 / 1 60.0',equal:'2 95.0 / 5 95.0 / 1 80.0 / 3 80.0 / 4 70.0'};document.querySelectorAll('[data-sort-case]').forEach(function(button){button.onclick=function(){const feedback=document.getElementById('sort-case-feedback');feedback.className='feedback good';feedback.textContent=sortCases[button.dataset.sortCase];};});
+document.querySelectorAll('[data-review]').forEach(function(button){button.onclick=function(){button.classList.toggle('done');};});showSlide(0);
+</script>
+</body>
+</html>

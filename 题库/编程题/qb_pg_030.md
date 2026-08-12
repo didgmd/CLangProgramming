@@ -2,7 +2,7 @@
 id: QB-PG-030
 category: 编程题
 chapters: 9
-concepts: 结构体、冒泡排序
+concepts: 结构体、结构体数组、结构体整体赋值、冒泡排序
 difficulty: 综合
 minutes: 20
 related_routines: 无
@@ -54,16 +54,16 @@ legacy_features: 无
 
 
 
-围绕“结构体冒泡排序”检查输入合法性、临界值、数组或循环边界，并严格匹配题目规定的输出格式。
+注意使用成员访问运算符读取成绩，按降序方向比较，并交换完整结构体记录。还应检查循环边界、相同成绩记录的先后次序和成绩保留1位小数的输出格式。
 
 <details>
 <summary>参考答案与解析</summary>
 
-**解题思路：** 用冒泡排序比较成绩，并同步交换完整记录。
+**解题思路：** 使用结构体数组保存5条记录。冒泡排序只比较成绩成员，但交换时整体交换两条记录，从而保持学号与成绩的对应关系。
 
 **评分建议：** 输入与边界处理2分，核心算法5分，正确输出2分，代码规范1分。
 
-**正常与边界测试：** 使用已降序数据和含相同成绩的数据检查完整记录交换。
+**正常与边界测试：** 使用已降序、升序和含相同成绩的数据检查比较方向、完整记录交换及相同成绩记录的相对顺序。
 
 ### 完整参考程序
 
@@ -77,30 +77,36 @@ struct Student
 };
 int main(void)
 {
-    struct Student a[5];
-    for (int i = 0; i < 5; i++)
+    struct Student students[5];
+    struct Student temp;
+    int i, j;
+
+    for (i = 0; i < 5; i++)
     {
-        if (scanf("%d%lf", &a[i].id, &a[i].score) != 2)
+        if (scanf("%d %lf", &students[i].id, &students[i].score) != 2)
         {
             return 1;
         }
     }
-    for (int j = 0; j < 4; j++)
+
+    for (j = 0; j < 4; j++)
     {
-        for (int i = 0; i < 4 - j; i++)
+        for (i = 0; i < 4 - j; i++)
         {
-            if (a[i].score < a[i + 1].score)
+            if (students[i].score < students[i + 1].score)
             {
-                struct Student t = a[i];
-                a[i] = a[i + 1];
-                a[i + 1] = t;
+                temp = students[i];
+                students[i] = students[i + 1];
+                students[i + 1] = temp;
             }
         }
     }
-    for (int i = 0; i < 5; i++)
+
+    for (i = 0; i < 5; i++)
     {
-        printf("%d %.1f\n", a[i].id, a[i].score);
+        printf("%d %.1f\n", students[i].id, students[i].score);
     }
+
     return 0;
 }
 ```
