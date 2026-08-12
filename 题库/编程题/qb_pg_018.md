@@ -45,7 +45,10 @@ legacy_features: 无
 
 
 
-围绕“递归阶乘”检查输入合法性、临界值、数组或循环边界，并严格匹配题目规定的输出格式。
+- 递归出口必须同时正确处理 `0!` 和 `1!`。
+- 递归调用必须使参数由 `n` 变为 `n-1`，逐步接近出口。
+- `20!` 需要 `long long` 及匹配的 `%lld` 格式。
+- 计算前必须拒绝负数和大于20的输入。
 
 <details>
 <summary>参考答案与解析</summary>
@@ -54,28 +57,38 @@ legacy_features: 无
 
 **评分建议：** 输入与边界处理2分，核心算法5分，正确输出2分，代码规范1分。
 
-**正常与边界测试：** `0`（边界，结果为1）；`5`（一般情况）。
+**正常与边界测试：** `0`、`5`、`20`、`-1`和`21`。
 
 ### 完整参考程序
 
 <!-- reference-c:start -->
 ```c
-#define __USE_MINGW_ANSI_STDIO 1
 #include <stdio.h>
-static unsigned long long fac(unsigned n)
-{
-    return n < 2 ? 1 : n * fac(n - 1);
-}
+
+long long factorial(int n);
+
 int main(void)
 {
     int n;
+
     if (scanf("%d", &n) != 1 || n < 0 || n > 20)
     {
         puts("invalid");
         return 0;
     }
-    printf("%llu\n", fac((unsigned) n));
+
+    printf("%lld\n", factorial(n));
     return 0;
+}
+
+long long factorial(int n)
+{
+    if (n <= 1)
+    {
+        return 1;
+    }
+
+    return n * factorial(n - 1);
 }
 ```
 <!-- reference-c:end -->

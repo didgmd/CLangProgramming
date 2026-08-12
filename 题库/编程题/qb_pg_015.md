@@ -46,7 +46,10 @@ legacy_features: 无
 
 
 
-围绕“递归斐波那契数列”检查输入合法性、临界值、数组或循环边界，并严格匹配题目规定的输出格式。
+- `fibonacci(0)`和`fibonacci(1)`是两个不同的递归出口。
+- 递归分支必须使用`n-1`和`n-2`，并把两个返回值相加。
+- 主函数只请求`fibonacci(0)`至`fibonacci(19)`，共20项。
+- 相邻数字间只有一个空格，行末只输出换行。
 
 <details>
 <summary>参考答案与解析</summary>
@@ -61,19 +64,41 @@ legacy_features: 无
 
 <!-- reference-c:start -->
 ```c
-#define __USE_MINGW_ANSI_STDIO 1
 #include <stdio.h>
-static long long fib(int n)
-{
-    return n < 2 ? n : fib(n - 1) + fib(n - 2);
-}
+
+int fibonacci(int n);
+
 int main(void)
 {
-    for (int i = 0; i < 20; i++)
+    int i;
+
+    for (i = 0; i < 20; i++)
     {
-        printf("%lld%c", fib(i), i == 19 ? '\n' : ' ');
+        if (i > 0)
+        {
+            printf(" ");
+        }
+
+        printf("%d", fibonacci(i));
     }
+
+    printf("\n");
     return 0;
+}
+
+int fibonacci(int n)
+{
+    if (n == 0)
+    {
+        return 0;
+    }
+
+    if (n == 1)
+    {
+        return 1;
+    }
+
+    return fibonacci(n - 1) + fibonacci(n - 2);
 }
 ```
 <!-- reference-c:end -->

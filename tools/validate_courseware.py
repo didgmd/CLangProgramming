@@ -29,6 +29,7 @@ CW_L07 = ROOT / "课件" / "讲授" / "07-nested-loops-and-primes" / "index.html
 CW_L08 = ROOT / "课件" / "讲授" / "08-one-dimensional-arrays" / "index.html"
 CW_L09 = ROOT / "课件" / "讲授" / "09-matrices-and-strings" / "index.html"
 CW_L10 = ROOT / "课件" / "讲授" / "10-functions-and-parameters" / "index.html"
+CW_L11 = ROOT / "课件" / "讲授" / "11-recursion" / "index.html"
 ALLOWED_EXTERNAL_HREFS = frozenset({"https://w3schools.org.cn/c/index.php"})
 
 REQUIRED_MARKERS = (
@@ -249,6 +250,8 @@ def target_for(course_id: str) -> Path:
         return CW_L09
     if course_id == "CW-L10":
         return CW_L10
+    if course_id == "CW-L11":
+        return CW_L11
     raise ValueError(f"unknown courseware id: {course_id}")
 
 
@@ -2359,7 +2362,248 @@ def compile_cw_l10_programs(
                     fail(failures, f"CW-L10 {program_id} output mismatch: exit={result.returncode}, actual={actual!r}")
 
 
+def validate_cw_l11(path: Path) -> list[str]:
+    failures: list[str] = []
+    if not path.exists():
+        return [f"file not found: {path}"]
+    raw = path.read_bytes()
+    if raw.startswith(b"\xef\xbb\xbf"):
+        fail(failures, "UTF-8 BOM is not allowed")
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        return [f"invalid UTF-8: {exc}"]
+    if "\t" in text:
+        fail(failures, "tab characters are not allowed")
+    required = (
+        'data-course-id="CW-L11"',
+        'data-chapter="7"',
+        'data-routines="EX-C07-007,EX-C07-022"',
+        'data-questions="QB-PG-018,QB-PG-015,QB-SC-017,QB-SC-046,QB-TR-017,QB-TR-026"',
+        'data-lesson-variants="recursive-factorial-valid-range,recursive-fibonacci-first-twenty"',
+        'data-positive-program="recursive-factorial"',
+        'data-positive-program="recursive-fibonacci"',
+        'data-programming-question-id="QB-PG-018"',
+        'data-programming-question-id="QB-PG-015"',
+        'data-trace-question-id="QB-TR-017"',
+        'data-trace-question-id="QB-TR-026"',
+        '<meta name="author" content="Kevin@SUT">',
+        'data-attribution="Kevin@SUT"',
+    )
+    for marker in required:
+        if marker not in text:
+            fail(failures, f"missing CW-L11 marker: {marker}")
+    for pattern in EXTERNAL_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            fail(failures, f"external or persistent dependency found: {pattern}")
+    for pattern in TEACHER_ONLY_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            fail(failures, f"teacher-only content found: {pattern}")
+    for phrase in CW_L02_STUDENT_FORBIDDEN:
+        if phrase in text:
+            fail(failures, f"student-facing teacher-prep phrase found: {phrase}")
+    if len(SLIDE_PATTERN.findall(text)) != 34:
+        fail(failures, "CW-L11 must contain exactly 34 slides")
+    if len(SECTION_BLOCK_PATTERN.findall(text)) != 34:
+        fail(failures, "CW-L11 must contain exactly 34 complete slide sections")
+    if text.count("<details") != 0:
+        fail(failures, "CW-L11 must expose all exercises directly")
+    if " / 34 · Kevin@SUT" not in text:
+        fail(failures, "CW-L11 footer total must be 34")
+
+    choice_text = "".join(
+        match.group(0)
+        for match in QUESTION_BLOCK_PATTERN.finditer(text)
+        if match.group("id") in {"QB-SC-017", "QB-SC-046"}
+    )
+    validate_embedded_questions(
+        choice_text,
+        failures,
+        ("QB-SC-017", "QB-SC-046"),
+        "CW-L11",
+    )
+    if text.count('data-question-option="') != 8:
+        fail(failures, "CW-L11 must expose eight choice options")
+
+    questions = scan_questions()
+    for question_id in ("QB-PG-018", "QB-PG-015"):
+        source = questions[question_id].text
+        prompt = re.search(r"## 题目\s*(.*?)\s*### 输入格式", source, re.DOTALL)
+        block = re.search(
+            rf'<section\b[^>]*data-programming-question-id="{question_id}"[^>]*>(.*?)</section>',
+            text,
+            re.IGNORECASE | re.DOTALL,
+        )
+        source_prompt = normalize_visible_text(prompt.group(1)) if prompt else ""
+        html_prompt = normalize_visible_text(block.group(1)) if block else ""
+        if not source_prompt or source_prompt not in html_prompt:
+            fail(failures, f"CW-L11 must visibly embed the {question_id} prompt")
+
+    for question_id in ("QB-TR-017", "QB-TR-026"):
+        source_code = re.search(r"```c\s*(.*?)```", questions[question_id].text, re.DOTALL)
+        block = re.search(
+            rf'<section\b[^>]*data-trace-question-id="{question_id}"[^>]*>(.*?)</section>',
+            text,
+            re.IGNORECASE | re.DOTALL,
+        )
+        html_code = re.search(
+            r'<pre\b[^>]*data-trace-code[^>]*>(.*?)</pre>',
+            block.group(1) if block else "",
+            re.DOTALL,
+        )
+        source_tokens = re.sub(r"\s+", "", source_code.group(1)) if source_code else ""
+        html_tokens = re.sub(
+            r"\s+",
+            "",
+            html.unescape(re.sub(r"<[^>]+>", "", html_code.group(1))),
+        ) if html_code else ""
+        if source_tokens != html_tokens:
+            fail(failures, f"{question_id} program differs from the question bank")
+
+    program_blocks = {
+        match.group("id"): html.unescape(re.sub(r"<[^>]+>", "", match.group("body")))
+        for match in re.finditer(
+            r'<pre\b[^>]*data-positive-program="(?P<id>[^"]+)"[^>]*>(?P<body>.*?)</pre>',
+            text,
+            re.IGNORECASE | re.DOTALL,
+        )
+    }
+    if set(program_blocks) != {"recursive-factorial", "recursive-fibonacci"}:
+        fail(failures, "CW-L11 must contain exactly the two declared positive programs")
+    validate_cw_l11_programs(text, program_blocks, failures)
+    check_links(text, path, failures, require_optional_external=False)
+    return failures
+
+
+def validate_cw_l11_programs(
+    text: str,
+    program_blocks: dict[str, str],
+    failures: list[str],
+) -> None:
+    code_text = "\n".join(program_blocks.values())
+    for forbidden, label in (
+        (r"\b(?:int|double|float|char|void|long)\s*\*+\s*\w+", "pointer declaration"),
+        (r"\w+\s*\[[^\]]*\]", "array"),
+        (r"\?[^:\n]+:", "conditional operator"),
+        (r"\b(?:static|extern)\b", "global or static storage"),
+        (r"\b(?:malloc|calloc|realloc|free)\s*\(", "dynamic memory"),
+        (r"\bstruct\b", "structure"),
+        (r"\b(?:FILE|fopen|fclose|fprintf|fscanf)\b", "file API"),
+    ):
+        if re.search(forbidden, code_text):
+            fail(failures, f"CW-L11 positive programs must not introduce {label}")
+    if re.search(r"if\s*\(\s*scanf|scanf\s*\([^;]+\)\s*[!=]=", code_text):
+        fail(failures, "CW-L11 student programs must not check scanf return values")
+
+    factorial = program_blocks.get("recursive-factorial", "")
+    fibonacci = program_blocks.get("recursive-fibonacci", "")
+    for marker in (
+        "long long factorial(int n);",
+        "if (n < 0 || n > 20)",
+        'printf("invalid\\n");',
+        "if (n <= 1)",
+        "return n * factorial(n - 1);",
+    ):
+        if marker not in factorial:
+            fail(failures, f"CW-L11 factorial program is incomplete: {marker}")
+    if factorial.count("factorial(") != 4:
+        fail(failures, "CW-L11 factorial program must contain declaration, call, definition, and one recursive call")
+    for marker in (
+        "int fibonacci(int n);",
+        "for (i = 0; i < 20; i++)",
+        "if (n == 0)",
+        "if (n == 1)",
+        "return fibonacci(n - 1) + fibonacci(n - 2);",
+    ):
+        if marker not in fibonacci:
+            fail(failures, f"CW-L11 fibonacci program is incomplete: {marker}")
+    if fibonacci.count("fibonacci(") != 5:
+        fail(failures, "CW-L11 fibonacci program must contain declaration, output call, definition, and two recursive calls")
+    for forbidden_call in ("factorial(factorial", "fibonacci(fibonacci"):
+        if forbidden_call in code_text:
+            fail(failures, "CW-L11 recursive arguments must move directly toward a base case")
+
+    visible = normalize_visible_text(text)
+    for marker in (
+        "递归出口", "规模缩小", "每一层都有自己的形参", "逐层返回",
+        "两个出口", "重复子问题", "单链", "双分支",
+        "浏览器进行确定性预演",
+    ):
+        if marker not in text and marker not in visible:
+            fail(failures, f"CW-L11 student explanation is incomplete: {marker}")
+    counts = (
+        ('data-factorial-error="', 4, "factorial diagnosis cases"),
+        ('data-fibonacci-error="', 4, "fibonacci diagnosis cases"),
+        ('data-fibonacci-case="', 5, "fibonacci value checks"),
+        ('data-trace-reveal="', 2, "trace answer controls"),
+        ("data-review ", 14, "review questions"),
+    )
+    for marker, expected, label in counts:
+        actual = text.count(marker)
+        if actual != expected:
+            fail(failures, f"CW-L11 expected {expected} {label}, found {actual}")
+    for command in (
+        "gcc factorial.c -o factorial.exe&#10;.\\factorial.exe",
+        "gcc fibonacci.c -o fibonacci.exe&#10;.\\fibonacci.exe",
+    ):
+        if command not in text:
+            fail(failures, f"CW-L11 beginner command is missing: {command.split('&#10;')[0]}")
+    compile_cw_l11_programs(program_blocks, failures)
+
+
+def compile_cw_l11_programs(
+    program_blocks: dict[str, str],
+    failures: list[str],
+) -> None:
+    gcc = shutil.which("gcc")
+    if not gcc:
+        fail(failures, "CW-L11 MinGW GCC was not found")
+        return
+    machine = subprocess.run(
+        [gcc, "-dumpmachine"], text=True, encoding="utf-8", errors="replace",
+        capture_output=True, check=False,
+    )
+    if machine.returncode != 0 or "mingw" not in machine.stdout.lower():
+        fail(failures, f"CW-L11 compiler is not MinGW GCC: {machine.stdout.strip()}")
+        return
+    fixtures = {
+        "recursive-factorial": (
+            ("0\n", "1\n"),
+            ("5\n", "120\n"),
+            ("20\n", "2432902008176640000\n"),
+            ("-1\n", "invalid\n"),
+            ("21\n", "invalid\n"),
+        ),
+        "recursive-fibonacci": (
+            ("", "0 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987 1597 2584 4181\n"),
+        ),
+    }
+    with tempfile.TemporaryDirectory(prefix="cw-l11-validation-") as temp_name:
+        temp_dir = Path(temp_name)
+        for program_id, cases in fixtures.items():
+            source = temp_dir / f"{program_id}.c"
+            executable = temp_dir / f"{program_id}.exe"
+            source.write_text(program_blocks[program_id], encoding="utf-8", newline="\n")
+            build = subprocess.run(
+                [gcc, "-std=c11", "-Wall", "-Wextra", "-Wpedantic", "-Werror", "-D__USE_MINGW_ANSI_STDIO=1", str(source), "-o", str(executable)],
+                text=True, encoding="utf-8", errors="replace", capture_output=True, check=False,
+            )
+            if build.returncode != 0:
+                fail(failures, f"CW-L11 {program_id} compile failed: {build.stderr.strip()}")
+                continue
+            for stdin_text, expected in cases:
+                result = subprocess.run(
+                    [str(executable)], input=stdin_text, text=True, encoding="utf-8",
+                    errors="replace", capture_output=True, check=False, timeout=10,
+                )
+                actual = result.stdout.replace("\r\n", "\n")
+                if result.returncode != 0 or actual != expected:
+                    fail(failures, f"CW-L11 {program_id} output mismatch: exit={result.returncode}, actual={actual!r}")
+
+
 def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
+    if course_id == "CW-L11":
+        return validate_cw_l11(path)
     if course_id == "CW-L02":
         return validate_cw_l02(path)
     if course_id == "CW-L03":
@@ -2470,7 +2714,7 @@ def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--id", default="CW-L01", help="courseware id: CW-L01 through CW-L10")
+    parser.add_argument("--id", default="CW-L01", help="courseware id: CW-L01 through CW-L11")
     parser.add_argument("--path", type=Path, help="explicit HTML path for local validation")
     args = parser.parse_args()
 
@@ -2487,7 +2731,7 @@ def main() -> int:
             print(f"- {item}")
         return 1
 
-    slide_count = 32 if args.id == "CW-L10" else 34 if args.id == "CW-L09" else 12 if args.id == "CW-L01" else 30 if args.id in {"CW-L07", "CW-L08"} else 28 if args.id == "CW-L06" else 26 if args.id in {"CW-L04", "CW-L05"} else 25
+    slide_count = 34 if args.id in {"CW-L09", "CW-L11"} else 32 if args.id == "CW-L10" else 12 if args.id == "CW-L01" else 30 if args.id in {"CW-L07", "CW-L08"} else 28 if args.id == "CW-L06" else 26 if args.id in {"CW-L04", "CW-L05"} else 25
     optional_external = 1 if args.id == "CW-L01" else 0
     print(f"COURSEWARE VALIDATION PASS: {args.id}, slides={slide_count}, offline-core=ok, optional_external={optional_external}, links=ok, text_encoding=UTF-8, bom=utf8-no-bom")
     return 0

@@ -1,6 +1,6 @@
 # 讲授课
 
-共16次讲授课、32学时。每次2课时、90分钟，只深讲1–2个程序。CW-L01已完成PPTX与HTML并通过校验；CW-L02、CW-L03均已完成25页学生端HTML；CW-L04、CW-L05均已完成26页学生端HTML；CW-L06已完成28页，CW-L07、CW-L08均已完成30页，CW-L09已完成34页，CW-L10已完成32页学生端HTML。
+共16次讲授课、32学时。每次2课时、90分钟，只深讲1–2个程序。CW-L01已完成PPTX与HTML并通过校验；CW-L02、CW-L03均已完成25页学生端HTML；CW-L04、CW-L05均已完成26页学生端HTML；CW-L06已完成28页，CW-L07、CW-L08均已完成30页，CW-L09与CW-L11均已完成34页，CW-L10已完成32页学生端HTML。
 
 | ID | 章节 | 主题 | 核心程序 | 状态 |
 |---|---|---|---|---|
@@ -14,7 +14,7 @@
 | [CW-L08](08-one-dimensional-arrays/README.md) | 第6章 | 一维数组：最大值与冒泡排序 | `QB-PG-002`、`QB-PG-004` | ready |
 | [CW-L09](09-matrices-and-strings/README.md) | 第6章 | 二维数组与字符串：选择排序和矩阵最大值 | `QB-PG-008`、`QB-PG-010` | ready |
 | [CW-L10](10-functions-and-parameters/README.md) | 第7章 | 函数、实与形参：求较大值与排序子函数 | `EX-C07-002`、`QB-PG-013` | ready |
-| [CW-L11](11-recursion/README.md) | 第7章 | 递归调用与终止条件 | `QB-PG-018`、`QB-PG-015` | planned |
+| [CW-L11](11-recursion/README.md) | 第7章 | 递归：阶乘与斐波那契数列 | `QB-PG-018`、`QB-PG-015` | ready |
 | [CW-L12](12-pointer-model-and-arrays/README.md) | 第8章 | 地址、指针变量、指针与数组 | `QB-PG-038` | planned |
 | [CW-L13](13-pointer-parameters-and-strings/README.md) | 第8章 | 指针参数与字符串处理 | `QB-PG-033`、`QB-TR-028` | planned |
 | [CW-L14](14-structures/README.md) | 第9章 | 结构体定义、成员和记录 | `QB-PG-030` | planned |

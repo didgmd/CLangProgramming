@@ -141,7 +141,14 @@ BEHAVIOR_FIXTURES: dict[str, list[BehaviorFixture]] = {
         ("3.5 -1 3.5 2 0 -1 2 3 1 0\n", "-1.00 -1.00 0.00 0.00 1.00 2.00 2.00 3.00 3.50 3.50\n"),
     ],
     "QB-PG-014": [("1000\n", "1\n"), ("9999\n", "2916\n")],
-    "QB-PG-018": [("0\n", "1\n"), ("21\n", "invalid\n")],
+    "QB-PG-015": [("", "0 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987 1597 2584 4181\n")],
+    "QB-PG-018": [
+        ("0\n", "1\n"),
+        ("5\n", "120\n"),
+        ("20\n", "2432902008176640000\n"),
+        ("-1\n", "invalid\n"),
+        ("21\n", "invalid\n"),
+    ],
     "QB-PG-021": [("1 2 3 4 5 6 7 8 9\n", "1 4 7\n2 5 8\n3 6 9\n")],
     "QB-PG-038": [("hello world\n", "11\n"), ("\n", "0\n")],
 }
@@ -359,7 +366,14 @@ def compile_answers(
                 source = temp_path / f"{question.question_id}.c"
                 source.write_text(question.reference_code, encoding="utf-8", newline="\n")
                 flags = (
-                    ["-std=c11", "-Wall", "-Wextra", "-Wpedantic", "-Werror"]
+                    [
+                        "-std=c11",
+                        "-Wall",
+                        "-Wextra",
+                        "-Wpedantic",
+                        "-Werror",
+                        "-D__USE_MINGW_ANSI_STDIO=1",
+                    ]
                     if question.compile_mode == "c11-strict"
                     else ["-std=gnu99", "-Wall", "-Wextra"]
                 )
