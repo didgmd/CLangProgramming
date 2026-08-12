@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="Kevin@SUT">
+<meta name="copyright" content="Kevin@SUT">
+<title>CW-L09 二维数组与字符串：选择排序和矩阵最大值</title>
+<style>
+:root{--ink:#14213d;--muted:#53657d;--blue:#0b6e99;--amber:#f5b942;--paper:#f5f8fb;--green:#19704a;--red:#a33a3a;--code:#101827}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow: hidden;background:#dce7ef;color:var(--ink);font-family:"Microsoft YaHei","Segoe UI",sans-serif}body{display:grid;grid-template-rows:1fr 54px}.deck{position:relative;min-height:0}.slide{position:absolute;inset:0;display:none;padding:22px 34px 14px}.slide.active{display:block}.slide-inner{height:100%;max-width:1212px;margin:auto;background:var(--paper);border-radius:18px;padding:18px 27px;box-shadow:0 10px 35px #17314a24;overflow:auto}
+.eyebrow{font-size:17px;font-weight:800;color:var(--blue)}h1{font-size:40px;margin:11px 0 17px}h2{font-size:30px;margin:5px 0 12px}h3{font-size:20px;margin:4px 0 7px}p,li,td,th{font-size:17px;line-height:1.35}.lead{font-size:22px;color:var(--muted)}.small{font-size:14px;color:var(--muted)}code{font-family:Consolas,monospace}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.card,.question-card{background:#fff;border:2px solid #d7e3ec;border-radius:14px;padding:10px 14px}.accent{border-color:#70c9d3;background:#eefbfd}.warn{border-color:#efc36c;background:#fff8e8}.error{border-color:#e6aaaa;background:#fff2f2}.rule{background:#e6f5f7;border-left:7px solid var(--blue);padding:8px 14px;border-radius:10px;font-size:17px;margin:8px 0}.formula{font:700 23px Consolas,monospace;text-align:center;background:#fff;border-radius:12px;padding:9px}
+.code-block,.trace-code,.error-code,.terminal{background:var(--code);color:#eef6ff;border-radius:12px;padding:8px 13px;font:15px/1.22 Consolas,monospace;white-space:pre-wrap;margin:6px 0;overflow:auto}.program-full{font-size:11.8px;line-height:1.02;padding:5px 11px}.error-code{border:2px solid #d96161}.terminal{background:#06111e;color:#9cf0c9;min-height:46px}.code-line{display:block;border-left:4px solid transparent;padding-left:6px}.active-code-line{background:#16476c;border-left-color:var(--amber)}
+table{width:100%;border-collapse:collapse;background:#fff}th,td{border:1px solid #cbd8e2;padding:5px 7px;text-align:left}th{background:#e7f2f7}.center td,.center th{text-align:center}.array-strip{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin:9px 0}.array-cell,.matrix-cell,.char-cell{min-width:0;background:#fff;border:2px solid #8bb8ca;border-radius:8px;text-align:center;padding:5px 2px}.array-cell .index,.matrix-cell .index,.char-cell .index{display:block;color:var(--muted);font-size:11px}.array-cell .value,.matrix-cell .value,.char-cell .value{display:block;color:var(--blue);font-weight:800;font-size:17px}.array-cell.active,.matrix-cell.active,.char-cell.active{background:#fff1c8;border-color:#d7960a}.array-cell.locked{background:#d9f2e5;border-color:#3b9b70}.matrix{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:9px auto;max-width:650px}.char-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:10px auto;max-width:720px}.char-cell.terminator{background:#ffe9c2;border-color:#d7960a}
+button,.button-link{border:0;border-radius:10px;background:var(--blue);color:#fff;padding:8px 13px;font-size:15.5px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}button:hover,button:focus-visible,.button-link:focus-visible{outline:3px solid var(--amber);outline-offset:2px}button.secondary{background:#53657d}button.option{display:block;width:100%;text-align:left;margin:4px 0;background:#eaf2f7;color:var(--ink)}button.option.correct{background:#d7f1e4;color:#124c34}button.option.wrong{background:#fae1e1;color:#772a2a}.button-row{display:flex;gap:7px;flex-wrap:wrap;margin:7px 0}.feedback{min-height:43px;padding:7px 12px;border-radius:10px;background:#e8f1f5;color:#18354b;font-size:16px}.feedback.good{background:#d9f2e5;color:#155e35}.feedback.bad{background:#fae1e1;color:#772a2a}.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.review{background:#edf3f7;color:var(--ink);text-align:left;padding:7px 9px}.review.done{background:#d9f2e5;color:#155e35}
+[data-section="selection-program"] .slide-inner,[data-section="matrix-program"] .slide-inner{padding-top:9px;padding-bottom:9px}[data-section="selection-program"] h2,[data-section="matrix-program"] h2{margin:1px 0 3px}
+footer{display:grid;grid-template-columns:190px 1fr 190px;align-items:center;background:#0d2238;color:#fff;padding:0 22px;gap:18px}.nav-buttons{display:flex;gap:8px}.nav-buttons button{padding:7px 13px;background:#264c6d;min-width:84px}.progress{height:8px;background:#39566d;border-radius:8px;overflow:hidden}.progress>span{display:block;height:100%;background:var(--amber)}.page{text-align:right;font-weight:700}
+@media(max-width:850px){body{grid-template-rows:1fr 62px}.slide{padding:8px}.slide-inner{padding:13px}.grid-2,.grid-3,.review-grid{grid-template-columns:1fr}.array-strip{grid-template-columns:repeat(5,1fr)}h1{font-size:31px}h2{font-size:25px}p,li,td,th{font-size:15px}footer{grid-template-columns:150px 1fr 90px}.code-block,.trace-code,.error-code{font-size:12.5px}}
+</style>
+</head>
+<body data-courseware="c-freshman-interactive-html" data-layout="slide-page" data-course-id="CW-L09" data-chapter="6" data-routines="EX-C06-005,EX-C06-006" data-questions="QB-PG-008,QB-PG-010,QB-TR-029,QB-SC-014,QB-SC-052,QB-SC-015,QB-SC-016,QB-SC-061" data-lesson-variants="selection-sort-fixed-ten,matrix-maximum-three-by-four,string-terminator-basics" data-attribution="Kevin@SUT">
+<main class="deck" data-deck data-interaction="ask-wait-reveal">
+<div hidden data-section="concept" data-section-marker="concept"></div><div hidden data-section="interaction" data-section-marker="interaction"></div><div hidden data-section="quiz" data-section-marker="quiz"></div><div hidden data-section="exercise" data-section-marker="exercise"></div><span hidden data-code-line></span>
+
+<section class="slide active" data-slide data-section="objectives"><div class="slide-inner"><div class="eyebrow">01 · 学习目标</div><h1>二维数组与字符串：选择排序和矩阵最大值</h1><div class="grid-2"><div class="card accent"><h3>数组状态</h3><ul><li>用下标保存最小元素的位置</li><li>按行、列遍历二维数组</li><li>同步更新最大值及其位置</li></ul></div><div class="card"><h3>字符序列</h3><ul><li>区分字符数组与C字符串</li><li>识别字符串结束符<code>\0</code></li><li>用下标依次访问字符</li></ul></div></div><p class="lead">本节继续用下标观察数据的位置、次序和结束边界。</p></div></section>
+
+<section class="slide" data-slide data-section="selection-task" data-programming-question-id="QB-PG-008"><div class="slide-inner"><div class="eyebrow">02 · QB-PG-008</div><h2>选择法排序</h2><div class="grid-2"><div class="card"><h3>题目</h3><p class="question-text">输入10个整数，使用选择法升序输出。</p><h3>输入格式</h3><p>10个整数，以空白分隔。</p><h3>输出格式</h3><p>一行输出升序排列后的10个整数。</p><p><strong>数据范围与边界：</strong>输入恰含10个 <code>int</code> 范围内的整数。</p></div><div class="card accent"><h3>样例输入</h3><pre class="terminal">10 9 8 7 6 5 4 3 2 1</pre><h3>样例输出</h3><pre class="terminal">1 2 3 4 5 6 7 8 9 10</pre><div class="rule">输入约束：示例数据均符合规定格式。</div></div></div></div></section>
+
+<section class="slide" data-slide data-section="selection-model"><div class="slide-inner"><div class="eyebrow">03 · 基本过程</div><h2>每一趟确定当前位置的最小元素</h2><div class="grid-3"><div class="card"><h3>1. 划分区域</h3><p>左侧位置已经确定，右侧仍待检查。</p></div><div class="card accent"><h3>2. 寻找最小值</h3><p>记录未排序部分中最小元素的下标。</p></div><div class="card"><h3>3. 完成交换</h3><p>一趟查找结束后，与当前起始位置交换。</p></div></div><div class="rule">查找过程中保存的是“最小元素在哪里”，而不是反复移动元素。</div></div></section>
+
+<section class="slide" data-slide data-section="index-roles"><div class="slide-inner"><div class="eyebrow">04 · 三个下标</div><h2>i、j、k承担不同职责</h2><div class="grid-3"><div class="card accent"><h3>i</h3><p>当前准备确定的位置，也是未排序部分的起点。</p></div><div class="card"><h3>j</h3><p>依次检查<code>i+1</code>至9的元素。</p></div><div class="card warn"><h3>k</h3><p>保存当前已发现的最小元素下标。</p></div></div><pre class="trace-code">k = i;
+for (j = i + 1; j < 10; j++)
+{
+    if (a[j] < a[k])
+    {
+        k = j;
+    }
+}</pre></div></section>
+
+<section class="slide" data-slide data-section="first-search"><div class="slide-inner"><div class="eyebrow">05 · 第一趟查找</div><h2>在 {4, 2, 5, 1, 3} 中寻找最小值</h2><div class="array-strip" id="search-strip"></div><div class="button-row"><button id="search-next">检查下一个元素</button><button class="secondary" id="search-reset">重置</button></div><table class="center"><tr><th>i</th><th>j</th><th>比较</th><th>k</th><th>当前最小值</th></tr><tbody id="search-state"><tr><td colspan="5">等待执行 k = i</td></tr></tbody></table><div class="feedback" id="search-feedback">第一趟中 i=0，先令 k=0。</div></div></section>
+
+<section class="slide" data-slide data-section="trace-tr029" data-trace-question-id="QB-TR-029"><div class="slide-inner"><div class="eyebrow">06 · QB-TR-029</div><h2>写出程序的准确输出</h2><div class="grid-2"><div><pre class="trace-code">#include &lt;stdio.h&gt;
+int main(void)
+{
+    int a[5] = {4, 2, 5, 1, 3}, k = 0;
+    for (int j = 1; j &lt; 5; j++)
+        if (a[j] &lt; a[k])
+            k = j;
+    int t = a[0];
+    a[0] = a[k];
+    a[k] = t;
+    for (int i = 0; i &lt; 5; i++)
+        printf("%d ", a[i]);
+    return 0;
+}</pre><p class="question-text">本题程序不读取外部输入。请写出程序运行后的精确输出。</p></div><div><div class="button-row"><button id="trace-next">执行下一步</button><button class="secondary" id="trace-reset">重置</button></div><div class="array-strip" id="trace-strip"></div><div class="feedback" id="trace-feedback">先比较下标1与当前最小值位置。</div><pre class="terminal" id="trace-output">尚未输出</pre></div></div></div></section>
+
+<section class="slide" data-slide data-section="k-initialization"><div class="slide-inner"><div class="eyebrow">07 · 下标初值</div><h2>每一趟都要重新执行 k = i</h2><div class="grid-2"><div class="card accent"><h3>第0趟</h3><div class="formula">i = 0，k = 0</div><p>先把<code>a[0]</code>看作未排序部分的最小值。</p></div><div class="card"><h3>第3趟</h3><div class="formula">i = 3，k = 3</div><p>前三个位置已确定，从<code>a[3]</code>重新开始。</p></div></div><div class="rule">如果不重新设置<code>k</code>，它可能仍指向已经确定的左侧区域。</div></div></section>
+
+<section class="slide" data-slide data-section="delayed-swap"><div class="slide-inner"><div class="eyebrow">08 · 交换时机</div><h2>先找完整趟的最小下标，再交换一次</h2><div class="grid-2"><div class="card"><h3>内层循环</h3><pre class="trace-code">if (a[j] < a[k])
+{
+    k = j;
+}</pre><p>只改变<code>k</code>。</p></div><div class="card accent"><h3>内层循环结束</h3><pre class="trace-code">t = a[i];
+a[i] = a[k];
+a[k] = t;</pre><p>只交换一次。</p></div></div><div class="rule">下标记录把“寻找最小值”和“移动元素”分成两个清晰步骤。</div></div></section>
+
+<section class="slide" data-slide data-section="passes-growth"><div class="slide-inner"><div class="eyebrow">09 · 已确定区域</div><h2>每完成一趟，左侧增加一个确定位置</h2><div class="card"><h3>初始</h3><div class="array-strip" data-values="4,2,5,1,3,9,8,7,6,0"></div></div><table class="center"><tr><th>趟数</th><th>当前位置</th><th>该趟结束后的左侧区域</th></tr><tr><td>1</td><td>i=0</td><td>0</td></tr><tr><td>2</td><td>i=1</td><td>0, 1</td></tr><tr><td>3</td><td>i=2</td><td>0, 1, 2</td></tr></table><div class="rule">第9趟完成后，前9个位置确定，最后一个位置也自然确定。</div></div></section>
+
+<section class="slide" data-slide data-section="selection-bounds"><div class="slide-inner"><div class="eyebrow">10 · 循环边界</div><h2>外层确定位置，内层检查未排序部分</h2><table class="center"><tr><th>表达式</th><th>取值范围</th><th>作用</th></tr><tr><td><code>i &lt; 9</code></td><td>0…8</td><td>最多完成9趟</td></tr><tr><td><code>j = i + 1</code></td><td>当前位置之后</td><td>避免与自身重复比较</td></tr><tr><td><code>j &lt; 10</code></td><td>最大下标9</td><td>覆盖未排序部分末尾</td></tr></table><div class="formula">第 i 趟检查：a[i+1] … a[9]</div></div></section>
+
+<section class="slide" data-slide data-section="comparison-count"><div class="slide-inner"><div class="eyebrow">11 · 比较次数</div><h2>检查范围逐趟缩短</h2><table class="center"><tr><th>i</th><th>j的范围</th><th>比较次数</th></tr><tr><td>0</td><td>1…9</td><td>9</td></tr><tr><td>1</td><td>2…9</td><td>8</td></tr><tr><td>…</td><td>…</td><td>…</td></tr><tr><td>8</td><td>9</td><td>1</td></tr></table><div class="formula">9 + 8 + 7 + … + 1 = 45</div><div class="rule">这里计算固定10个元素完成9趟时的元素比较次数。</div></div></section>
+
+<section class="slide" data-slide data-section="selection-program"><div class="slide-inner"><div class="eyebrow">12 · 完整程序</div><h2>十个整数选择排序</h2><pre class="code-block program-full" data-positive-program="selection-sort">#include &lt;stdio.h&gt;
+
+int main()
+{
+    int a[10];
+    int i, j, k, t;
+
+    for (i = 0; i &lt; 10; i++)
+    {
+        scanf("%d", &amp;a[i]);
+    }
+
+    for (i = 0; i &lt; 9; i++)
+    {
+        k = i;
+
+        for (j = i + 1; j &lt; 10; j++)
+        {
+            if (a[j] &lt; a[k])
+            {
+                k = j;
+            }
+        }
+
+        t = a[i];
+        a[i] = a[k];
+        a[k] = t;
+    }
+
+    for (i = 0; i &lt; 10; i++)
+    {
+        if (i &gt; 0)
+        {
+            printf(" ");
+        }
+
+        printf("%d", a[i]);
+    }
+
+    printf("\n");
+    return 0;
+}</pre><div class="rule">输入约束：程序运行时提供恰好10个合法整数。</div></div></section>
+
+<section class="slide" data-slide data-section="selection-stepper"><div class="slide-inner"><div class="eyebrow">13 · 全部趟数</div><h2>每一趟锁定一个左侧位置</h2><div class="array-strip" id="selection-strip"></div><div class="button-row"><button id="selection-next">完成下一趟</button><button class="secondary" id="selection-reset">重置</button></div><table class="center"><tr><th>已完成趟数</th><th>最小值下标</th><th>交换位置</th><th>已确定元素</th></tr><tbody id="selection-state"><tr><td>0</td><td>—</td><td>—</td><td>0</td></tr></tbody></table><div class="feedback" id="selection-feedback">从整个数组中寻找第一个位置的最小值。</div></div></section>
+
+<section class="slide" data-slide data-section="selection-errors"><div class="slide-inner"><div class="eyebrow">14 · 错误诊断</div><h2>检查初值、范围、更新和交换</h2><div class="grid-2"><button data-selection-error="reset">1. 下一趟没有执行 k = i</button><button data-selection-error="early">2. 每发现更小元素就立即交换</button><button data-selection-error="start">3. 内层仍从 j = 1 开始</button><button data-selection-error="swap">4. 把 a[k] 写成 a[j]</button></div><div class="feedback" id="selection-error-feedback">选择一种故意错误。</div><div class="card error"><h3>故意错误示例</h3><pre class="error-code">for (i = 0; i &lt; 9; i++)
+{
+    /* 缺少 k = i; */
+    for (j = i + 1; j &lt; 10; j++)
+    {
+        if (a[j] &lt; a[k])
+        {
+            k = j;
+        }
+    }
+}</pre><p>每一趟的未排序区域起点不同，<code>k</code>必须随<code>i</code>重新初始化。</p></div></div></section>
+
+<section class="slide" data-slide data-section="selection-review"><div class="slide-inner"><div class="eyebrow">15 · 测试与自检</div><h2>逆序、已有序和重复值均得到升序结果</h2><div class="grid-2"><div><table class="center"><tr><th>数据</th><th>输出</th></tr><tr><td>10至1</td><td>1 2 3 4 5 6 7 8 9 10</td></tr><tr><td>1至10</td><td>1 2 3 4 5 6 7 8 9 10</td></tr><tr><td>含负数和重复值</td><td>-1 0 0 1 1 2 2 3 3 3</td></tr></table><pre class="code-block">gcc selection.c -o selection.exe
+.\selection.exe</pre><div class="button-row"><a class="button-link" href="../../../题库/编程题/qb_pg_008.md">QB-PG-008</a><a class="button-link" href="../../../题库/读程序写结果/qb_tr_029.md">QB-TR-029</a></div></div><div><div class="review-grid"><button class="review" data-review data-answer="i表示当前准备确定的位置。">i表示什么？</button><button class="review" data-review data-answer="j检查未排序部分。">j表示什么？</button><button class="review" data-review data-answer="k保存当前最小元素下标。">k保存什么？</button><button class="review" data-review data-answer="每一趟先执行k=i。">k如何初始化？</button><button class="review" data-review data-answer="内层从i+1开始。">j从哪里开始？</button><button class="review" data-review data-answer="一趟查找结束后交换。">何时交换？</button><button class="review" data-review data-answer="10个元素最多9趟。">最多几趟？</button></div><div class="feedback review-feedback">点击问题查看答案。</div><p class="small">浏览器进行确定性预演，不执行真实C代码。</p></div></div></div></section>
+
+<section class="slide" data-slide data-section="matrix-task" data-programming-question-id="QB-PG-010"><div class="slide-inner"><div class="eyebrow">16 · QB-PG-010</div><h2>矩阵最大元素及位置</h2><div class="grid-2"><div class="card"><h3>题目</h3><p class="question-text">输入3行4列整数矩阵，输出最大元素及其行列下标。</p><h3>输入格式</h3><p>按行输入3×4整数矩阵。</p><h3>输出格式</h3><p>输出最大元素及其行、列下标。</p><p><strong>数据范围与边界：</strong>恰输入12个整数；行列下标从0开始。</p></div><div class="card accent"><h3>样例输入</h3><pre class="terminal">1 2 3 4 5 6 20 8 9 10 11 12</pre><h3>样例输出</h3><pre class="terminal">20 1 2</pre><div class="rule">输入约束：示例数据均符合规定格式。</div></div></div></div></section>
+
+<section class="slide" data-slide data-section="matrix-declaration"><div class="slide-inner"><div class="eyebrow">17 · 二维数组声明</div><h2>拆解 int a[3][4];</h2><div class="grid-3"><div class="card"><h3>int</h3><p>每个元素保存一个整数。</p></div><div class="card accent"><h3>[3]</h3><p>数组包含3行。</p></div><div class="card"><h3>[4]</h3><p>每一行包含4列。</p></div></div><div class="formula">元素总数 = 3 × 4 = 12</div><div class="rule">一个元素需要两个下标：<code>a[行下标][列下标]</code>。</div></div></section>
+
+<section class="slide" data-slide data-section="matrix-grid"><div class="slide-inner"><div class="eyebrow">18 · 行与列</div><h2>3×4数组包含12个 a[i][j] 元素</h2><div class="matrix" id="label-matrix"></div><div class="button-row"><button data-matrix-cell="0,0">查看 a[0][0]</button><button data-matrix-cell="1,2">查看 a[1][2]</button><button data-matrix-cell="2,3">查看 a[2][3]</button></div><div class="feedback" id="matrix-cell-feedback">选择一个元素引用。</div></div></section>
+
+<section class="slide" data-slide data-section="matrix-bounds"><div class="slide-inner"><div class="eyebrow">19 · 下标范围</div><h2>行下标与列下标使用不同边界</h2><div class="grid-2"><div class="card accent"><h3>行下标</h3><div class="formula">0 ≤ i &lt; 3</div><p>有效值：0、1、2。</p></div><div class="card"><h3>列下标</h3><div class="formula">0 ≤ j &lt; 4</div><p>有效值：0、1、2、3。</p></div></div><div class="rule"><code>a[2][3]</code>是末元素；<code>a[3][0]</code>和<code>a[0][4]</code>均越界。</div></div></section>
+
+<section class="slide" data-slide data-section="question-sc014"><div class="slide-inner"><div class="eyebrow">20 · QB-SC-014</div><h2>二维数组元素引用</h2><article class="question-card" data-question-id="QB-SC-014"><p class="question-text">定义 int a[3][4]; 后，正确的元素引用是（ ）。</p><div class="grid-2"><div><button class="option" data-question-option="A" data-correct="false" data-feedback="逗号不能代替两个独立的下标运算符。">A. a[1,2]</button><button class="option" data-question-option="B" data-correct="false" data-feedback="列下标4越过有效范围0至3。">B. a[1][4]</button></div><div><button class="option" data-question-option="C" data-correct="true" data-feedback="正确。1+2的结果是3，行1列3均在有效范围内。">C. a[1][1+2]</button><button class="option" data-question-option="D" data-correct="false" data-feedback="数组元素使用方括号，不使用函数调用形式。">D. a(1)(3)</button></div></div><div class="feedback" data-question-feedback>选择一个答案。</div></article></div></section>
+
+<section class="slide" data-slide data-section="matrix-initialization"><div class="slide-inner"><div class="eyebrow">21 · 按行初始化</div><h2>每组花括号对应一行</h2><div class="grid-2"><pre class="trace-code">int a[3][4] =
+{
+    {1, 2, 3, 4},
+    {5, 6, 7, 8},
+    {9, 10, 11, 12}
+};</pre><div class="matrix" data-matrix-values="1,2,3,4,5,6,7,8,9,10,11,12"></div></div><div class="rule">第一组值进入第0行，第二组进入第1行，第三组进入第2行。</div></div></section>
+
+<section class="slide" data-slide data-section="question-sc052"><div class="slide-inner"><div class="eyebrow">22 · QB-SC-052</div><h2>二维数组完整初始化</h2><article class="question-card" data-question-id="QB-SC-052"><p class="question-text">完整初始化二维数组时（ ）。</p><div class="grid-2"><div><button class="option" data-question-option="A" data-correct="true" data-feedback="正确。初始化值可推断行数，但元素定位仍需要已知列数。">A. 可省略行数但不能省略列数</button><button class="option" data-question-option="B" data-correct="false" data-feedback="列数决定每一行的边界，不能省略。">B. 可省略列数</button></div><div><button class="option" data-question-option="C" data-correct="false" data-feedback="列数不能省略。">C. 行列均可省略</button><button class="option" data-question-option="D" data-correct="false" data-feedback="提供完整初值时可以省略行数。">D. 均不能省略</button></div></div><div class="feedback" data-question-feedback>选择一个答案。</div></article><pre class="trace-code">int a[][4] = {{1, 2, 3, 4}, {5, 6, 7, 8}};</pre></div></section>
+
+<section class="slide" data-slide data-section="matrix-input"><div class="slide-inner"><div class="eyebrow">23 · 按行读取</div><h2>外层遍历行，内层遍历列</h2><div class="grid-2"><pre class="trace-code">for (i = 0; i &lt; 3; i++)
+{
+    for (j = 0; j &lt; 4; j++)
+    {
+        scanf("%d", &amp;a[i][j]);
+    }
+}</pre><div><div class="matrix" id="input-matrix"></div><div class="button-row"><button id="input-next">保存下一个整数</button><button class="secondary" id="input-reset">重置</button></div><div class="feedback" id="input-feedback">第一个整数保存到a[0][0]。</div></div></div><div class="rule"><code>&amp;a[i][j]</code>表示当前元素的存放位置。</div></div></section>
+
+<section class="slide" data-slide data-section="maximum-initialization"><div class="slide-inner"><div class="eyebrow">24 · 初始状态</div><h2>最大值和位置都从第一个元素开始</h2><pre class="trace-code">maximum = a[0][0];
+row = 0;
+column = 0;</pre><div class="grid-3"><div class="card accent"><h3>maximum</h3><p>当前最大元素的值。</p></div><div class="card"><h3>row</h3><p>当前最大元素的行下标。</p></div><div class="card"><h3>column</h3><p>当前最大元素的列下标。</p></div></div><div class="rule">不能把<code>maximum</code>初始化为0，否则全负矩阵会得到错误结果。</div></div></section>
+
+<section class="slide" data-slide data-section="matrix-compare"><div class="slide-inner"><div class="eyebrow">25 · 状态更新</div><h2>发现更大元素时，同时更新三项状态</h2><div class="matrix" id="compare-matrix"></div><div class="button-row"><button id="compare-next">比较下一个元素</button><button class="secondary" id="compare-reset">重置</button></div><table class="center"><tr><th>当前位置</th><th>元素值</th><th>maximum</th><th>row</th><th>column</th></tr><tbody id="compare-state"><tr><td colspan="5">等待初始化</td></tr></tbody></table><div class="feedback" id="compare-feedback">第一步从a[0][0]建立初始状态。</div></div></section>
+
+<section class="slide" data-slide data-section="matrix-program"><div class="slide-inner"><div class="eyebrow">26 · 完整程序</div><h2>3行4列矩阵的最大元素及位置</h2><pre class="code-block program-full" data-positive-program="matrix-maximum">#include &lt;stdio.h&gt;
+
+int main()
+{
+    int a[3][4];
+    int i, j;
+    int maximum;
+    int row, column;
+
+    for (i = 0; i &lt; 3; i++)
+    {
+        for (j = 0; j &lt; 4; j++)
+        {
+            scanf("%d", &amp;a[i][j]);
+        }
+    }
+
+    maximum = a[0][0];
+    row = 0;
+    column = 0;
+
+    for (i = 0; i &lt; 3; i++)
+    {
+        for (j = 0; j &lt; 4; j++)
+        {
+            if (a[i][j] &gt; maximum)
+            {
+                maximum = a[i][j];
+                row = i;
+                column = j;
+            }
+        }
+    }
+
+    printf("%d %d %d\n", maximum, row, column);
+    return 0;
+}</pre><div class="rule">输入约束：程序运行时按行提供12个合法整数。</div></div></section>
+
+<section class="slide" data-slide data-section="matrix-stepper"><div class="slide-inner"><div class="eyebrow">27 · 十二个元素</div><h2>按行依次检查，并保留第一次出现的最大值</h2><div class="button-row"><button data-matrix-case="sample">样例矩阵</button><button data-matrix-case="equal">全相等矩阵</button><button data-matrix-case="negative">全负矩阵</button><button id="matrix-next">下一步</button><button class="secondary" id="matrix-reset">重置</button></div><div class="matrix" id="step-matrix"></div><div class="feedback" id="matrix-step-feedback">选择数据后，从a[0][0]开始。</div><pre class="terminal" id="matrix-step-output">尚未完成遍历</pre></div></section>
+
+<section class="slide" data-slide data-section="matrix-errors"><div class="slide-inner"><div class="eyebrow">28 · 错误诊断</div><h2>检查初值、边界和位置同步</h2><div class="grid-2"><button data-matrix-error="zero">1. maximum初始化为0</button><button data-matrix-error="column">2. 列循环写成 j &lt; 3</button><button data-matrix-error="position">3. 只更新maximum</button><button data-matrix-error="order">4. 输出row和column颠倒</button></div><div class="feedback" id="matrix-error-feedback">选择一种故意错误。</div><div class="card error"><h3>故意错误示例</h3><pre class="error-code">if (a[i][j] &gt; maximum)
+{
+    maximum = a[i][j];
+    /* 没有更新row和column */
+}</pre><p>最大值改变后，位置必须在同一个分支中同步更新。</p></div></div></section>
+
+<section class="slide" data-slide data-section="matrix-review"><div class="slide-inner"><div class="eyebrow">29 · 测试与自检</div><h2>普通、全相等和全负矩阵均能确定结果</h2><div class="grid-2"><div><table class="center"><tr><th>数据特征</th><th>输出</th></tr><tr><td>20位于第1行第2列</td><td>20 1 2</td></tr><tr><td>12个元素均为5</td><td>5 0 0</td></tr><tr><td>-1至-12</td><td>-1 0 0</td></tr></table><pre class="code-block">gcc matrix_max.c -o matrix_max.exe
+.\matrix_max.exe</pre><div class="button-row"><a class="button-link" href="../../../题库/编程题/qb_pg_010.md">QB-PG-010</a><a class="button-link" href="../../../题库/选择题/qb_sc_014.md">QB-SC-014</a><a class="button-link" href="../../../题库/选择题/qb_sc_052.md">QB-SC-052</a></div></div><div><div class="review-grid"><button class="review" data-review data-answer="3行4列，共12个元素。">a[3][4]有多少元素？</button><button class="review" data-review data-answer="行0至2，列0至3。">下标范围？</button><button class="review" data-review data-answer="a[i][j]表示第i行第j列元素。">a[i][j]表示什么？</button><button class="review" data-review data-answer="外层遍历行，内层遍历列。">如何遍历？</button><button class="review" data-review data-answer="用a[0][0]初始化。">maximum如何初始化？</button><button class="review" data-review data-answer="同时更新maximum、row、column。">何时更新位置？</button><button class="review" data-review data-answer="严格大于保留第一次出现位置。">相同最大值保留谁？</button></div><div class="feedback review-feedback">点击问题查看答案。</div></div></div></div></section>
+
+<section class="slide" data-slide data-section="string-model"><div class="slide-inner"><div class="eyebrow">30 · 字符数组与字符串</div><h2>C字符串必须以空字符 \0 结束</h2><div class="grid-2"><div class="card"><h3>字符数组</h3><pre class="trace-code">char a[3] = {'C', 'A', 'T'};</pre><p>包含三个字符，但没有字符串结束符。</p></div><div class="card accent"><h3>C字符串</h3><pre class="trace-code">char s[] = "CAT";</pre><p>实际保存<code>'C'</code>、<code>'A'</code>、<code>'T'</code>和<code>'\0'</code>。</p></div></div><div class="rule">字符数组不一定是字符串；含有正确结束符的字符序列才能按C字符串处理。</div></div></section>
+
+<section class="slide" data-slide data-section="question-sc015"><div class="slide-inner"><div class="eyebrow">31 · QB-SC-015</div><h2>换行符与字符串结束符</h2><article class="question-card" data-question-id="QB-SC-015"><p class="question-text"><code>char a[]="one\n";</code> 中数组占用的字节数是（ ）。</p><div class="grid-2"><div><button class="option" data-question-option="A" data-correct="false" data-feedback="只计算了o、n、e，遗漏了换行符和结束符。">A. 3</button><button class="option" data-question-option="B" data-correct="false" data-feedback="换行符占一个字节，还要保存字符串结束符。">B. 4</button></div><div><button class="option" data-question-option="C" data-correct="true" data-feedback="正确。o、n、e、换行符和结束符共5个字节。">C. 5</button><button class="option" data-question-option="D" data-correct="false" data-feedback="反斜杠与n共同构成一个转义字符，不是两个独立字符。">D. 6</button></div></div><div class="feedback" data-question-feedback>选择一个答案。</div></article><div class="char-strip" data-chars="o,n,e,\n,\0"></div><div class="rule"><code>\n</code>表示换行；<code>\0</code>表示字符串结束。二者作用不同。</div></div></section>
+
+<section class="slide" data-slide data-section="question-sc016"><div class="slide-inner"><div class="eyebrow">32 · QB-SC-016</div><h2>结束符也占用一个数组元素</h2><article class="question-card" data-question-id="QB-SC-016"><p class="question-text">执行 char str[81]="abcdef"; 后，字符串结束符位于（ ）。</p><div class="grid-2"><div><button class="option" data-question-option="A" data-correct="false" data-feedback="str[5]保存字符f。">A. str[5]</button><button class="option" data-question-option="B" data-correct="true" data-feedback="正确。六个普通字符占用下标0至5，结束符位于下标6。">B. str[6]</button></div><div><button class="option" data-question-option="C" data-correct="false" data-feedback="结束符紧跟在f之后，不位于下标7。">C. str[7]</button><button class="option" data-question-option="D" data-correct="false" data-feedback="后续元素会被初始化为0，但字符串在第一个结束符处终止。">D. str[80]</button></div></div><div class="feedback" data-question-feedback>选择一个答案。</div></article><div class="char-strip" data-chars="a,b,c,d,e,f,\0"></div></div></section>
+
+<section class="slide" data-slide data-section="string-traversal"><div class="slide-inner"><div class="eyebrow">33 · 下标遍历字符串</div><h2>遇到第一个 \0 时停止</h2><div class="grid-2"><div><pre class="trace-code" data-string-snippet>char s[] = "Hello";
+int i = 0;
+
+while (s[i] != '\0')
+{
+    printf("%c", s[i]);
+    i++;
+}</pre><div class="char-strip" id="hello-strip"></div><div class="button-row"><button id="string-next">访问下一个字符</button><button class="secondary" id="string-reset">重置</button></div></div><article class="question-card" data-question-id="QB-SC-061"><p class="question-text">遍历 C 字符串最常用的结束条件是（ ）。</p><button class="option" data-question-option="A" data-correct="false" data-feedback="字符串可以包含空格，空格不是统一结束标志。">A. 遇到空格</button><button class="option" data-question-option="B" data-correct="false" data-feedback="字符串可以包含换行符，换行不是统一结束标志。">B. 遇到换行</button><button class="option" data-question-option="C" data-correct="true" data-feedback="正确。C字符串以数值为0的空字符结束。">C. 遇到 '\0'</button><button class="option" data-question-option="D" data-correct="false" data-feedback="结束条件是空字符本身，不是任意非零值。">D. 达到整数 0 之外任意值</button><div class="feedback" data-question-feedback>选择一个答案。</div></article></div><div class="feedback" id="string-feedback">从下标0开始访问普通字符。</div></div></section>
+
+<section class="slide" data-slide data-section="summary"><div class="slide-inner"><div class="eyebrow">34 · 总结与自检</div><h2>位置、次序和结束边界</h2><div class="grid-2"><div><div class="card accent"><ul><li>选择排序用<code>k</code>记录最小元素下标</li><li>二维数组用行、列两个下标定位元素</li><li>C字符串在第一个<code>\0</code>处结束</li><li><code>\n</code>是换行，字符<code>'0'</code>是普通数字字符</li></ul></div><div class="button-row"><a class="button-link" href="../../../题库/选择题/qb_sc_015.md">QB-SC-015</a><a class="button-link" href="../../../题库/选择题/qb_sc_016.md">QB-SC-016</a><a class="button-link" href="../../../题库/选择题/qb_sc_061.md">QB-SC-061</a><a class="button-link" href="../../../例程/chapters/06-arrays-and-strings/ex_c06_005_6_5.c">EX-C06-005</a><a class="button-link" href="../../../例程/chapters/06-arrays-and-strings/ex_c06_006_6_6.c">EX-C06-006</a></div><p class="small">浏览器进行确定性预演，不执行真实C代码。</p></div><div><div class="review-grid"><button class="review" data-review data-answer="选择排序每趟确定一个左侧位置。">每趟确定什么？</button><button class="review" data-review data-answer="k保存最小元素下标。">k保存什么？</button><button class="review" data-review data-answer="二维数组元素使用两个下标。">元素如何定位？</button><button class="review" data-review data-answer="行0至2，列0至3。">3×4下标范围？</button><button class="review" data-review data-answer="最大值变化时同步更新行列。">位置何时更新？</button><button class="review" data-review data-answer="\0表示C字符串结束。">\0的作用？</button><button class="review" data-review data-answer="\n换行，\0结束字符串，'0'是普通字符。">三个写法的区别？</button></div><div class="feedback review-feedback">点击问题查看答案。</div></div></div></div></section>
+</main>
+<footer><div class="nav-buttons"><button id="prev">上一页</button><button id="next">下一页</button></div><div class="progress"><span id="progress"></span></div><div class="page"><span id="page">1</span> / 34 · Kevin@SUT</div></footer>
+<script>
+"use strict";
+var slides=Array.from(document.querySelectorAll("[data-slide]")),slideIndex=0;
+function show(n){slideIndex=Math.max(0,Math.min(33,n));slides.forEach(function(s,i){s.classList.toggle("active",i===slideIndex);});document.getElementById("page").textContent=slideIndex+1;document.getElementById("progress").style.width=((slideIndex+1)/34*100)+"%";}
+document.getElementById("prev").onclick=function(){show(slideIndex-1);};document.getElementById("next").onclick=function(){show(slideIndex+1);};document.addEventListener("keydown",function(e){if(["ArrowRight","PageDown"].includes(e.key))show(slideIndex+1);if(["ArrowLeft","PageUp"].includes(e.key))show(slideIndex-1);if(e.key==="Home")show(0);if(e.key==="End")show(33);});
+function setFeedback(el,text,good){el.textContent=text;el.classList.remove("good","bad");if(good!==undefined)el.classList.add(good?"good":"bad");}
+function drawArray(el,values,active,locked){el.innerHTML=values.map(function(v,i){return'<div class="array-cell '+(i===active?'active ':'')+(locked&&i<locked?'locked':'')+'"><span class="index">a['+i+']</span><span class="value">'+v+'</span></div>';}).join("");}
+function drawMatrix(el,values,active){el.innerHTML=values.map(function(v,n){return'<div class="matrix-cell '+(n===active?'active':'')+'"><span class="index">a['+Math.floor(n/4)+']['+(n%4)+']</span><span class="value">'+v+'</span></div>';}).join("");}
+function drawChars(el,values,active){el.innerHTML=values.map(function(v,i){return'<div class="char-cell '+(i===active?'active ':'')+(v==="\\0"?'terminator':'')+'"><span class="index">['+i+']</span><span class="value">'+v+'</span></div>';}).join("");}
+document.querySelectorAll("[data-values]").forEach(function(el){drawArray(el,el.dataset.values.split(","),-1,0);});
+document.querySelectorAll("[data-matrix-values]").forEach(function(el){drawMatrix(el,el.dataset.matrixValues.split(","),-1);});
+document.querySelectorAll("[data-chars]").forEach(function(el){drawChars(el,el.dataset.chars.split(","),-1);});
+document.querySelectorAll("article.question-card").forEach(function(q){q.querySelectorAll(".option").forEach(function(b){b.onclick=function(){q.querySelectorAll(".option").forEach(function(x){x.classList.remove("correct","wrong");});var ok=b.dataset.correct==="true";b.classList.add(ok?"correct":"wrong");setFeedback(q.querySelector("[data-question-feedback]"),b.dataset.feedback,ok);};});});
+var small=[4,2,5,1,3],sj=0,sk=0,search=document.getElementById("search-strip");
+function resetSearch(){sj=0;sk=0;drawArray(search,small,sk,0);document.getElementById("search-state").innerHTML='<tr><td>0</td><td>—</td><td>k = i</td><td>0</td><td>4</td></tr>';setFeedback(document.getElementById("search-feedback"),"k=0，当前最小值为4。",true);}resetSearch();
+document.getElementById("search-next").onclick=function(){if(sj>=4)return;sj++;var old=sk;if(small[sj]<small[sk])sk=sj;drawArray(search,small,sj,0);document.getElementById("search-state").innerHTML="<tr><td>0</td><td>"+sj+"</td><td>"+small[sj]+" 与 "+small[old]+"</td><td>"+sk+"</td><td>"+small[sk]+"</td></tr>";setFeedback(document.getElementById("search-feedback"),sj===4?"查找结束，最小值1位于下标3。":"继续检查未排序部分。",true);};document.getElementById("search-reset").onclick=resetSearch;
+var trStep=0,trData=[4,2,5,1,3],trK=0,trStrip=document.getElementById("trace-strip");function resetTrace(){trStep=0;trData=[4,2,5,1,3];trK=0;drawArray(trStrip,trData,-1,0);document.getElementById("trace-output").textContent="尚未输出";setFeedback(document.getElementById("trace-feedback"),"先比较下标1与当前最小值位置。");}resetTrace();
+document.getElementById("trace-next").onclick=function(){if(trStep<4){trStep++;if(trData[trStep]<trData[trK])trK=trStep;drawArray(trStrip,trData,trStep,0);setFeedback(document.getElementById("trace-feedback"),"j="+trStep+"，k="+trK+"，当前最小值="+trData[trK]+"。",true);}else if(trStep===4){var t=trData[0];trData[0]=trData[trK];trData[trK]=t;trStep++;drawArray(trStrip,trData,-1,1);document.getElementById("trace-output").textContent="1 2 5 4 3 ";setFeedback(document.getElementById("trace-feedback"),"交换a[0]与a[3]，随后依次输出数组。",true);}};document.getElementById("trace-reset").onclick=resetTrace;
+var selBase=[10,9,8,7,6,5,4,3,2,1],sel=[],selPass=0,selStrip=document.getElementById("selection-strip");function resetSelection(){sel=selBase.slice();selPass=0;drawArray(selStrip,sel,-1,0);document.getElementById("selection-state").innerHTML='<tr><td>0</td><td>—</td><td>—</td><td>0</td></tr>';setFeedback(document.getElementById("selection-feedback"),"从整个数组中寻找第一个位置的最小值。");}resetSelection();
+document.getElementById("selection-next").onclick=function(){if(selPass>=9)return;var i=selPass,k=i;for(var j=i+1;j<10;j++){if(sel[j]<sel[k])k=j;}var t=sel[i];sel[i]=sel[k];sel[k]=t;selPass++;drawArray(selStrip,sel,-1,selPass);document.getElementById("selection-state").innerHTML="<tr><td>"+selPass+"</td><td>"+k+"</td><td>"+i+" 与 "+k+"</td><td>"+selPass+"</td></tr>";setFeedback(document.getElementById("selection-feedback"),selPass===9?"九趟结束，数组完成升序排列。":"左侧"+selPass+"个位置已经确定。",true);};document.getElementById("selection-reset").onclick=resetSelection;
+var selErrors={reset:"k仍可能指向已确定区域，下一趟比较起点错误。",early:"会产生不必要的多次交换，也不再符合先选后换的步骤。",start:"j会重新检查左侧已确定区域。",swap:"内层结束后的j已经到10，交换必须使用保存的k。"};document.querySelectorAll("[data-selection-error]").forEach(function(b){b.onclick=function(){setFeedback(document.getElementById("selection-error-feedback"),selErrors[b.dataset.selectionError],false);};});
+var labels=Array.from({length:12},function(_,n){return n;});drawMatrix(document.getElementById("label-matrix"),labels.map(function(_,n){return "["+Math.floor(n/4)+"]["+(n%4)+"]";}),-1);
+document.querySelectorAll("[data-matrix-cell]").forEach(function(b){b.onclick=function(){var p=b.dataset.matrixCell.split(",").map(Number),n=p[0]*4+p[1];drawMatrix(document.getElementById("label-matrix"),labels.map(function(_,x){return "["+Math.floor(x/4)+"]["+(x%4)+"]";}),n);setFeedback(document.getElementById("matrix-cell-feedback"),"a["+p[0]+"]["+p[1]+"]位于第"+p[0]+"行、第"+p[1]+"列。",true);};});
+var inputValues=[1,2,3,4,5,6,20,8,9,10,11,12],inputAt=0,inputEl=document.getElementById("input-matrix");function resetInput(){inputAt=0;drawMatrix(inputEl,Array(12).fill("—"),-1);setFeedback(document.getElementById("input-feedback"),"第一个整数保存到a[0][0]。");}resetInput();
+document.getElementById("input-next").onclick=function(){if(inputAt>=12)return;inputAt++;var vals=inputValues.map(function(v,i){return i<inputAt?v:"—";});drawMatrix(inputEl,vals,inputAt-1);var n=inputAt-1;setFeedback(document.getElementById("input-feedback"),inputAt===12?"12个整数已按行保存完毕。":"刚保存a["+Math.floor(n/4)+"]["+(n%4)+"]。",true);};document.getElementById("input-reset").onclick=resetInput;
+var compAt=-1,compMax=null,compRow=0,compCol=0,compEl=document.getElementById("compare-matrix");function resetCompare(){compAt=-1;compMax=null;compRow=0;compCol=0;drawMatrix(compEl,inputValues,-1);document.getElementById("compare-state").innerHTML='<tr><td colspan="5">等待初始化</td></tr>';setFeedback(document.getElementById("compare-feedback"),"第一步从a[0][0]建立初始状态。");}resetCompare();
+document.getElementById("compare-next").onclick=function(){if(compAt>=11)return;compAt++;var v=inputValues[compAt],r=Math.floor(compAt/4),c=compAt%4;if(compAt===0||v>compMax){compMax=v;compRow=r;compCol=c;}drawMatrix(compEl,inputValues,compAt);document.getElementById("compare-state").innerHTML="<tr><td>a["+r+"]["+c+"]</td><td>"+v+"</td><td>"+compMax+"</td><td>"+compRow+"</td><td>"+compCol+"</td></tr>";setFeedback(document.getElementById("compare-feedback"),compAt===11?"遍历结束：20位于第1行第2列。":"继续按行比较。",true);};document.getElementById("compare-reset").onclick=resetCompare;
+var matrixCases={sample:[1,2,3,4,5,6,20,8,9,10,11,12],equal:Array(12).fill(5),negative:[-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12]},mat=matrixCases.sample,matAt=-1,matMax=0,matR=0,matC=0,matEl=document.getElementById("step-matrix");
+function resetMatrix(){matAt=-1;matMax=mat[0];matR=0;matC=0;drawMatrix(matEl,mat,-1);document.getElementById("matrix-step-output").textContent="尚未完成遍历";setFeedback(document.getElementById("matrix-step-feedback"),"从a[0][0]开始。");}resetMatrix();
+document.querySelectorAll("[data-matrix-case]").forEach(function(b){b.onclick=function(){mat=matrixCases[b.dataset.matrixCase];resetMatrix();};});
+document.getElementById("matrix-next").onclick=function(){if(matAt>=11)return;matAt++;var r=Math.floor(matAt/4),c=matAt%4;if(mat[matAt]>matMax){matMax=mat[matAt];matR=r;matC=c;}drawMatrix(matEl,mat,matAt);setFeedback(document.getElementById("matrix-step-feedback"),"a["+r+"]["+c+"]="+mat[matAt]+"，当前状态为 "+matMax+" "+matR+" "+matC+"。",true);if(matAt===11)document.getElementById("matrix-step-output").textContent=matMax+" "+matR+" "+matC;};document.getElementById("matrix-reset").onclick=resetMatrix;
+var matrixErrors={zero:"全负矩阵中0并不是数组元素，结果会错误。",column:"3×4矩阵有4列，j<3会漏掉最后一列。",position:"maximum改变后，row和column仍指向旧位置。",order:"题目要求先输出行下标，再输出列下标。"};document.querySelectorAll("[data-matrix-error]").forEach(function(b){b.onclick=function(){setFeedback(document.getElementById("matrix-error-feedback"),matrixErrors[b.dataset.matrixError],false);};});
+var hello=["H","e","l","l","o","\\0"],strAt=-1,helloEl=document.getElementById("hello-strip");function resetString(){strAt=-1;drawChars(helloEl,hello,-1);setFeedback(document.getElementById("string-feedback"),"从下标0开始访问普通字符。");}resetString();
+document.getElementById("string-next").onclick=function(){if(strAt>=5)return;strAt++;drawChars(helloEl,hello,strAt);setFeedback(document.getElementById("string-feedback"),strAt===5?"s[5]是\\0，条件为假，遍历结束。":"输出字符 "+hello[strAt]+"，随后i增加1。",true);};document.getElementById("string-reset").onclick=resetString;
+document.querySelectorAll("[data-review]").forEach(function(b){b.onclick=function(){b.classList.toggle("done");setFeedback(b.closest(".slide").querySelector(".review-feedback"),b.dataset.answer,true);};});show(0);
+</script>
+</body>
+</html>
