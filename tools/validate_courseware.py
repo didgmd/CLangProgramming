@@ -6,9 +6,14 @@ from __future__ import annotations
 import argparse
 import html
 import re
+import shutil
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from urllib.parse import urlparse
+
+sys.dont_write_bytecode = True
 
 from question_common import scan_questions
 
@@ -20,6 +25,7 @@ CW_L03 = ROOT / "课件" / "讲授" / "03-sequential-programming" / "index.html"
 CW_L04 = ROOT / "课件" / "讲授" / "04-selection-if" / "index.html"
 CW_L05 = ROOT / "课件" / "讲授" / "05-selection-nesting-and-switch" / "index.html"
 CW_L06 = ROOT / "课件" / "讲授" / "06-loops-and-state" / "index.html"
+CW_L07 = ROOT / "课件" / "讲授" / "07-nested-loops-and-primes" / "index.html"
 ALLOWED_EXTERNAL_HREFS = frozenset({"https://w3schools.org.cn/c/index.php"})
 
 REQUIRED_MARKERS = (
@@ -232,6 +238,8 @@ def target_for(course_id: str) -> Path:
         return CW_L05
     if course_id == "CW-L06":
         return CW_L06
+    if course_id == "CW-L07":
+        return CW_L07
     raise ValueError(f"unknown courseware id: {course_id}")
 
 
@@ -1284,6 +1292,327 @@ def validate_cw_l06(path: Path) -> list[str]:
     return failures
 
 
+def validate_cw_l07(path: Path) -> list[str]:
+    failures: list[str] = []
+    if not path.exists():
+        return [f"file not found: {path}"]
+
+    raw = path.read_bytes()
+    if raw.startswith(b"\xef\xbb\xbf"):
+        fail(failures, "UTF-8 BOM is not allowed")
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        return [f"invalid UTF-8: {exc}"]
+
+    if "\t" in text:
+        fail(failures, "tab characters are not allowed")
+    if "<html" not in text.lower() or "</html>" not in text.lower():
+        fail(failures, "document is not a complete HTML file")
+    if "overflow:hidden" not in text.replace(" ", ""):
+        fail(failures, "slide/page mode must hide page-level overflow")
+
+    required_markers = (
+        'data-courseware="c-freshman-interactive-html"',
+        'data-layout="slide-page"',
+        'data-course-id="CW-L07"',
+        'data-chapter="5"',
+        'data-routines="EX-C05-007"',
+        'data-questions="QB-PG-009,QB-FB-012,QB-SC-011,QB-SC-057"',
+        'data-lesson-variants="four-by-five-product-table,interval-primes-nested-break"',
+        'data-attribution="Kevin@SUT"',
+        '<meta name="author" content="Kevin@SUT">',
+        '<meta name="copyright" content="Kevin@SUT">',
+        'data-positive-program="product-table"',
+        'data-positive-program="interval-primes"',
+        'data-programming-question-id="QB-PG-009"',
+        'data-fill-question-id="QB-FB-012"',
+        "data-code-line",
+        "active-code-line",
+    )
+    for marker in required_markers:
+        if marker not in text:
+            fail(failures, f"missing CW-L07 marker: {marker}")
+
+    for pattern in EXTERNAL_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            fail(failures, f"external or persistent dependency found: {pattern}")
+    for pattern in TEACHER_ONLY_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            fail(failures, f"teacher-only content found: {pattern}")
+    for phrase in CW_L02_STUDENT_FORBIDDEN:
+        if phrase in text:
+            fail(failures, f"student-facing teacher-prep phrase found: {phrase}")
+
+    slides = len(SLIDE_PATTERN.findall(text))
+    sections = len(SECTION_BLOCK_PATTERN.findall(text))
+    if slides != 30:
+        fail(failures, f"CW-L07 expected 30 slides, found {slides}")
+    if sections != 30:
+        fail(failures, f"CW-L07 expected 30 complete section blocks, found {sections}")
+    if text.count("<details") != 0:
+        fail(failures, "CW-L07 must expose all knowledge and exercises directly")
+    if " / 30 · Kevin@SUT" not in text:
+        fail(failures, "CW-L07 footer total must be 30")
+
+    validate_embedded_questions(text, failures, ("QB-SC-011", "QB-SC-057"), "CW-L07")
+    if text.count('data-question-option="') != 8:
+        fail(failures, "CW-L07 must expose eight options across two choice questions")
+
+    questions = scan_questions()
+    source = questions["QB-PG-009"].text
+    prompt_match = re.search(r"## 题目\s*(.*?)\s*### 输入格式", source, re.DOTALL)
+    html_match = re.search(
+        r'<section\b[^>]*data-programming-question-id="QB-PG-009"[^>]*>(.*?)</section>',
+        text,
+        re.IGNORECASE | re.DOTALL,
+    )
+    source_prompt = normalize_visible_text(prompt_match.group(1)) if prompt_match else ""
+    html_prompt = normalize_visible_text(html_match.group(1)) if html_match else ""
+    if not source_prompt or source_prompt not in html_prompt:
+        fail(failures, "CW-L07 must visibly embed the QB-PG-009 prompt")
+
+    fill_source = questions["QB-FB-012"].text
+    fill_source_body = re.search(
+        r"## 题目\s*(?P<prompt>.*?)\x60\x60\x60c\s*(?P<code>.*?)\x60\x60\x60",
+        fill_source,
+        re.DOTALL,
+    )
+    fill_html = re.search(
+        r'<section\b[^>]*data-fill-question-id="QB-FB-012"[^>]*>(.*?)</section>',
+        text,
+        re.IGNORECASE | re.DOTALL,
+    )
+    fill_html_prompt = re.search(
+        r'<p\b[^>]*class="[^"]*question-text[^"]*"[^>]*>(.*?)</p>',
+        fill_html.group(1) if fill_html else "",
+        re.DOTALL,
+    )
+    fill_html_code = re.search(
+        r'<pre\b[^>]*class="[^"]*trace-code[^"]*"[^>]*>(.*?)</pre>',
+        fill_html.group(1) if fill_html else "",
+        re.DOTALL,
+    )
+    source_fill_prompt = normalize_visible_text(fill_source_body.group("prompt")) if fill_source_body else ""
+    actual_fill_prompt = normalize_visible_text(fill_html_prompt.group(1)) if fill_html_prompt else ""
+    if source_fill_prompt != actual_fill_prompt:
+        fail(failures, "QB-FB-012 prompt differs from the question bank")
+    source_fill_tokens = re.sub(r"\s+", "", fill_source_body.group("code")) if fill_source_body else ""
+    actual_fill_tokens = re.sub(
+        r"\s+",
+        "",
+        html.unescape(re.sub(r"<[^>]+>", "", fill_html_code.group(1))),
+    ) if fill_html_code else ""
+    if source_fill_tokens != actual_fill_tokens:
+        fail(failures, "QB-FB-012 program differs from the question bank")
+    if text.count('data-fill="') != 4:
+        fail(failures, "QB-FB-012 must expose four fill-answer controls")
+    if "逐空答案" in normalize_visible_text(text):
+        fail(failures, "QB-FB-012 answers must remain hidden until a reveal button is clicked")
+    for answer in ("n&lt;=200", "i*i&lt;=n", "n%i==0", "if(prime)"):
+        if f'data-answer="{answer}"' not in text:
+            fail(failures, f"QB-FB-012 answer is missing: {answer}")
+
+    program_blocks = {
+        match.group("id"): html.unescape(re.sub(r"<[^>]+>", "", match.group("body")))
+        for match in re.finditer(
+            r'<pre\b[^>]*data-positive-program="(?P<id>[^"]+)"[^>]*>(?P<body>.*?)</pre>',
+            text,
+            re.IGNORECASE | re.DOTALL,
+        )
+    }
+    if set(program_blocks) != {"product-table", "interval-primes"}:
+        fail(failures, "CW-L07 must contain exactly the two declared positive programs")
+
+    validate_cw_l07_programs(text, program_blocks, failures)
+    check_links(text, path, failures, require_optional_external=False)
+    return failures
+
+
+def loop_nesting_depth(code: str) -> int:
+    """Return the maximum braced loop nesting depth in formatted C code."""
+    stripped = re.sub(r"/\*.*?\*/|//[^\n]*", "", code, flags=re.DOTALL)
+    stack: list[bool] = []
+    pending_loop = False
+    depth = 0
+    maximum = 0
+    for token in re.findall(r"\b(?:for|while|do)\b|[{}]", stripped):
+        if token in {"for", "while", "do"}:
+            pending_loop = True
+        elif token == "{":
+            stack.append(pending_loop)
+            if pending_loop:
+                depth += 1
+                maximum = max(maximum, depth)
+            pending_loop = False
+        elif token == "}" and stack:
+            if stack.pop():
+                depth -= 1
+    return maximum
+
+
+def validate_cw_l07_programs(
+    text: str,
+    program_blocks: dict[str, str],
+    failures: list[str],
+) -> None:
+    code_text = "\n".join(program_blocks.values())
+    for forbidden, label in (
+        (r"\[[^\]]*\]", "array syntax"),
+        (r"\bswitch\s*\(", "switch"),
+        (r"\bgoto\b", "goto"),
+        (r"\?[^:\n]+:", "conditional operator"),
+        (r"\breturn\s+1\s*;", "return 1"),
+    ):
+        if re.search(forbidden, code_text):
+            fail(failures, f"CW-L07 positive programs must not introduce {label}")
+    if re.search(r"if\s*\(\s*scanf|scanf\s*\([^;]+\)\s*[!=]=", code_text):
+        fail(failures, "CW-L07 student programs must not check scanf return values")
+    if len(re.findall(r"\b(?:int|void|float|double|char)\s+(?!main\b)\w+\s*\([^;]*\)\s*\{", code_text)):
+        fail(failures, "CW-L07 must not introduce custom functions")
+    for program_id, code in program_blocks.items():
+        if loop_nesting_depth(code) != 2:
+            fail(failures, f"CW-L07 {program_id} must have loop nesting depth exactly two")
+
+    table_code = program_blocks.get("product-table", "")
+    for marker in (
+        "for (i = 1; i <= 4; i++)",
+        "for (j = 1; j <= 5; j++)",
+        'printf("%4d", i * j);',
+        'printf("\\n");',
+    ):
+        if marker not in table_code:
+            fail(failures, f"CW-L07 product-table program is incomplete: {marker}")
+    prime_code = program_blocks.get("interval-primes", "")
+    for marker in (
+        "for (n = 100; n <= 200; n++)",
+        "is_prime = 1;",
+        "for (i = 2; i <= n / i; i++)",
+        "if (n % i == 0)",
+        "is_prime = 0;",
+        "break;",
+        "if (count % 5 != 0)",
+        "if (count % 5 == 0)",
+    ):
+        if marker not in prime_code:
+            fail(failures, f"CW-L07 interval-primes program is incomplete: {marker}")
+    if prime_code.count("break;") != 1:
+        fail(failures, "CW-L07 prime program must use one explicit inner-loop break")
+    if "continue;" in code_text:
+        fail(failures, "CW-L07 positive programs must keep continue in the marked demonstration only")
+
+    exact_product = "   1   2   3   4   5\n   2   4   6   8  10\n   3   6   9  12  15\n   4   8  12  16  20"
+    exact_primes = "101 103 107 109 113\n127 131 137 139 149\n151 157 163 167 173\n179 181 191 193 197\n199"
+    if text.count(exact_product) < 2:
+        fail(failures, "CW-L07 product-table exact output must appear in task and review")
+    if text.count(exact_primes) < 2:
+        fail(failures, "CW-L07 interval-primes exact output must appear in task and review")
+    visible = normalize_visible_text(text)
+    for marker in (
+        'data-prime-count="21"',
+        'data-line-distribution="5,5,5,5,1"',
+        "内层初始化",
+        "4 × 5 = 20",
+        "只结束直接包围它的内层循环",
+        "每个候选数开始时",
+        "浏览器进行确定性",
+    ):
+        if marker not in text and marker not in visible:
+            fail(failures, f"CW-L07 student explanation is incomplete: {marker}")
+
+    counts = (
+        ('data-state-row="', 3, "product state-row controls"),
+        ('data-break-row="', 2, "break demonstrations"),
+        ('data-continue-demo="', 2, "continue demonstrations"),
+        ('data-pair="', 4, "prime state-pair controls"),
+        ('data-prime-candidate="', 3, "prime candidate controls"),
+        ('data-prime-error="', 4, "prime diagnosis cases"),
+        ("data-review ", 14, "review questions"),
+    )
+    for marker, expected, label in counts:
+        actual = text.count(marker)
+        if actual != expected:
+            fail(failures, f"CW-L07 expected {expected} {label}, found {actual}")
+    for command in (
+        "gcc table.c -o table.exe\n.\\table.exe",
+        "gcc primes.c -o primes.exe\n.\\primes.exe",
+    ):
+        if command not in text:
+            fail(failures, f"CW-L07 beginner command is missing: {command.splitlines()[0]}")
+    compile_cw_l07_programs(program_blocks, failures, exact_product, exact_primes)
+
+
+def compile_cw_l07_programs(
+    program_blocks: dict[str, str],
+    failures: list[str],
+    exact_product: str,
+    exact_primes: str,
+) -> None:
+    gcc = shutil.which("gcc")
+    if not gcc:
+        fail(failures, "CW-L07 MinGW GCC was not found")
+        return
+    machine = subprocess.run(
+        [gcc, "-dumpmachine"],
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        capture_output=True,
+        check=False,
+    )
+    if machine.returncode != 0 or "mingw" not in machine.stdout.lower():
+        fail(failures, f"CW-L07 compiler is not MinGW GCC: {machine.stdout.strip()}")
+        return
+
+    fixtures = {
+        "product-table": exact_product + "\n",
+        "interval-primes": exact_primes + "\n",
+    }
+    with tempfile.TemporaryDirectory(prefix="cw-l07-validation-") as temp_name:
+        temp_dir = Path(temp_name)
+        for program_id, expected in fixtures.items():
+            source = temp_dir / f"{program_id}.c"
+            executable = temp_dir / f"{program_id}.exe"
+            source.write_text(program_blocks[program_id], encoding="utf-8", newline="\n")
+            build = subprocess.run(
+                [
+                    gcc,
+                    "-std=c11",
+                    "-Wall",
+                    "-Wextra",
+                    "-Wpedantic",
+                    "-Werror",
+                    str(source),
+                    "-o",
+                    str(executable),
+                ],
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                capture_output=True,
+                check=False,
+            )
+            if build.returncode != 0:
+                fail(failures, f"CW-L07 {program_id} compile failed: {build.stderr.strip()}")
+                continue
+            run_result = subprocess.run(
+                [str(executable)],
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                capture_output=True,
+                check=False,
+                timeout=10,
+            )
+            actual = run_result.stdout.replace("\r\n", "\n")
+            if run_result.returncode != 0 or actual != expected:
+                fail(
+                    failures,
+                    f"CW-L07 {program_id} output mismatch: "
+                    f"exit={run_result.returncode}, actual={actual!r}",
+                )
+
+
 def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
     if course_id == "CW-L02":
         return validate_cw_l02(path)
@@ -1295,6 +1624,8 @@ def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
         return validate_cw_l05(path)
     if course_id == "CW-L06":
         return validate_cw_l06(path)
+    if course_id == "CW-L07":
+        return validate_cw_l07(path)
     failures: list[str] = []
     if not path.exists():
         return [f"file not found: {path}"]
@@ -1387,7 +1718,7 @@ def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--id", default="CW-L01", help="courseware id: CW-L01 through CW-L06")
+    parser.add_argument("--id", default="CW-L01", help="courseware id: CW-L01 through CW-L07")
     parser.add_argument("--path", type=Path, help="explicit HTML path for local validation")
     args = parser.parse_args()
 
@@ -1404,7 +1735,7 @@ def main() -> int:
             print(f"- {item}")
         return 1
 
-    slide_count = 12 if args.id == "CW-L01" else 28 if args.id == "CW-L06" else 26 if args.id in {"CW-L04", "CW-L05"} else 25
+    slide_count = 12 if args.id == "CW-L01" else 30 if args.id == "CW-L07" else 28 if args.id == "CW-L06" else 26 if args.id in {"CW-L04", "CW-L05"} else 25
     optional_external = 1 if args.id == "CW-L01" else 0
     print(f"COURSEWARE VALIDATION PASS: {args.id}, slides={slide_count}, offline-core=ok, optional_external={optional_external}, links=ok, text_encoding=UTF-8, bom=utf8-no-bom")
     return 0

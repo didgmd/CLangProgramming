@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="Kevin@SUT">
+<meta name="copyright" content="Kevin@SUT">
+<title>CW-L07 嵌套循环：乘积表与区间素数</title>
+<style>
+:root{--ink:#14213d;--muted:#53657d;--blue:#0b6e99;--cyan:#dff5f8;--amber:#f5b942;--paper:#f5f8fb;--green:#19704a;--red:#a33a3a;--code:#101827}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#dce7ef;color:var(--ink);font-family:"Microsoft YaHei","Segoe UI",sans-serif}body{display:grid;grid-template-rows:1fr 54px}
+.deck{position:relative;min-height:0}.slide{position:absolute;inset:0;display:none;padding:22px 34px 14px}.slide.active{display:block}.slide-inner{height:100%;max-width:1212px;margin:auto;background:var(--paper);border-radius:18px;padding:20px 28px;box-shadow:0 10px 35px #17314a24;overflow:auto}
+.eyebrow{font-size:17px;font-weight:800;color:var(--blue);letter-spacing:.04em}h1{font-size:42px;margin:12px 0 18px;line-height:1.18}h2{font-size:31px;margin:5px 0 14px;line-height:1.2}h3{font-size:22px;margin:4px 0 9px}p,li,td,th{font-size:19px;line-height:1.42}.lead{font-size:23px;color:var(--muted)}.small{font-size:16px;color:var(--muted)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.card,.question-card{background:#fff;border:2px solid #d7e3ec;border-radius:14px;padding:12px 16px}.accent{border-color:#70c9d3;background:#eefbfd}.warn{border-color:#efc36c;background:#fff8e8}.error{border-color:#e6aaaa;background:#fff2f2}.rule{background:#e6f5f7;border-left:7px solid var(--blue);padding:10px 16px;border-radius:10px;font-size:19px;margin:10px 0}.formula{font:700 26px/1.3 "Cambria Math","Times New Roman",serif;text-align:center;background:#fff;border-radius:12px;padding:10px}
+.code-block,.trace-code,.error-code,.terminal{background:var(--code);color:#eef6ff;border-radius:12px;padding:11px 16px;font:17px/1.3 Consolas,"Courier New",monospace;white-space:pre-wrap;margin:8px 0;overflow:auto}.compact{font-size:15px;line-height:1.17}.program-full{font-size:12.7px;line-height:1.02;padding:5px 13px;margin:0}.error-code{border:2px solid #d96161}.terminal{background:#06111e;color:#9cf0c9;min-height:54px}.code-line{display:block;border-left:4px solid transparent;padding-left:7px}.active-code-line{background:#16476c;border-left-color:var(--amber)}
+[data-section="prime-program"] .slide-inner,[data-section="fill-question"] .slide-inner{padding-top:13px;padding-bottom:13px}[data-section="prime-program"] h2,[data-section="fill-question"] h2{margin:2px 0 6px}[data-section="prime-errors"] [data-prime-error] h3{color:#5f1f1f}
+table{width:100%;border-collapse:collapse;background:#fff}th,td{border:1px solid #cbd8e2;padding:6px 9px;text-align:left}th{background:#e7f2f7}.center td,.center th{text-align:center}.state-grid td{font-size:16px;padding:5px}.state-cell{background:#fff;border:2px solid #8bb8ca;border-radius:10px;padding:7px;text-align:center;font-size:17px}.state-cell strong{display:block;color:var(--blue);font-size:21px}
+button,.button-link{border:0;border-radius:10px;background:var(--blue);color:#fff;padding:9px 15px;font-size:17px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}button:hover,button:focus-visible,.button-link:focus-visible{outline:3px solid var(--amber);outline-offset:2px}button.secondary{background:#53657d}button.option{display:block;width:100%;text-align:left;margin:6px 0;background:#eaf2f7;color:var(--ink)}button.option.correct{background:#d7f1e4;color:#124c34}button.option.wrong{background:#fae1e1;color:#772a2a}.button-row{display:flex;gap:9px;flex-wrap:wrap;margin:10px 0}.feedback{min-height:50px;padding:10px 15px;border-radius:10px;background:#e8f1f5;color:#18354b;font-size:18px}.feedback.good{background:#d9f2e5;color:#155e35}.feedback.bad{background:#fae1e1;color:#772a2a}
+.path{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap}.node{border:2px solid #8bb8ca;border-radius:11px;background:#fff;padding:8px 12px;font-size:18px}.arrow{font-size:25px;color:var(--blue)}.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.review{background:#edf3f7;color:var(--ink);text-align:left;padding:7px 11px}.review.done{background:#d9f2e5;color:#155e35}.fill-answer{background:#eaf2f7;color:var(--ink)}.fill-answer.revealed{background:#d9f2e5;color:#155e35}
+footer{display:grid;grid-template-columns:190px 1fr 190px;align-items:center;background:#0d2238;color:#fff;padding:0 22px;gap:18px}.nav-buttons{display:flex;gap:8px}.nav-buttons button{padding:7px 13px;background:#264c6d;white-space:nowrap;min-width:84px}.progress{height:8px;background:#39566d;border-radius:8px;overflow:hidden}.progress>span{display:block;height:100%;background:var(--amber);width:0}.page{text-align:right;font-weight:700}
+@media(max-width:850px){body{grid-template-rows:1fr 62px}.slide{padding:8px}.slide-inner{padding:15px}.grid-2,.grid-3,.grid-4,.grid-5,.review-grid{grid-template-columns:1fr}h1{font-size:32px}h2{font-size:26px}p,li,td,th{font-size:17px}footer{grid-template-columns:150px 1fr 90px}.code-block,.trace-code,.error-code{font-size:14px}}
+</style>
+</head>
+<body data-courseware="c-freshman-interactive-html" data-layout="slide-page" data-course-id="CW-L07" data-chapter="5" data-routines="EX-C05-007" data-questions="QB-PG-009,QB-FB-012,QB-SC-011,QB-SC-057" data-lesson-variants="four-by-five-product-table,interval-primes-nested-break" data-attribution="Kevin@SUT">
+<main class="deck" data-deck>
+
+<section class="slide active" data-slide data-section="objectives"><div class="slide-inner"><div class="eyebrow">01 · 学习目标</div><h1>嵌套循环：乘积表与区间素数</h1><div class="grid-2"><div class="card accent"><h3>两层循环</h3><ul><li>区分外层循环与内层循环的职责</li><li>跟踪两个循环变量的状态</li><li>计算循环体的总执行次数</li></ul></div><div class="card"><h3>循环控制</h3><ul><li>说明内层循环为何重新初始化</li><li>区分 <code>break</code> 与 <code>continue</code></li><li>完成乘积表与区间素数程序</li></ul></div></div><p class="lead">外层循环确定“处理哪一组”，内层循环完成“这一组中的每一步”。</p></div></section>
+
+<section class="slide" data-slide data-section="table-task"><div class="slide-inner"><div class="eyebrow">02 · 程序一</div><h2>输出4行5列乘积表</h2><div class="grid-2"><div class="card"><h3>任务</h3><p>第 <code>i</code> 行、第 <code>j</code> 列输出乘积 <code>i * j</code>。</p><ul><li><code>i</code> 的范围：1至4</li><li><code>j</code> 的范围：1至5</li><li>每个数占4个字符宽度</li><li>每完成一行输出一次换行</li></ul></div><div class="card accent"><h3>精确输出</h3><pre class="terminal" data-product-output>   1   2   3   4   5
+   2   4   6   8  10
+   3   6   9  12  15
+   4   8  12  16  20</pre></div></div></div></section>
+
+<section class="slide" data-slide data-section="row-column"><div class="slide-inner"><div class="eyebrow">03 · 行与列</div><h2>两个循环变量承担不同职责</h2><div class="grid-2"><div class="card accent"><h3>外层变量 i</h3><p>决定当前输出第几行。</p><div class="formula">i = 1, 2, 3, 4</div></div><div class="card"><h3>内层变量 j</h3><p>决定当前行输出第几列。</p><div class="formula">j = 1, 2, 3, 4, 5</div></div></div><div class="path"><span class="node">确定一行 i</span><span class="arrow">→</span><span class="node">遍历五列 j</span><span class="arrow">→</span><span class="node">换行</span><span class="arrow">→</span><span class="node">下一行</span></div><div class="rule">一个状态由有序对 <code>(i, j)</code> 表示。例如 <code>(2, 4)</code> 对应第2行第4列，输出8。</div></div></section>
+
+<section class="slide" data-slide data-section="nested-syntax"><div class="slide-inner"><div class="eyebrow">04 · 基本结构</div><h2>内层 for 属于外层循环体</h2><div class="grid-2"><pre class="trace-code">for (i = 1; i &lt;= 4; i++)
+{
+    for (j = 1; j &lt;= 5; j++)
+    {
+        printf("%4d", i * j);
+    }
+
+    printf("\n");
+}</pre><div class="card"><ol><li>外层确定当前 <code>i</code>。</li><li>执行内层初始化 <code>j = 1</code>。</li><li>内层完成五次输出。</li><li>内层结束后执行换行。</li><li>外层执行 <code>i++</code>。</li></ol></div></div><div class="rule">缩进和花括号清楚地表示归属关系：内层循环和换行语句都位于外层循环体中。</div></div></section>
+
+<section class="slide" data-slide data-section="first-row"><div class="slide-inner"><div class="eyebrow">05 · 第一行</div><h2>i = 1 时，j 完整变化一次</h2><div class="grid-5"><div class="state-cell"><strong>(1,1)</strong>1×1=1</div><div class="state-cell"><strong>(1,2)</strong>1×2=2</div><div class="state-cell"><strong>(1,3)</strong>1×3=3</div><div class="state-cell"><strong>(1,4)</strong>1×4=4</div><div class="state-cell"><strong>(1,5)</strong>1×5=5</div></div><div class="path" style="margin-top:20px"><span class="node">j=1</span><span class="arrow">→</span><span class="node">输出1</span><span class="arrow">→</span><span class="node">j++</span><span class="arrow">→</span><span class="node">再次判断</span></div><div class="rule">当 <code>j</code> 更新为6时，条件 <code>j &lt;= 5</code> 为假，第一行的内层循环结束。</div></div></section>
+
+<section class="slide" data-slide data-section="inner-reset"><div class="slide-inner"><div class="eyebrow">06 · 重新初始化</div><h2>i = 2 时，j 再次从1开始</h2><div class="grid-2"><div class="card"><h3>第一行结束</h3><p><code>i = 1</code>，内层结束时 <code>j = 6</code>。</p><p>随后执行换行和外层更新 <code>i++</code>。</p></div><div class="card accent"><h3>第二行开始</h3><p><code>i = 2</code>，再次执行内层循环头部的初始化：</p><div class="formula">j = 1</div></div></div><div class="button-row"><button id="reset-demo-next">查看下一阶段</button><button class="secondary" id="reset-demo-reset">重置</button></div><div class="feedback" id="reset-demo-feedback" aria-live="polite">点击按钮观察内层初始化何时再次执行。</div></div></section>
+
+<section class="slide" data-slide data-section="twenty-states"><div class="slide-inner"><div class="eyebrow">07 · 20个状态</div><h2>每一行都包含5个 (i, j) 组合</h2><table class="center state-grid"><tr><th>i \ j</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr><tr><th>1</th><td>(1,1)=1</td><td>(1,2)=2</td><td>(1,3)=3</td><td>(1,4)=4</td><td>(1,5)=5</td></tr><tr><th>2</th><td>(2,1)=2</td><td>(2,2)=4</td><td>(2,3)=6</td><td>(2,4)=8</td><td>(2,5)=10</td></tr><tr><th>3</th><td>(3,1)=3</td><td>(3,2)=6</td><td>(3,3)=9</td><td>(3,4)=12</td><td>(3,5)=15</td></tr><tr><th>4</th><td>(4,1)=4</td><td>(4,2)=8</td><td>(4,3)=12</td><td>(4,4)=16</td><td>(4,5)=20</td></tr></table><div class="button-row"><button data-state-row="1">突出第1行</button><button data-state-row="2">突出第2行</button><button data-state-row="4">突出第4行</button></div><div class="feedback" id="state-row-feedback">选择一行查看其状态范围。</div></div></section>
+
+<section class="slide" data-slide data-section="execution-count"><div class="slide-inner"><div class="eyebrow">08 · 执行次数</div><h2>内层循环体共执行 4 × 5 次</h2><div class="grid-3"><div class="state-cell"><strong>4次</strong>外层循环</div><div class="state-cell"><strong>5次</strong>每行内层循环</div><div class="state-cell"><strong>20次</strong>乘法与数字输出</div></div><div class="formula" style="margin-top:18px">总次数 = 外层次数 × 每次外层对应的内层次数 = 4 × 5 = 20</div><div class="rule"><code>printf("\n");</code>不在内层循环中，所以执行4次，而不是20次。</div><div class="button-row"><button data-count-check="product">乘法执行多少次？</button><button data-count-check="newline">换行执行多少次？</button></div><div class="feedback" id="count-feedback">选择一项查看计算依据。</div></div></section>
+
+<section class="slide" data-slide data-section="table-program"><div class="slide-inner"><div class="eyebrow">09 · 完整程序</div><h2>两层 for 输出乘积表</h2><pre class="code-block program-full" data-positive-program="product-table"><span class="code-line" data-code-line>#include &lt;stdio.h&gt;
+
+int main()
+{</span>
+<span class="code-line" data-code-line>    int i, j;</span>
+<span class="code-line" data-code-line>    for (i = 1; i &lt;= 4; i++)
+    {</span>
+<span class="code-line" data-code-line>        for (j = 1; j &lt;= 5; j++)
+        {
+            printf("%4d", i * j);
+        }</span>
+<span class="code-line" data-code-line>        printf("\n");
+    }</span>
+<span class="code-line" data-code-line>    return 0;
+}</span></pre><div class="rule"><code>%4d</code>表示整数至少占4个字符宽度，使各列对齐。</div></div></section>
+
+<section class="slide" data-slide data-section="table-stepper"><div class="slide-inner"><div class="eyebrow">10 · 逐行执行</div><h2>每次完成一轮外层循环，输出一整行</h2><div class="button-row"><button id="table-next">完成下一行</button><button class="secondary" id="table-reset">重置</button></div><div class="grid-2"><div><table class="center"><tr><th>当前 i</th><th>内层 j</th><th>数字输出次数</th></tr><tbody id="table-step-state"><tr><td>—</td><td>—</td><td>0</td></tr></tbody></table><div class="feedback" id="table-step-feedback">尚未开始执行。</div></div><div class="card accent"><h3>累计屏幕输出</h3><pre class="terminal" id="table-step-output">尚未输出</pre></div></div></div></section>
+
+<section class="slide" data-slide data-section="break-inner"><div class="slide-inner"><div class="eyebrow">11 · break</div><h2>只结束直接包围它的内层循环</h2><div class="grid-2"><pre class="trace-code">for (i = 1; i &lt;= 4; i++)
+{
+    for (j = 1; j &lt;= 5; j++)
+    {
+        if (j == 3)
+        {
+            break;
+        }
+        printf("%4d", i * j);
+    }
+    printf("\n");
+}</pre><div class="card"><h3>执行结果</h3><p>每行只输出 <code>j=1</code> 和 <code>j=2</code> 的两个值。</p><p><code>j==3</code> 时离开内层循环；外层继续进入下一行。</p><div class="button-row"><button data-break-row="1">查看第1行</button><button data-break-row="2">查看第2行</button></div><div class="feedback" id="break-feedback">选择一行查看路径。</div></div></div></div></section>
+
+<section class="slide" data-slide data-section="question-sc057"><div class="slide-inner"><div class="eyebrow">12 · QB-SC-057</div><h2>循环中的 break</h2><article class="question-card" data-question-id="QB-SC-057"><p class="question-text">多层循环中执行一个 <code>break</code> 会（ ）。</p><div class="grid-2"><div><button class="option" data-question-option="A" data-correct="false" data-feedback="break不会自动结束所有层；它只作用于直接包围它的循环或switch。">A. 结束所有循环</button><button class="option" data-question-option="B" data-correct="true" data-feedback="正确。break只结束直接包围它的最内层当前循环。">B. 只结束最内层当前循环</button></div><div><button class="option" data-question-option="C" data-correct="false" data-feedback="离开内层循环后，外层从其循环体的后续语句继续，并非立即重新开始。">C. 重新开始外层</button><button class="option" data-question-option="D" data-correct="false" data-feedback="break结束循环或switch，不会结束整个程序。">D. 结束程序</button></div></div><div class="feedback" data-question-feedback>选择一个答案。</div></article></div></section>
+
+<section class="slide" data-slide data-section="continue-inner"><div class="slide-inner"><div class="eyebrow">13 · continue</div><h2>跳过当前内层迭代的剩余语句</h2><div class="grid-2"><pre class="trace-code">if (j == 3)
+{
+    continue;
+}
+
+printf("%4d", i * j);</pre><div class="card accent"><ol><li><code>j==3</code>时不执行本轮的 <code>printf</code>。</li><li>程序转到内层 <code>for</code> 的更新表达式。</li><li>执行 <code>j++</code> 后再次判断条件。</li><li>同一行的 <code>j=4</code>、<code>j=5</code>仍会处理。</li></ol></div></div><div class="button-row"><button data-continue-demo="1">i=1 时的输出</button><button data-continue-demo="4">i=4 时的输出</button></div><div class="feedback" id="continue-feedback">选择一行查看跳过第3列后的结果。</div></div></section>
+
+<section class="slide" data-slide data-section="question-sc011"><div class="slide-inner"><div class="eyebrow">14 · QB-SC-011</div><h2>break 与 continue</h2><article class="question-card" data-question-id="QB-SC-011"><p class="question-text">下列说法错误的是（ ）。</p><div class="grid-2"><div><button class="option" data-question-option="A" data-correct="false" data-feedback="该说法正确：break可以结束直接包围它的当前循环。">A. break 可结束当前循环</button><button class="option" data-question-option="B" data-correct="false" data-feedback="该说法正确：continue结束本次迭代的剩余部分，随后进入下一轮。">B. continue 结束本次迭代</button></div><div><button class="option" data-question-option="C" data-correct="true" data-feedback="该说法错误。break可以结束当前switch语句的执行；continue面向循环的下一次迭代，二者作用不同。">C. switch 中 break 与 continue 作用相同</button><button class="option" data-question-option="D" data-correct="false" data-feedback="该说法正确：执行break后，程序结束当前switch语句，并从该语句之后继续执行。">D. break 可结束当前 switch 语句的执行</button></div></div><div class="feedback" data-question-feedback>选择一个答案。</div></article><div class="card error"><h3>故意错误示例：continue 放在输出之后</h3><pre class="error-code">printf("%4d", i * j);
+if (j == 3)
+{
+    continue;
+}</pre><p>第3列已经输出，后面的 <code>continue</code>无法撤销这次输出。</p></div></div></section>
+
+<section class="slide" data-slide data-section="table-review"><div class="slide-inner"><div class="eyebrow">15 · 验证与自检</div><h2>乘积表的结构必须与输出一致</h2><div class="grid-2"><div><pre class="terminal">   1   2   3   4   5
+   2   4   6   8  10
+   3   6   9  12  15
+   4   8  12  16  20</pre><pre class="code-block">gcc table.c -o table.exe
+.\table.exe</pre><p class="small">浏览器进行确定性预演，不执行真实C代码。</p></div><div><div class="review-grid"><button class="review" data-review data-answer="外层i控制行。">哪个变量控制行？</button><button class="review" data-review data-answer="内层j控制列。">哪个变量控制列？</button><button class="review" data-review data-answer="每次进入内层for时都会执行j=1。">j为何重新从1开始？</button><button class="review" data-review data-answer="乘法和数字输出执行20次。">核心循环体执行几次？</button><button class="review" data-review data-answer="换行位于内层循环之后，所以每行执行一次。">换行为何执行4次？</button><button class="review" data-review data-answer="break只结束直接包围它的内层循环。">break结束哪一层？</button><button class="review" data-review data-answer="continue跳过本轮剩余语句，再执行for更新。">continue之后发生什么？</button></div><div class="feedback review-feedback">点击问题查看答案。</div></div></div></div></section>
+
+<section class="slide" data-slide data-section="prime-task" data-programming-question-id="QB-PG-009"><div class="slide-inner"><div class="eyebrow">16 · QB-PG-009</div><h2>区间素数</h2><div class="grid-2"><div class="card"><h3>题目</h3><p>输出100到200之间的全部素数，每行最多输出5个。</p><h3>输入格式</h3><p>无输入。</p><h3>输出格式</h3><p>按升序输出100到200之间的素数，每行5个，最后一行可以不足5个。</p><p>候选整数固定为闭区间 <code>[100, 200]</code>。</p></div><div class="card accent"><h3>样例输出</h3><pre class="terminal compact">101 103 107 109 113
+127 131 137 139 149
+151 157 163 167 173
+179 181 191 193 197
+199</pre></div></div></div></section>
+
+<section class="slide" data-slide data-section="outer-candidates"><div class="slide-inner"><div class="eyebrow">17 · 外层循环</div><h2>依次产生100至200的候选整数</h2><pre class="trace-code">for (n = 100; n &lt;= 200; n++)
+{
+    /* 检查当前候选数 n */
+}</pre><div class="path"><span class="node">n=100</span><span class="arrow">→</span><span class="node">n=101</span><span class="arrow">→</span><span class="node">n=102</span><span class="arrow">→</span><span class="node">…</span><span class="arrow">→</span><span class="node">n=200</span></div><div class="rule">外层循环共处理101个候选整数。每个候选数都要开始一次独立的素数判断。</div></div></section>
+
+<section class="slide" data-slide data-section="inner-trial"><div class="slide-inner"><div class="eyebrow">18 · 内层循环</div><h2>对当前 n 从2开始试除</h2><pre class="trace-code">for (i = 2; i &lt;= n / i; i++)
+{
+    if (n % i == 0)
+    {
+        is_prime = 0;
+        break;
+    }
+}</pre><div class="grid-3"><div class="state-cell"><strong>n</strong>当前候选数</div><div class="state-cell"><strong>i</strong>当前试除数</div><div class="state-cell"><strong>n % i</strong>是否整除</div></div><div class="rule">外层的一个 <code>n</code> 对应内层的一系列 <code>i</code>。候选数改变后，试除数重新从2开始。</div></div></section>
+
+<section class="slide" data-slide data-section="prime-state-pairs"><div class="slide-inner"><div class="eyebrow">19 · 两层状态</div><h2>(n, i) 表示“正在用 i 检查 n”</h2><table class="center"><tr><th>候选数 n</th><th>内层状态</th><th>结果</th></tr><tr><td>101</td><td>(101,2)…(101,10)</td><td>没有找到因数</td></tr><tr><td>105</td><td>(105,2)、(105,3)</td><td>3是因数</td></tr><tr><td>121</td><td>(121,2)…(121,11)</td><td>11是因数</td></tr><tr><td>199</td><td>(199,2)…(199,14)</td><td>没有找到因数</td></tr></table><div class="button-row"><button data-pair="101">查看101</button><button data-pair="105">查看105</button><button data-pair="121">查看121</button><button data-pair="199">查看199</button></div><div class="feedback" id="pair-feedback">选择一个候选数查看其内层状态。</div></div></section>
+
+<section class="slide" data-slide data-section="flag-reset"><div class="slide-inner"><div class="eyebrow">20 · 状态重置</div><h2>每个候选数开始时，is_prime 都要重新设为1</h2><div class="grid-2"><pre class="trace-code">for (n = 100; n &lt;= 200; n++)
+{
+    is_prime = 1;
+
+    for (i = 2; i &lt;= n / i; i++)
+    {
+        ...
+    }
+}</pre><div class="card accent"><h3>为什么必须放在外层循环内部？</h3><p>检查100时会发现因数并把标志改为0。</p><p>如果检查101前不重置，101会错误地继承100的判断状态。</p></div></div><div class="button-row"><button id="flag-sequence">演示100 → 101</button></div><div class="feedback" id="flag-feedback">点击按钮观察两个候选数之间的状态边界。</div></div></section>
+
+<section class="slide" data-slide data-section="prime-break"><div class="slide-inner"><div class="eyebrow">21 · 提前结束试除</div><h2>找到因数后，只离开当前内层循环</h2><div class="path"><span class="node">n=105</span><span class="arrow">→</span><span class="node">i=2：不能整除</span><span class="arrow">→</span><span class="node">i=3：可以整除</span><span class="arrow">→</span><span class="node">break</span></div><div class="grid-2" style="margin-top:16px"><div class="card error"><h3>结束的部分</h3><p>105的试除循环立即结束，不再检查 <code>i=4,5,...</code>。</p></div><div class="card accent"><h3>继续的部分</h3><p>外层执行 <code>n++</code>，继续检查106。</p></div></div><div class="rule"><code>break</code>没有结束外层候选循环，也没有结束整个程序。</div></div></section>
+
+<section class="slide" data-slide data-section="trial-boundary"><div class="slide-inner"><div class="eyebrow">22 · 内层终止</div><h2>试除循环有两个结束原因</h2><div class="formula">i &lt;= n / i</div><div class="grid-2"><div class="card error"><h3>找到因数</h3><p><code>n % i == 0</code></p><p>标志改为0，执行 <code>break</code>。</p></div><div class="card accent"><h3>完成必要试除</h3><p><code>i &lt;= n / i</code>变为假。</p><p>标志保持1，当前数是素数。</p></div></div><div class="rule"><code>i &lt;= n / i</code>避免直接计算 <code>i * i</code>可能产生的溢出。</div></div></section>
+
+<section class="slide" data-slide data-section="output-count"><div class="slide-inner"><div class="eyebrow">23 · 输出计数</div><h2>count 记录已经输出的素数个数</h2><div class="grid-2"><pre class="trace-code">if (is_prime)
+{
+    if (count % 5 != 0)
+    {
+        printf(" ");
+    }
+
+    printf("%d", n);
+    count++;
+
+    if (count % 5 == 0)
+    {
+        printf("\n");
+    }
+}</pre><div class="card"><ul><li>输出第1个数前不打印空格。</li><li>第2至第5个数前打印一个空格。</li><li><code>count</code>增加到5的倍数时换行。</li><li>最后不足5个时，在循环结束后补换行。</li></ul></div></div></div></section>
+
+<section class="slide" data-slide data-section="prime-construction"><div class="slide-inner"><div class="eyebrow">24 · 程序结构</div><h2>候选、重置、试除、输出</h2><div class="path"><span class="node">外层产生 n</span><span class="arrow">→</span><span class="node">is_prime=1</span><span class="arrow">→</span><span class="node">内层试除 i</span><span class="arrow">→</span><span class="node">按标志输出</span></div><div class="grid-4" style="margin-top:18px"><div class="card"><h3>候选</h3><p><code>n=100…200</code></p></div><div class="card accent"><h3>重置</h3><p>新候选不继承旧状态。</p></div><div class="card"><h3>试除</h3><p>找到因数即结束内层。</p></div><div class="card accent"><h3>输出</h3><p>只输出标志仍为1的数。</p></div></div><div class="rule">两层循环分别回答两个问题：检查哪个数？用哪个试除数检查？</div></div></section>
+
+<section class="slide" data-slide data-section="prime-program"><div class="slide-inner"><div class="eyebrow">25 · 完整程序</div><h2>输出100至200之间的素数</h2><pre class="code-block program-full" data-positive-program="interval-primes"><span class="code-line" data-code-line>#include &lt;stdio.h&gt;
+
+int main()
+{
+    int n, i;
+    int is_prime;
+    int count = 0;</span>
+<span class="code-line" data-code-line>    for (n = 100; n &lt;= 200; n++)
+    {
+        is_prime = 1;</span>
+<span class="code-line" data-code-line>        for (i = 2; i &lt;= n / i; i++)
+        {
+            if (n % i == 0)
+            {
+                is_prime = 0;
+                break;
+            }
+        }</span>
+<span class="code-line" data-code-line>        if (is_prime)
+        {
+            if (count % 5 != 0)
+            {
+                printf(" ");
+            }
+            printf("%d", n);
+            count++;
+            if (count % 5 == 0)
+            {
+                printf("\n");
+            }
+        }
+    }</span>
+<span class="code-line" data-code-line>    if (count % 5 != 0)
+    {
+        printf("\n");
+    }
+    return 0;
+}</span></pre></div></section>
+
+<section class="slide" data-slide data-section="trace-101"><div class="slide-inner"><div class="eyebrow">26 · 逐轮执行</div><h2>101：完成全部必要试除</h2><div class="button-row"><button id="trace101-next">下一轮</button><button class="secondary" id="trace101-reset">重置</button></div><div class="grid-2"><div><table class="center"><tr><th>i</th><th>101 % i</th><th>is_prime</th></tr><tbody id="trace101-table"><tr><td>初始2</td><td>—</td><td>1</td></tr></tbody></table></div><div class="card accent"><h3>当前结论</h3><div class="feedback" id="trace101-feedback">尚未开始试除。</div><h3>屏幕变化</h3><pre class="terminal" id="trace101-output">尚未输出</pre></div></div></div></section>
+
+<section class="slide" data-slide data-section="candidate-comparison"><div class="slide-inner"><div class="eyebrow">27 · 不同终止路径</div><h2>105、121和199的内层循环</h2><div class="button-row"><button data-prime-candidate="105">105</button><button data-prime-candidate="121">121</button><button data-prime-candidate="199">199</button><button class="secondary" id="candidate-compare-reset">重置</button></div><table class="center"><tr><th>候选数</th><th>关键试除</th><th>结束原因</th><th>是否输出</th></tr><tbody id="candidate-compare-table"><tr><td>—</td><td>—</td><td>—</td><td>—</td></tr></tbody></table><div class="feedback" id="candidate-compare-feedback">选择一个候选数。</div></div></section>
+
+<section class="slide" data-slide data-section="fill-question" data-fill-question-id="QB-FB-012"><div class="slide-inner"><div class="eyebrow">28 · QB-FB-012</div><h2>输出区间素数</h2><p class="question-text">补全程序，输出100到200之间的所有素数。 无输入；输出：100至200之间的素数。</p><div class="grid-2"><pre class="trace-code compact">#include &lt;stdio.h&gt;
+int main(void)
+{
+    for (int n = 100; /*〔1〕*/ ; n++)
+    {
+        int prime = 1;
+        for (int i = 2; /*〔2〕*/ ; i++)
+            if ( /*〔3〕*/ )
+            {
+                prime = 0;
+                break;
+            }
+        /*〔4〕*/
+        printf("%d ", n);
+    }
+    putchar('\n');
+    return 0;
+}</pre><div><div class="grid-2"><button class="fill-answer" data-fill="1" data-answer="n&lt;=200">〔1〕查看答案</button><button class="fill-answer" data-fill="2" data-answer="i*i&lt;=n">〔2〕查看答案</button><button class="fill-answer" data-fill="3" data-answer="n%i==0">〔3〕查看答案</button><button class="fill-answer" data-fill="4" data-answer="if(prime)">〔4〕查看答案</button></div><div class="feedback" id="fill-feedback">四个空位共同构成候选范围、试除边界、整除条件和输出条件。</div></div></div></div></section>
+
+<section class="slide" data-slide data-section="prime-errors"><div class="slide-inner"><div class="eyebrow">29 · 错误诊断</div><h2>两层循环的状态必须彼此独立</h2><div class="grid-4"><button class="card error" data-prime-error="reset"><h3>标志未重置</h3><pre class="error-code">is_prime = 1;
+/* 写在外层循环前 */</pre></button><button class="card error" data-prime-error="bound"><h3>边界错误</h3><pre class="error-code">i &lt; n / i</pre></button><button class="card error" data-prime-error="break"><h3>误解 break</h3><pre class="error-code">/* 认为会结束两层 */</pre></button><button class="card error" data-prime-error="format"><h3>行数错误</h3><pre class="error-code">count % 4 == 0</pre></button></div><div class="feedback" id="prime-error-feedback">以上均为故意错误示例。选择一项查看正确写法和原因。</div></div></section>
+
+<section class="slide" data-slide data-section="summary"><div class="slide-inner"><div class="eyebrow">30 · 总结与自检</div><h2>21个素数按5 / 5 / 5 / 5 / 1分行</h2><div class="grid-2"><div><pre class="terminal compact" data-prime-output data-prime-count="21" data-line-distribution="5,5,5,5,1">101 103 107 109 113
+127 131 137 139 149
+151 157 163 167 173
+179 181 191 193 197
+199</pre><pre class="code-block">gcc primes.c -o primes.exe
+.\primes.exe</pre><div class="button-row"><a class="button-link" href="../../../题库/编程题/qb_pg_009.md">QB-PG-009</a><a class="button-link" href="../../../题库/程序填空/qb_fb_012.md">QB-FB-012</a><a class="button-link" href="../../../题库/选择题/qb_sc_011.md">QB-SC-011</a><a class="button-link" href="../../../题库/选择题/qb_sc_057.md">QB-SC-057</a><a class="button-link" href="../../../例程/chapters/05-loops/ex_c05_007_5_6.c">EX-C05-007</a></div></div><div><div class="review-grid"><button class="review" data-review data-answer="外层n产生候选整数。">外层变量表示什么？</button><button class="review" data-review data-answer="内层i表示当前试除数。">内层变量表示什么？</button><button class="review" data-review data-answer="每个新候选开始时都要重置为1。">何时重置标志？</button><button class="review" data-review data-answer="找到因数后，break只结束内层试除循环。">何时执行break？</button><button class="review" data-review data-answer="试除到平方根附近即可。">内层边界为何足够？</button><button class="review" data-review data-answer="count记录已输出素数数量，并控制每行5个。">count有什么作用？</button><button class="review" data-review data-answer="首项101、末项199，共21个。">如何检查完整输出？</button></div><div class="feedback review-feedback">点击问题查看答案。</div><p class="small">浏览器进行确定性预演，不执行真实C代码。</p></div></div></div></section>
+</main>
+<footer><div class="nav-buttons"><button id="prev" aria-label="上一页">← 上一页</button><button id="next" aria-label="下一页">下一页 →</button></div><div class="progress" aria-label="课件进度"><span id="progress"></span></div><div class="page"><span id="page-number">1</span> / 30 · Kevin@SUT</div></footer>
+<script>
+"use strict";
+var slides=Array.from(document.querySelectorAll("[data-slide]")),index=0;
+var prev=document.getElementById("prev"),next=document.getElementById("next"),progress=document.getElementById("progress"),page=document.getElementById("page-number");
+function show(n){index=Math.max(0,Math.min(slides.length-1,n));slides.forEach(function(s,i){s.classList.toggle("active",i===index);});page.textContent=String(index+1);progress.style.width=((index+1)/slides.length*100)+"%";prev.disabled=index===0;next.disabled=index===slides.length-1;}
+function setFeedback(el,text,good){el.textContent=text;el.classList.toggle("good",good===true);el.classList.toggle("bad",good===false);}
+prev.addEventListener("click",function(){show(index-1);});next.addEventListener("click",function(){show(index+1);});
+document.addEventListener("keydown",function(e){if(["ArrowRight","PageDown"].includes(e.key))show(index+1);if(["ArrowLeft","PageUp"].includes(e.key))show(index-1);if(e.key==="Home")show(0);if(e.key==="End")show(slides.length-1);});
+var resetStages=["第一行：i=1，内层执行j=1至5，结束时j=6。","外层更新：i变为2。","重新进入内层for：初始化表达式再次执行，j重新变为1。"],resetIndex=0;
+document.getElementById("reset-demo-next").addEventListener("click",function(){setFeedback(document.getElementById("reset-demo-feedback"),resetStages[resetIndex],true);resetIndex=(resetIndex+1)%resetStages.length;});
+document.getElementById("reset-demo-reset").addEventListener("click",function(){resetIndex=0;setFeedback(document.getElementById("reset-demo-feedback"),"点击按钮观察内层初始化何时再次执行。");});
+document.querySelectorAll("[data-state-row]").forEach(function(b){b.addEventListener("click",function(){var i=Number(b.dataset.stateRow);setFeedback(document.getElementById("state-row-feedback"),"i="+i+"时，内层依次经历("+i+",1)至("+i+",5)，输出5个乘积。",true);});});
+document.querySelectorAll("[data-count-check]").forEach(function(b){b.addEventListener("click",function(){setFeedback(document.getElementById("count-feedback"),b.dataset.countCheck==="product"?"4行×每行5列，乘法和数字输出共20次。":"换行位于内层循环之后，每次外层循环执行一次，共4次。",true);});});
+var productRows=["   1   2   3   4   5","   2   4   6   8  10","   3   6   9  12  15","   4   8  12  16  20"],tableIndex=0;
+document.getElementById("table-next").addEventListener("click",function(){if(tableIndex>=4){setFeedback(document.getElementById("table-step-feedback"),"四行全部完成，外层条件i<=4变为假。",true);return;}tableIndex++;document.getElementById("table-step-state").innerHTML="<tr><td>"+tableIndex+"</td><td>1至5</td><td>"+(tableIndex*5)+"</td></tr>";document.getElementById("table-step-output").textContent=productRows.slice(0,tableIndex).join("\n");setFeedback(document.getElementById("table-step-feedback"),"完成i="+tableIndex+"：内层执行5次，然后换行。",true);});
+document.getElementById("table-reset").addEventListener("click",function(){tableIndex=0;document.getElementById("table-step-state").innerHTML="<tr><td>—</td><td>—</td><td>0</td></tr>";document.getElementById("table-step-output").textContent="尚未输出";setFeedback(document.getElementById("table-step-feedback"),"尚未开始执行。");});
+document.querySelectorAll("[data-break-row]").forEach(function(b){b.addEventListener("click",function(){var i=Number(b.dataset.breakRow);setFeedback(document.getElementById("break-feedback"),"i="+i+"时输出"+(i*1)+"和"+(i*2)+"；j=3时break结束内层，外层仍继续。",true);});});
+document.querySelectorAll("[data-continue-demo]").forEach(function(b){b.addEventListener("click",function(){var i=Number(b.dataset.continueDemo);setFeedback(document.getElementById("continue-feedback"),"i="+i+"时输出"+[1,2,4,5].map(function(j){return i*j;}).join("、")+"；第3列被跳过，其余列继续。",true);});});
+document.querySelectorAll("article.question-card").forEach(function(article){article.querySelectorAll("button.option").forEach(function(b){b.addEventListener("click",function(){article.querySelectorAll("button.option").forEach(function(x){x.classList.remove("correct","wrong");});var good=b.dataset.correct==="true";b.classList.add(good?"correct":"wrong");setFeedback(article.querySelector("[data-question-feedback]"),b.dataset.feedback,good);});});});
+document.querySelectorAll("[data-pair]").forEach(function(b){b.addEventListener("click",function(){var d={"101":"i从2检查到10，没有找到因数。","105":"i=3时余数为0，内层提前结束。","121":"i=11时余数为0，内层提前结束。","199":"i从2检查到14，没有找到因数。"};setFeedback(document.getElementById("pair-feedback"),d[b.dataset.pair],true);});});
+document.getElementById("flag-sequence").addEventListener("click",function(){setFeedback(document.getElementById("flag-feedback"),"检查100后is_prime为0；外层进入101时先重新赋值为1，再开始101的试除。",true);});
+var trace101=[[2,1],[3,2],[4,1],[5,1],[6,5],[7,3],[8,5],[9,2],[10,1]],trace101Index=0;
+document.getElementById("trace101-next").addEventListener("click",function(){if(trace101Index<trace101.length){var d=trace101[trace101Index++],tr=document.createElement("tr");tr.innerHTML="<td>"+d[0]+"</td><td>"+d[1]+"</td><td>1</td>";document.getElementById("trace101-table").appendChild(tr);var done=trace101Index===trace101.length;setFeedback(document.getElementById("trace101-feedback"),done?"下一次i=11，条件11<=101/11为假；101是素数。":"余数不为0，继续试除。",true);document.getElementById("trace101-output").textContent=done?"101":"尚未输出";}});
+document.getElementById("trace101-reset").addEventListener("click",function(){trace101Index=0;document.getElementById("trace101-table").innerHTML="<tr><td>初始2</td><td>—</td><td>1</td></tr>";setFeedback(document.getElementById("trace101-feedback"),"尚未开始试除。");document.getElementById("trace101-output").textContent="尚未输出";});
+var candidateCompare={"105":["i=3，105%3=0","找到因数并break","否"],"121":["i=11，121%11=0","找到因数并break","否"],"199":["i=2至14均不能整除","完成必要试除","是"]};
+document.querySelectorAll("[data-prime-candidate]").forEach(function(b){b.addEventListener("click",function(){var d=candidateCompare[b.dataset.primeCandidate];document.getElementById("candidate-compare-table").innerHTML="<tr><td>"+b.dataset.primeCandidate+"</td><td>"+d[0]+"</td><td>"+d[1]+"</td><td>"+d[2]+"</td></tr>";setFeedback(document.getElementById("candidate-compare-feedback"),d[2]==="是"?"标志保持1，输出199。":"标志变为0，不输出当前候选数。",d[2]==="是");});});
+document.getElementById("candidate-compare-reset").addEventListener("click",function(){document.getElementById("candidate-compare-table").innerHTML="<tr><td>—</td><td>—</td><td>—</td><td>—</td></tr>";setFeedback(document.getElementById("candidate-compare-feedback"),"选择一个候选数。");});
+document.querySelectorAll("[data-fill]").forEach(function(b){b.addEventListener("click",function(){b.textContent="〔"+b.dataset.fill+"〕 "+b.dataset.answer;b.classList.add("revealed");setFeedback(document.getElementById("fill-feedback"),"该空答案为"+b.dataset.answer+"。把它代回程序后，再检查前后语句是否形成完整逻辑。",true);});});
+var primeErrors={reset:"is_prime = 1必须写在外层循环体内，使每个候选数获得新的判断状态。",bound:"应写i <= n / i；使用<会漏掉平方数的平方根因数，例如121的11。",break:"break只结束内层试除循环；随后外层更新n并检查下一个候选数。",format:"每行5个应在count % 5 == 0时换行。"};
+document.querySelectorAll("[data-prime-error]").forEach(function(b){b.addEventListener("click",function(){setFeedback(document.getElementById("prime-error-feedback"),primeErrors[b.dataset.primeError],false);});});
+document.querySelectorAll("[data-review]").forEach(function(b){b.addEventListener("click",function(){b.classList.toggle("done");setFeedback(b.closest(".slide").querySelector(".review-feedback"),b.dataset.answer,true);});});
+show(0);
+</script>
+</body>
+</html>

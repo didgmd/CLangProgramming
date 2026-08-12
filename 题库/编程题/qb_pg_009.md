@@ -48,14 +48,16 @@ legacy_features: 无
 
 ## 常见失分点
 
-
-
-围绕“区间素数”检查输入合法性、临界值、数组或循环边界，并严格匹配题目规定的输出格式。
+- 候选范围必须是闭区间 `[100, 200]`。
+- 每检查一个新的候选数，都要把素数标志重新设为1。
+- 内层试除只需进行到平方根附近，条件可写为 `i <= n / i`。
+- 找到因数后，`break`只结束当前试除循环，外层循环仍继续检查下一个候选数。
+- 输出计数应在输出素数后更新，并保证每行最多5个。
 
 <details>
 <summary>参考答案与解析</summary>
 
-**解题思路：** 逐个检查候选数，试除上界取其平方根。
+**解题思路：** 外层循环逐个产生100至200的候选数；每个候选数开始时重置素数标志，内层循环进行试除。找到因数后将标志改为0并结束内层循环；标志仍为1时输出该素数，并用计数器控制每行5个。
 
 **评分建议：** 输入与边界处理2分，核心算法5分，正确输出2分，代码规范1分。
 
@@ -66,37 +68,48 @@ legacy_features: 无
 <!-- reference-c:start -->
 ```c
 #include <stdio.h>
-int main(void)
+
+int main()
 {
+    int n, i;
+    int is_prime;
     int count = 0;
-    for (int n = 100; n <= 200; n++)
+
+    for (n = 100; n <= 200; n++)
     {
-        int p = 1;
-        for (int i = 2; i <= n / i && p; i++)
+        is_prime = 1;
+
+        for (i = 2; i <= n / i; i++)
         {
             if (n % i == 0)
             {
-                p = 0;
+                is_prime = 0;
+                break;
             }
         }
-        if (p)
+
+        if (is_prime)
         {
-            if (count % 5)
+            if (count % 5 != 0)
             {
-                putchar(' ');
+                printf(" ");
             }
+
             printf("%d", n);
             count++;
+
             if (count % 5 == 0)
             {
-                putchar('\n');
+                printf("\n");
             }
         }
     }
-    if (count % 5)
+
+    if (count % 5 != 0)
     {
-        putchar('\n');
+        printf("\n");
     }
+
     return 0;
 }
 ```

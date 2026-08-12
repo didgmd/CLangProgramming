@@ -21,7 +21,7 @@ B. continue 结束本次迭代
 
 C. switch 中 break 与 continue 作用相同
 
-D. break 可离开 switch
+D. break 可结束当前 switch 语句的执行
 
 ## 常见失分点
 
@@ -34,6 +34,6 @@ D. break 可离开 switch
 
 **答案：C。**
 
-`continue` 面向循环的下一次迭代，`break` 结束循环或 `switch`，二者作用不同。
+`continue` 跳过当前循环迭代的剩余部分，进入下一次迭代；`break` 结束直接包围它的循环或当前 `switch` 语句的执行，二者作用不同。
 
 </details>
