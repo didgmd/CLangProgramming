@@ -26,6 +26,7 @@ CW_L04 = ROOT / "课件" / "讲授" / "04-selection-if" / "index.html"
 CW_L05 = ROOT / "课件" / "讲授" / "05-selection-nesting-and-switch" / "index.html"
 CW_L06 = ROOT / "课件" / "讲授" / "06-loops-and-state" / "index.html"
 CW_L07 = ROOT / "课件" / "讲授" / "07-nested-loops-and-primes" / "index.html"
+CW_L08 = ROOT / "课件" / "讲授" / "08-one-dimensional-arrays" / "index.html"
 ALLOWED_EXTERNAL_HREFS = frozenset({"https://w3schools.org.cn/c/index.php"})
 
 REQUIRED_MARKERS = (
@@ -240,6 +241,8 @@ def target_for(course_id: str) -> Path:
         return CW_L06
     if course_id == "CW-L07":
         return CW_L07
+    if course_id == "CW-L08":
+        return CW_L08
     raise ValueError(f"unknown courseware id: {course_id}")
 
 
@@ -1613,6 +1616,267 @@ def compile_cw_l07_programs(
                 )
 
 
+def validate_cw_l08(path: Path) -> list[str]:
+    failures: list[str] = []
+    if not path.exists():
+        return [f"file not found: {path}"]
+    raw = path.read_bytes()
+    if raw.startswith(b"\xef\xbb\xbf"):
+        fail(failures, "UTF-8 BOM is not allowed")
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        return [f"invalid UTF-8: {exc}"]
+
+    if "\t" in text:
+        fail(failures, "tab characters are not allowed")
+    required = (
+        'data-course-id="CW-L08"',
+        'data-chapter="6"',
+        'data-routines="EX-C06-001,EX-C06-003"',
+        'data-questions="QB-PG-002,QB-PG-004,QB-SC-012,QB-SC-013,QB-SC-042,QB-TR-005"',
+        'data-lesson-variants="array-maximum-fixed-ten,bubble-sort-fixed-ten"',
+        'data-positive-program="array-maximum"',
+        'data-positive-program="bubble-sort"',
+        'data-programming-question-id="QB-PG-002"',
+        'data-programming-question-id="QB-PG-004"',
+        'data-trace-question-id="QB-TR-005"',
+        '<meta name="author" content="Kevin@SUT">',
+        'data-attribution="Kevin@SUT"',
+        "data-code-line",
+    )
+    for marker in required:
+        if marker not in text:
+            fail(failures, f"missing CW-L08 marker: {marker}")
+    for pattern in EXTERNAL_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            fail(failures, f"external or persistent dependency found: {pattern}")
+    for pattern in TEACHER_ONLY_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            fail(failures, f"teacher-only content found: {pattern}")
+    for phrase in CW_L02_STUDENT_FORBIDDEN:
+        if phrase in text:
+            fail(failures, f"student-facing teacher-prep phrase found: {phrase}")
+
+    if len(SLIDE_PATTERN.findall(text)) != 30:
+        fail(failures, "CW-L08 must contain exactly 30 slides")
+    if len(SECTION_BLOCK_PATTERN.findall(text)) != 30:
+        fail(failures, "CW-L08 must contain exactly 30 complete slide sections")
+    if text.count("<details") != 0:
+        fail(failures, "CW-L08 must expose all exercises directly")
+    if " / 30 · Kevin@SUT" not in text:
+        fail(failures, "CW-L08 footer total must be 30")
+
+    validate_embedded_questions(
+        text,
+        failures,
+        ("QB-SC-012", "QB-SC-013", "QB-SC-042"),
+        "CW-L08",
+    )
+    if text.count('data-question-option="') != 12:
+        fail(failures, "CW-L08 must expose twelve options across three choice questions")
+
+    questions = scan_questions()
+    for question_id in ("QB-PG-002", "QB-PG-004"):
+        source = questions[question_id].text
+        prompt_match = re.search(r"## 题目\s*(.*?)\s*### 输入格式", source, re.DOTALL)
+        html_match = re.search(
+            rf'<section\b[^>]*data-programming-question-id="{question_id}"[^>]*>(.*?)</section>',
+            text,
+            re.IGNORECASE | re.DOTALL,
+        )
+        source_prompt = normalize_visible_text(prompt_match.group(1)) if prompt_match else ""
+        html_prompt = normalize_visible_text(html_match.group(1)) if html_match else ""
+        if not source_prompt or source_prompt not in html_prompt:
+            fail(failures, f"CW-L08 must visibly embed the {question_id} prompt")
+
+    trace_source = questions["QB-TR-005"].text
+    trace_code = re.search(r"```c\s*(.*?)```", trace_source, re.DOTALL)
+    trace_html = re.search(
+        r'<section\b[^>]*data-trace-question-id="QB-TR-005"[^>]*>(.*?)</section>',
+        text,
+        re.IGNORECASE | re.DOTALL,
+    )
+    trace_html_code = re.search(
+        r'<pre\b[^>]*class="[^"]*trace-code[^"]*"[^>]*>(.*?)</pre>',
+        trace_html.group(1) if trace_html else "",
+        re.DOTALL,
+    )
+    source_tokens = re.sub(r"\s+", "", trace_code.group(1)) if trace_code else ""
+    html_tokens = re.sub(
+        r"\s+",
+        "",
+        html.unescape(re.sub(r"<[^>]+>", "", trace_html_code.group(1))),
+    ) if trace_html_code else ""
+    if source_tokens != html_tokens:
+        fail(failures, "QB-TR-005 program differs from the question bank")
+
+    program_blocks = {
+        match.group("id"): html.unescape(re.sub(r"<[^>]+>", "", match.group("body")))
+        for match in re.finditer(
+            r'<pre\b[^>]*data-positive-program="(?P<id>[^"]+)"[^>]*>(?P<body>.*?)</pre>',
+            text,
+            re.IGNORECASE | re.DOTALL,
+        )
+    }
+    if set(program_blocks) != {"array-maximum", "bubble-sort"}:
+        fail(failures, "CW-L08 must contain exactly the two declared positive programs")
+    validate_cw_l08_programs(text, program_blocks, failures)
+    check_links(text, path, failures, require_optional_external=False)
+    return failures
+
+
+def validate_cw_l08_programs(
+    text: str,
+    program_blocks: dict[str, str],
+    failures: list[str],
+) -> None:
+    code_text = "\n".join(program_blocks.values())
+    for forbidden, label in (
+        (r"\[[^\]]*\]\s*\[", "two-dimensional array syntax"),
+        (r"\bchar\s+\w+\s*\[", "character array"),
+        (r"#include\s*<string\.h>", "string library"),
+        (r"\b(?:strlen|strcpy|strcmp|strcat)\s*\(", "string function"),
+        (r"\b(?:int|double|float|char)\s*\*+\s*\w+", "pointer declaration"),
+        (r"\breturn\s+1\s*;", "return 1"),
+        (r"\?[^:\n]+:", "conditional operator"),
+    ):
+        if re.search(forbidden, code_text):
+            fail(failures, f"CW-L08 positive programs must not introduce {label}")
+    if re.search(r"if\s*\(\s*scanf|scanf\s*\([^;]+\)\s*[!=]=", code_text):
+        fail(failures, "CW-L08 student programs must not check scanf return values")
+    if len(re.findall(r"\b(?:int|void|float|double|char)\s+(?!main\b)\w+\s*\([^;]*\)\s*\{", code_text)):
+        fail(failures, "CW-L08 must not introduce custom functions")
+
+    maximum = program_blocks.get("array-maximum", "")
+    bubble = program_blocks.get("bubble-sort", "")
+    if loop_nesting_depth(maximum) != 1:
+        fail(failures, "CW-L08 maximum program must have loop nesting depth one")
+    if loop_nesting_depth(bubble) != 2:
+        fail(failures, "CW-L08 bubble program must have loop nesting depth two")
+    for marker in (
+        "double a[10];",
+        "maximum = a[0];",
+        "for (i = 1; i < 10; i++)",
+        "if (a[i] > maximum)",
+        'printf("%.6f\\n", maximum);',
+    ):
+        if marker not in maximum:
+            fail(failures, f"CW-L08 maximum program is incomplete: {marker}")
+    for marker in (
+        "int a[10];",
+        "for (j = 0; j < 9; j++)",
+        "for (i = 0; i < 9 - j; i++)",
+        "if (a[i] > a[i + 1])",
+        "t = a[i];",
+        "a[i] = a[i + 1];",
+        "a[i + 1] = t;",
+    ):
+        if marker not in bubble:
+            fail(failures, f"CW-L08 bubble program is incomplete: {marker}")
+
+    visible = normalize_visible_text(text)
+    for marker in (
+        "有效下标是0至9",
+        "maximum = a[0]",
+        "全为负数",
+        "a[i + 1]",
+        "i < 9 - j",
+        "9 + 8 + 7 + 6 + 5 + 4 + 3 + 2 + 1 = 45",
+        "浏览器进行确定性预演",
+    ):
+        if marker not in text and marker not in visible:
+            fail(failures, f"CW-L08 student explanation is incomplete: {marker}")
+    counts = (
+        ('data-index="', 3, "index checks"),
+        ('data-neighbor="', 2, "neighbor demonstrations"),
+        ('data-max-case="', 2, "maximum cases"),
+        ('data-pair="', 3, "adjacent comparisons"),
+        ('data-equal="', 3, "duplicate comparisons"),
+        ('data-error="', 4, "bubble diagnosis cases"),
+        ('data-test="', 3, "bubble behavior tests"),
+        ("data-review ", 14, "review questions"),
+    )
+    for marker, expected, label in counts:
+        actual = text.count(marker)
+        if actual != expected:
+            fail(failures, f"CW-L08 expected {expected} {label}, found {actual}")
+    for command in (
+        "gcc maximum.c -o maximum.exe\n.\\maximum.exe",
+        "gcc bubble.c -o bubble.exe\n.\\bubble.exe",
+    ):
+        if command not in text:
+            fail(failures, f"CW-L08 beginner command is missing: {command.splitlines()[0]}")
+    compile_cw_l08_programs(program_blocks, failures)
+
+
+def compile_cw_l08_programs(
+    program_blocks: dict[str, str],
+    failures: list[str],
+) -> None:
+    gcc = shutil.which("gcc")
+    if not gcc:
+        fail(failures, "CW-L08 MinGW GCC was not found")
+        return
+    machine = subprocess.run(
+        [gcc, "-dumpmachine"],
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        capture_output=True,
+        check=False,
+    )
+    if machine.returncode != 0 or "mingw" not in machine.stdout.lower():
+        fail(failures, f"CW-L08 compiler is not MinGW GCC: {machine.stdout.strip()}")
+        return
+    fixtures = {
+        "array-maximum": (
+            ("1 2 3 4 5 6 7 8 9 10\n", "10.000000\n"),
+            ("-8.5 -2 -3 -4 -5 -6 -7 -8 -9 -10\n", "-2.000000\n"),
+            ("9.5 1 9.5 3 2 8 7 6 5 4\n", "9.500000\n"),
+        ),
+        "bubble-sort": (
+            ("10 9 8 7 6 5 4 3 2 1\n", "1 2 3 4 5 6 7 8 9 10\n"),
+            ("1 2 3 4 5 6 7 8 9 10\n", "1 2 3 4 5 6 7 8 9 10\n"),
+            ("3 1 3 2 0 -1 2 3 1 0\n", "-1 0 0 1 1 2 2 3 3 3\n"),
+        ),
+    }
+    with tempfile.TemporaryDirectory(prefix="cw-l08-validation-") as temp_name:
+        temp_dir = Path(temp_name)
+        for program_id, cases in fixtures.items():
+            source = temp_dir / f"{program_id}.c"
+            executable = temp_dir / f"{program_id}.exe"
+            source.write_text(program_blocks[program_id], encoding="utf-8", newline="\n")
+            build = subprocess.run(
+                [gcc, "-std=c11", "-Wall", "-Wextra", "-Wpedantic", "-Werror", str(source), "-o", str(executable)],
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                capture_output=True,
+                check=False,
+            )
+            if build.returncode != 0:
+                fail(failures, f"CW-L08 {program_id} compile failed: {build.stderr.strip()}")
+                continue
+            for stdin_text, expected in cases:
+                result = subprocess.run(
+                    [str(executable)],
+                    input=stdin_text,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                    capture_output=True,
+                    check=False,
+                    timeout=10,
+                )
+                actual = result.stdout.replace("\r\n", "\n")
+                if result.returncode != 0 or actual != expected:
+                    fail(
+                        failures,
+                        f"CW-L08 {program_id} output mismatch: exit={result.returncode}, actual={actual!r}",
+                    )
+
+
 def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
     if course_id == "CW-L02":
         return validate_cw_l02(path)
@@ -1626,6 +1890,8 @@ def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
         return validate_cw_l06(path)
     if course_id == "CW-L07":
         return validate_cw_l07(path)
+    if course_id == "CW-L08":
+        return validate_cw_l08(path)
     failures: list[str] = []
     if not path.exists():
         return [f"file not found: {path}"]
@@ -1718,7 +1984,7 @@ def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--id", default="CW-L01", help="courseware id: CW-L01 through CW-L07")
+    parser.add_argument("--id", default="CW-L01", help="courseware id: CW-L01 through CW-L08")
     parser.add_argument("--path", type=Path, help="explicit HTML path for local validation")
     args = parser.parse_args()
 
@@ -1735,7 +2001,7 @@ def main() -> int:
             print(f"- {item}")
         return 1
 
-    slide_count = 12 if args.id == "CW-L01" else 30 if args.id == "CW-L07" else 28 if args.id == "CW-L06" else 26 if args.id in {"CW-L04", "CW-L05"} else 25
+    slide_count = 12 if args.id == "CW-L01" else 30 if args.id in {"CW-L07", "CW-L08"} else 28 if args.id == "CW-L06" else 26 if args.id in {"CW-L04", "CW-L05"} else 25
     optional_external = 1 if args.id == "CW-L01" else 0
     print(f"COURSEWARE VALIDATION PASS: {args.id}, slides={slide_count}, offline-core=ok, optional_external={optional_external}, links=ok, text_encoding=UTF-8, bom=utf8-no-bom")
     return 0
