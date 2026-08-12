@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="Kevin@SUT">
+<meta name="copyright" content="Kevin@SUT">
+<title>CW-L10 函数、实参与形参：求较大值与排序子函数</title>
+<style>
+:root{--ink:#14213d;--muted:#53657d;--blue:#0b6e99;--amber:#f5b942;--paper:#f5f8fb;--green:#19704a;--red:#a33a3a;--code:#101827}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow: hidden;background:#dce7ef;color:var(--ink);font-family:"Microsoft YaHei","Segoe UI",sans-serif}body{display:grid;grid-template-rows:1fr 54px}.deck{position:relative;min-height:0}.slide{position:absolute;inset:0;display:none;padding:22px 34px 14px}.slide.active{display:block}.slide-inner{height:100%;max-width:1212px;margin:auto;background:var(--paper);border-radius:18px;padding:18px 27px;box-shadow:0 10px 35px #17314a24;overflow:auto}
+.eyebrow{font-size:17px;font-weight:800;color:var(--blue)}h1{font-size:40px;margin:11px 0 17px}h2{font-size:30px;margin:5px 0 12px}h3{font-size:20px;margin:4px 0 7px}p,li,td,th{font-size:17px;line-height:1.35}.lead{font-size:22px;color:var(--muted)}.small{font-size:14px;color:var(--muted)}code{font-family:Consolas,monospace}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.card,.question-card{background:#fff;border:2px solid #d7e3ec;border-radius:14px;padding:10px 14px}.accent{border-color:#70c9d3;background:#eefbfd}.warn{border-color:#efc36c;background:#fff8e8}.error{border-color:#e6aaaa;background:#fff2f2}.rule{background:#e6f5f7;border-left:7px solid var(--blue);padding:8px 14px;border-radius:10px;font-size:17px;margin:8px 0}.formula{font:700 22px Consolas,monospace;text-align:center;background:#fff;border-radius:12px;padding:9px}
+.code-block,.trace-code,.error-code,.terminal{background:var(--code);color:#eef6ff;border-radius:12px;padding:8px 13px;font:14.5px/1.2 Consolas,monospace;white-space:pre-wrap;margin:6px 0;overflow:auto}.program-full{font-size:11.4px;line-height:1.01;padding:5px 11px}.fill-code{font-size:12px;line-height:1.07}.fill-code.long{font-size:9.8px;line-height:1}.error-code{border:2px solid #d96161}.terminal{background:#06111e;color:#9cf0c9;min-height:44px}.code-line{display:block;border-left:4px solid transparent;padding-left:6px}.active-code-line{background:#16476c;border-left-color:var(--amber)}
+table{width:100%;border-collapse:collapse;background:#fff}th,td{border:1px solid #cbd8e2;padding:5px 7px;text-align:left}th{background:#e7f2f7}.center td,.center th{text-align:center}.array-strip{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin:9px 0}.array-cell{min-width:0;background:#fff;border:2px solid #8bb8ca;border-radius:8px;text-align:center;padding:5px 2px}.array-cell .index{display:block;color:var(--muted);font-size:11px}.array-cell .value{display:block;color:var(--blue);font-weight:800;font-size:16px}.array-cell.active{background:#fff1c8;border-color:#d7960a}.array-cell.locked{background:#d9f2e5;border-color:#3b9b70}.flow{display:flex;gap:9px;align-items:stretch;justify-content:center;flex-wrap:wrap}.flow .node{background:#fff;border:2px solid #8bb8ca;border-radius:12px;padding:10px 13px;min-width:145px;text-align:center}.flow .arrow{font-size:28px;color:var(--blue);align-self:center}.parameter-map{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:24px;max-width:760px;margin:12px auto}.parameter-pair{display:grid;grid-template-rows:auto 34px auto;align-items:center;text-align:center}.parameter-pair .node{background:#fff;border:2px solid #8bb8ca;border-radius:12px;padding:10px 13px}.parameter-pair .down-arrow{font-size:28px;line-height:34px;color:var(--blue)}.state-box{background:#fff;border:2px solid #d7e3ec;border-radius:12px;padding:9px;text-align:center}.state-box.active{border-color:#d7960a;background:#fff1c8}
+button,.button-link{border:0;border-radius:10px;background:var(--blue);color:#fff;padding:8px 13px;font-size:15.5px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}button:hover,button:focus-visible,.button-link:focus-visible{outline:3px solid var(--amber);outline-offset:2px}button.secondary{background:#53657d}button.option{display:block;width:100%;text-align:left;margin:4px 0;background:#eaf2f7;color:var(--ink)}button.option.correct{background:#d7f1e4;color:#124c34}button.option.wrong{background:#fae1e1;color:#772a2a}.button-row{display:flex;gap:7px;flex-wrap:wrap;margin:7px 0}.feedback{min-height:43px;padding:7px 12px;border-radius:10px;background:#e8f1f5;color:#18354b;font-size:16px}.feedback.good{background:#d9f2e5;color:#155e35}.feedback.bad{background:#fae1e1;color:#772a2a}.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.review{background:#edf3f7;color:var(--ink);text-align:left;padding:7px 9px}.review.done{background:#d9f2e5;color:#155e35}.blank{color:#c57a00;font-weight:800}
+[data-section="maximum-program"] .slide-inner,[data-section="sort-program"] .slide-inner{padding-top:8px;padding-bottom:8px}[data-section="maximum-program"] h2,[data-section="sort-program"] h2{margin:1px 0 3px}
+footer{display:grid;grid-template-columns:190px 1fr 190px;align-items:center;background:#0d2238;color:#fff;padding:0 22px;gap:18px}.nav-buttons{display:flex;gap:8px}.nav-buttons button{padding:7px 13px;background:#264c6d;min-width:84px}.progress{height:8px;background:#39566d;border-radius:8px;overflow:hidden}.progress>span{display:block;height:100%;background:var(--amber)}.page{text-align:right;font-weight:700}
+@media(max-width:850px){body{grid-template-rows:1fr 62px}.slide{padding:8px}.slide-inner{padding:13px}.grid-2,.grid-3,.review-grid{grid-template-columns:1fr}.array-strip{grid-template-columns:repeat(5,1fr)}h1{font-size:31px}h2{font-size:25px}p,li,td,th{font-size:15px}footer{grid-template-columns:150px 1fr 90px}.code-block,.trace-code,.error-code{font-size:12px}}
+</style>
+</head>
+<body data-courseware="c-freshman-interactive-html" data-layout="slide-page" data-course-id="CW-L10" data-chapter="7" data-routines="EX-C07-002,EX-C07-012" data-questions="QB-PG-013,QB-FB-003,QB-FB-013,QB-SC-019,QB-SC-044,QB-TF-004,QB-TF-005" data-lesson-variants="scalar-max-value-parameters,float-array-sort-function" data-attribution="Kevin@SUT">
+<main class="deck" data-deck data-interaction="ask-wait-reveal">
+<div hidden data-section="concept" data-section-marker="concept"></div><div hidden data-section="interaction" data-section-marker="interaction"></div><div hidden data-section="quiz" data-section-marker="quiz"></div><div hidden data-section="exercise" data-section-marker="exercise"></div><span hidden data-code-line></span>
+
+<section class="slide active" data-slide data-section="objectives"><div class="slide-inner"><div class="eyebrow">01 · 学习目标</div><h1>函数、实参与形参：求较大值与排序子函数</h1><div class="grid-2"><div class="card accent"><h3>函数接口</h3><ul><li>识别声明、调用和定义</li><li>区分实参与形参</li><li>接收并使用函数返回值</li></ul></div><div class="card"><h3>程序分工</h3><ul><li>用普通参数传递数据值</li><li>用数组参数处理一组数据</li><li>使用<code>void</code>函数完成独立任务</li></ul></div></div><p class="lead">函数把一项明确处理写成可调用的程序单元。</p></div></section>
+
+<section class="slide" data-slide data-section="maximum-task"><div class="slide-inner"><div class="eyebrow">02 · 求较大值</div><h2>调用函数输出两个整数中的较大值</h2><div class="grid-2"><div class="card"><h3>任务</h3><p>输入两个整数，调用<code>max</code>函数求出较大值并输出。</p><h3>输入格式</h3><p>两个整数，以空白分隔。</p><h3>输出格式</h3><p>输出其中较大的整数。</p><p><strong>数据范围：</strong>两个数据均在<code>int</code>范围内。</p></div><div class="card accent"><h3>样例输入</h3><pre class="terminal">8 5</pre><h3>样例输出</h3><pre class="terminal">8</pre><div class="rule">输入约束：示例数据均符合规定格式。</div></div></div></div></section>
+
+<section class="slide" data-slide data-section="why-functions"><div class="slide-inner"><div class="eyebrow">03 · 明确的程序单元</div><h2>max函数只承担“比较两个值”</h2><div class="grid-2"><div class="card warn"><h3>全部放在main中</h3><pre class="trace-code">if (a > b)
+{
+    result = a;
+}
+else
+{
+    result = b;
+}</pre><p><code>main</code>同时负责输入、比较和输出。</p></div><div class="card accent"><h3>调用max函数</h3><pre class="trace-code">result = max(a, b);</pre><p><code>main</code>发出调用，<code>max</code>完成比较并交回结果。</p></div></div><div class="rule">函数名表达任务，参数提供数据，返回值提供处理结果。</div></div></section>
+
+<section class="slide" data-slide data-section="function-interface"><div class="slide-inner"><div class="eyebrow">04 · 函数接口</div><h2>拆解 int max(int x, int y)</h2><div class="grid-3"><div class="card accent"><h3>int</h3><p>函数返回值的类型。</p></div><div class="card"><h3>max</h3><p>函数名称，也是调用时使用的名称。</p></div><div class="card warn"><h3>int x, int y</h3><p>两个形参及其类型。</p></div></div><div class="formula">返回类型　函数名（形参列表）</div></div></section>
+
+<section class="slide" data-slide data-section="declaration-call-definition"><div class="slide-inner"><div class="eyebrow">05 · 三种代码形式</div><h2>声明、调用和定义作用不同</h2><div class="grid-3"><div class="card"><h3>函数声明</h3><pre class="trace-code">int max(int x, int y);</pre><p>提前说明调用接口，末尾有分号。</p></div><div class="card accent"><h3>函数调用</h3><pre class="trace-code">result = max(a, b);</pre><p>提供实参并接收返回值。</p></div><div class="card"><h3>函数定义</h3><pre class="trace-code">int max(int x, int y)
+{
+    /* 函数体 */
+}</pre><p>给出函数实际执行的语句。</p></div></div></div></section>
+
+<section class="slide" data-slide data-section="question-sc019"><div class="slide-inner"><div class="eyebrow">06 · QB-SC-019</div><h2>函数原型的作用</h2><article class="question-card" data-question-id="QB-SC-019"><p class="question-text">在所有调用函数之前给出函数原型的主要作用是（ ）。</p><div class="grid-2"><div><button class="option" data-question-option="A" data-correct="false" data-feedback="函数原型不负责分配动态内存。">A. 分配动态内存</button><button class="option" data-question-option="B" data-correct="true" data-feedback="正确。编译器可在调用处检查参数和返回类型。">B. 让编译器检查调用接口</button></div><div><button class="option" data-question-option="C" data-correct="false" data-feedback="声明函数不会自动执行函数。">C. 自动执行函数</button><button class="option" data-question-option="D" data-correct="false" data-feedback="原型需要明确返回类型，不能省略。">D. 省略函数返回值</button></div></div><div class="feedback" data-question-feedback>选择一个答案。</div></article></div></section>
+
+<section class="slide" data-slide data-section="actual-formal"><div class="slide-inner"><div class="eyebrow">07 · 实参与形参</div><h2>实参按位置对应形参</h2><div class="parameter-map"><div class="parameter-pair"><div class="node"><strong>实参 a</strong><br>调用者中的变量</div><div class="down-arrow" aria-hidden="true">↓</div><div class="node"><strong>形参 x</strong><br>函数中的变量</div></div><div class="parameter-pair"><div class="node"><strong>实参 b</strong><br>调用者中的变量</div><div class="down-arrow" aria-hidden="true">↓</div><div class="node"><strong>形参 y</strong><br>函数中的变量</div></div></div><pre class="trace-code">result = max(a, b);
+int max(int x, int y);</pre><div class="rule">调用时先计算实参的值，再按位置交给对应形参。</div></div></section>
+
+<section class="slide" data-slide data-section="value-copy"><div class="slide-inner"><div class="eyebrow">08 · 调用状态</div><h2>输入8和5时，实参值复制给形参</h2><div class="grid-2"><div class="card"><h3>main中的变量</h3><div class="grid-2"><div class="state-box">a = 8</div><div class="state-box">b = 5</div></div></div><div class="card accent"><h3>max中的形参</h3><div class="grid-2"><div class="state-box" id="copy-x">x = —</div><div class="state-box" id="copy-y">y = —</div></div></div></div><div class="button-row"><button id="copy-values">执行参数传递</button><button class="secondary" id="copy-reset">重置</button></div><div class="feedback" id="copy-feedback">调用前，max函数中的本次形参尚未建立。</div></div></section>
+
+<section class="slide" data-slide data-section="value-parameter"><div class="slide-inner"><div class="eyebrow">09 · 普通参数按值传递</div><h2>改变形参，不会自动改变对应实参</h2><div class="grid-2"><pre class="trace-code">void change(int x)
+{
+    x = 100;
+}
+
+int a = 8;
+change(a);</pre><div><table class="center"><tr><th>位置</th><th>调用前</th><th>函数内赋值后</th><th>调用结束后</th></tr><tr><td>实参a</td><td>8</td><td>8</td><td>8</td></tr><tr><td>形参x</td><td>—</td><td>100</td><td>失效</td></tr></table></div></div><div class="rule">形参获得的是实参当前值的副本，形参与实参是不同变量。</div></div></section>
+
+<section class="slide" data-slide data-section="question-sc044"><div class="slide-inner"><div class="eyebrow">10 · QB-SC-044</div><h2>形参与实参</h2><article class="question-card" data-question-id="QB-SC-044"><p class="question-text">函数调用时，形参与实参之间发生的是（ ）。</p><div class="grid-2"><div><button class="option" data-question-option="A" data-correct="false" data-feedback="形参与实参可以使用不同名称，不是名称绑定。">A. 名称绑定</button><button class="option" data-question-option="B" data-correct="true" data-feedback="正确。实参值按接口约定传给对应形参。">B. 按声明规则传递值</button></div><div><button class="option" data-question-option="C" data-correct="false" data-feedback="一个函数不能直接共享另一个函数的全部局部变量。">C. 共享全部局部变量</button><button class="option" data-question-option="D" data-correct="false" data-feedback="普通函数调用不会自动形成自调用。">D. 自动递归</button></div></div><div class="feedback" data-question-feedback>选择一个答案。</div></article></div></section>
+
+<section class="slide" data-slide data-section="return-path"><div class="slide-inner"><div class="eyebrow">11 · 返回值</div><h2>return结束函数，并把一个结果交回调用位置</h2><div class="flow"><div class="node">执行<code>max(a,b)</code></div><div class="arrow">→</div><div class="node">函数内得到<code>result=8</code></div><div class="arrow">→</div><div class="node"><code>return result;</code></div><div class="arrow">→</div><div class="node"><code>main</code>中的result得到8</div></div><div class="button-row"><button id="return-next">执行下一阶段</button><button class="secondary" id="return-reset">重置</button></div><div class="feedback" id="return-feedback">调用表达式尚未开始执行。</div></div></section>
+
+<section class="slide" data-slide data-section="question-tf005"><div class="slide-inner"><div class="eyebrow">12 · QB-TF-005</div><h2>函数返回类型</h2><article class="question-card" data-question-id="QB-TF-005"><p class="question-text">判断下列说法是否正确：</p><blockquote>函数返回值的类型由函数定义或声明中给出的返回类型决定。</blockquote><div class="button-row"><button class="option" data-question-option="A" data-correct="true" data-feedback="正确。返回表达式会按函数声明或定义给出的返回类型进行必要转换。">正确</button><button class="option" data-question-option="B" data-correct="false" data-feedback="该说法正确；函数接口中的返回类型决定调用者接收的值类型。">错误</button></div><div class="feedback" data-question-feedback>作出判断。</div></article><div class="rule"><code>int max(...)</code>表示该函数向调用者返回一个<code>int</code>值。</div></div></section>
+
+<section class="slide" data-slide data-section="fill-fb013" data-fill-question-id="QB-FB-013"><div class="slide-inner"><div class="eyebrow">13 · QB-FB-013</div><h2>调和级数分组求和</h2><p class="question-text">补全函数，计算从 <code>1/m</code> 到 <code>1/n</code> 的调和级数部分和。无输入；输出：<code>1+1/2+...+1/10</code>的值。</p><div class="grid-2"><pre class="trace-code fill-code">#include &lt;stdio.h&gt;
+double part(int m, int n)
+{
+    double <span class="blank">/*〔1〕*/</span>;
+    for (int i = m; <span class="blank">/*〔2〕*/</span> ; i++)
+    <span class="blank">/*〔3〕*/</span>;
+    return sum;
+}
+int main(void)
+{
+    printf("%.6f\n", <span class="blank">/*〔4〕*/</span>);
+    return 0;
+}</pre><div><div class="button-row"><button data-fill-answer="1">揭示第1空</button><button data-fill-answer="2">揭示第2空</button><button data-fill-answer="3">揭示第3空</button><button data-fill-answer="4">揭示第4空</button></div><table class="center"><tr><th>空位</th><th>答案</th></tr><tbody id="fb013-answers"><tr><td colspan="2">选择空位查看答案</td></tr></tbody></table><div class="feedback" id="fb013-feedback">函数返回类型为double，调用时传入1和10。</div></div></div></div></section>
+
+<section class="slide" data-slide data-section="maximum-program"><div class="slide-inner"><div class="eyebrow">14 · 完整程序</div><h2>调用max函数输出较大值</h2><pre class="code-block program-full" data-positive-program="scalar-maximum">#include &lt;stdio.h&gt;
+
+int max(int x, int y);
+
+int main()
+{
+    int a, b;
+    int result;
+
+    scanf("%d %d", &amp;a, &amp;b);
+
+    result = max(a, b);
+
+    printf("%d\n", result);
+
+    return 0;
+}
+
+int max(int x, int y)
+{
+    int result;
+
+    if (x &gt; y)
+    {
+        result = x;
+    }
+    else
+    {
+        result = y;
+    }
+
+    return result;
+}</pre><div class="rule">输入约束：程序运行时提供两个合法整数。</div></div></section>
+
+<section class="slide" data-slide data-section="maximum-stepper"><div class="slide-inner"><div class="eyebrow">15 · 调用执行器</div><h2>观察调用前、函数内和返回后的状态</h2><div class="button-row"><button data-max-case="positive">8 5</button><button data-max-case="negative">-3 -7</button><button data-max-case="equal">4 4</button><button id="max-next">下一阶段</button><button class="secondary" id="max-reset">重置</button></div><div class="grid-3"><div class="state-box" id="max-main-state">main：等待输入</div><div class="state-box" id="max-function-state">max：尚未调用</div><div class="state-box" id="max-result-state">输出：—</div></div><div class="feedback" id="max-feedback">选择一组输入，然后逐步执行。</div></div></section>
+
+<section class="slide" data-slide data-section="maximum-review"><div class="slide-inner"><div class="eyebrow">16 · 测试与自检</div><h2>普通值、负数和相等值均得到正确结果</h2><div class="grid-2"><div><table class="center"><tr><th>输入</th><th>输出</th></tr><tr><td>8 5</td><td>8</td></tr><tr><td>-3 -7</td><td>-3</td></tr><tr><td>4 4</td><td>4</td></tr></table><pre class="code-block">gcc maximum.c -o maximum.exe
+.\maximum.exe</pre><div class="button-row"><a class="button-link" href="../../../例程/chapters/07-functions/ex_c07_002_7_2.c">EX-C07-002</a><a class="button-link" href="../../../题库/选择题/qb_sc_019.md">QB-SC-019</a><a class="button-link" href="../../../题库/选择题/qb_sc_044.md">QB-SC-044</a></div></div><div><div class="review-grid"><button class="review" data-review data-answer="声明提前给出函数接口。">函数声明作用？</button><button class="review" data-review data-answer="max(a,b)是函数调用。">哪部分是调用？</button><button class="review" data-review data-answer="a和b是实参。">实参是谁？</button><button class="review" data-review data-answer="x和y是形参。">形参是谁？</button><button class="review" data-review data-answer="普通参数按值传递。">如何传递？</button><button class="review" data-review data-answer="return结束函数并交回一个值。">return作用？</button><button class="review" data-review data-answer="main从调用语句之后继续执行。">返回后执行哪里？</button></div><div class="feedback review-feedback">点击问题查看答案。</div><p class="small">浏览器进行确定性预演，不执行真实C代码。</p></div></div></div></section>
+
+<section class="slide" data-slide data-section="sort-task" data-programming-question-id="QB-PG-013"><div class="slide-inner"><div class="eyebrow">17 · QB-PG-013</div><h2>浮点数组子函数排序</h2><div class="grid-2"><div class="card"><h3>题目</h3><p class="question-text">输入10个浮点数，调用排序子函数按升序输出。</p><h3>输入格式</h3><p>10个实数。</p><h3>输出格式</h3><p>升序输出排序后的实数。</p><p><strong>数据范围与边界：</strong>输入恰含10个实数。</p></div><div class="card accent"><h3>样例输入</h3><pre class="terminal">3 1 2 4 5 6 7 8 9 0</pre><h3>样例输出</h3><pre class="terminal">0.00 1.00 2.00 3.00 4.00 5.00 6.00 7.00 8.00 9.00</pre><div class="rule">输入约束：示例数据均符合规定格式。</div></div></div></div></section>
+
+<section class="slide" data-slide data-section="function-responsibilities"><div class="slide-inner"><div class="eyebrow">18 · 程序分工</div><h2>main与sort分别完成不同任务</h2><div class="grid-2"><div class="card accent"><h3>main函数</h3><ol><li>建立数组</li><li>保存10个输入数据</li><li>调用<code>sort</code></li><li>输出排序结果</li></ol></div><div class="card"><h3>sort函数</h3><ol><li>接收数组和元素数量</li><li>比较相邻元素</li><li>交换次序错误的元素</li><li>完成全部排序趟数</li></ol></div></div><div class="rule">清晰分工使每个函数只处理一项明确任务。</div></div></section>
+
+<section class="slide" data-slide data-section="sort-interface"><div class="slide-inner"><div class="eyebrow">19 · 排序函数接口</div><h2>拆解 void sort(double a[], int n)</h2><div class="grid-3"><div class="card accent"><h3>void</h3><p>函数不向调用表达式返回结果值。</p></div><div class="card"><h3>double a[]</h3><p>函数接收一个<code>double</code>数组。</p></div><div class="card warn"><h3>int n</h3><p>本次处理的元素数量。</p></div></div><div class="formula">void sort(double a[], int n);</div></div></section>
+
+<section class="slide" data-slide data-section="void-call"><div class="slide-inner"><div class="eyebrow">20 · void函数</div><h2>调用语句独立出现，不接收返回值</h2><div class="grid-2"><div class="card accent"><h3>正确调用</h3><pre class="trace-code">sort(a, 10);</pre><p>函数完成数组排序，随后继续执行下一条语句。</p></div><div class="card error"><h3>故意错误示例</h3><pre class="error-code">result = sort(a, 10);</pre><p><code>sort</code>的返回类型是<code>void</code>，没有结果值可赋给<code>result</code>。</p></div></div></div></section>
+
+<section class="slide" data-slide data-section="array-actual-formal"><div class="slide-inner"><div class="eyebrow">21 · 参数对应</div><h2>数组实参与长度实参分别对应两个形参</h2><table class="center"><tr><th>调用中的实参</th><th>函数定义中的形参</th><th>本次含义</th></tr><tr><td><code>a</code></td><td><code>double a[]</code></td><td>需要排序的数组</td></tr><tr><td><code>10</code></td><td><code>int n</code></td><td>处理10个元素</td></tr></table><pre class="trace-code">sort(a, 10);
+     ↓   ↓
+sort(a,  n);</pre><div class="rule">形参名称可以不同，参数的类型、个数和位置必须符合函数接口。</div></div></section>
+
+<section class="slide" data-slide data-section="array-observable"><div class="slide-inner"><div class="eyebrow">22 · 调用前后</div><h2>sort中的交换结果保留在main的数组中</h2><div class="card"><h3>调用前</h3><div class="array-strip" data-values="3,1,2,4,5,6,7,8,9,0"></div></div><div class="card accent"><h3>sort结束后</h3><div class="array-strip" data-values="0,1,2,3,4,5,6,7,8,9" data-locked="10"></div></div><div class="rule">本课只观察调用前后的数组状态，不展开数组参数的底层实现。</div></div></section>
+
+<section class="slide" data-slide data-section="length-parameter"><div class="slide-inner"><div class="eyebrow">23 · 长度形参</div><h2>n控制排序范围</h2><div class="grid-2"><pre class="trace-code">for (i = 0; i < n - 1; i++)
+{
+    for (j = 0; j < n - 1 - i; j++)
+    {
+        /* 比较与交换 */
+    }
+}</pre><div class="card"><ul><li><code>n=10</code>时最多完成9趟</li><li>第一趟最多比较9对元素</li><li>已就位区域随趟数增大</li><li>函数接口明确告诉函数本次数量</li></ul></div></div><div class="rule">循环使用<code>n</code>，排序函数才能按实参给出的数量工作。</div></div></section>
+
+<section class="slide" data-slide data-section="bubble-review"><div class="slide-inner"><div class="eyebrow">24 · 一趟冒泡</div><h2>函数内部沿用相邻比较和交换</h2><div class="array-strip" id="bubble-strip"></div><div class="button-row"><button id="bubble-next">比较下一对</button><button class="secondary" id="bubble-reset">重置</button></div><table class="center"><tr><th>j</th><th>相邻元素</th><th>是否交换</th><th>当前数组</th></tr><tbody id="bubble-state"><tr><td colspan="4">等待第一趟</td></tr></tbody></table><div class="feedback" id="bubble-feedback">第一趟从a[0]与a[1]开始。</div></div></section>
+
+<section class="slide" data-slide data-section="fill-fb003" data-fill-question-id="QB-FB-003"><div class="slide-inner"><div class="eyebrow">25 · QB-FB-003</div><h2>冒泡排序函数填空</h2><p class="question-text">补全冒泡排序函数，把10个整数按升序排列并输出。输入：10个整数；输出：升序排列结果。</p><div class="grid-2"><pre class="trace-code fill-code long">#include &lt;stdio.h&gt;
+void bubble(int a[], int n)
+{
+    for (int i = 0; <span class="blank">/*〔1〕*/</span>; i++)
+        for (int j = 0; <span class="blank">/*〔2〕*/</span>; j++)
+            if (<span class="blank">/*〔3〕*/</span>)
+            {
+                int t = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = t;
+            }
+}
+int main(void)
+{
+    int a[10];
+    for (int i = 0; i &lt; 10; i++)
+    if (scanf("%d", &amp;a[i]) != 1)
+    return 1;
+    <span class="blank">/*〔4〕*/</span>;
+    for (int i = 0; i &lt; 10; i++)
+    printf("%d%c", a[i], i == 9 ? '\n' : ' ');
+    return 0;
+}</pre><div><div class="button-row"><button data-fb003-answer="1">第1空</button><button data-fb003-answer="2">第2空</button><button data-fb003-answer="3">第3空</button><button data-fb003-answer="4">第4空</button></div><table class="center"><tr><th>空位</th><th>答案</th></tr><tbody id="fb003-answers"><tr><td colspan="2">选择空位查看答案</td></tr></tbody></table><div class="feedback" id="fb003-feedback">四个空分别控制趟数、比较范围、交换条件和函数调用。</div></div></div></div></section>
+
+<section class="slide" data-slide data-section="call-sequence"><div class="slide-inner"><div class="eyebrow">26 · 调用顺序</div><h2>sort结束后，main从调用语句之后继续</h2><div class="flow"><div class="node" data-call-stage="0">main完成输入</div><div class="arrow">→</div><div class="node" data-call-stage="1">调用sort(a,10)</div><div class="arrow">→</div><div class="node" data-call-stage="2">sort完成9趟</div><div class="arrow">→</div><div class="node" data-call-stage="3">返回main输出</div></div><div class="button-row"><button id="call-next">下一阶段</button><button class="secondary" id="call-reset">重置</button></div><div class="feedback" id="call-feedback">程序先在main中保存10个数据。</div></div></section>
+
+<section class="slide" data-slide data-section="sort-program"><div class="slide-inner"><div class="eyebrow">27 · 完整程序</div><h2>调用排序子函数升序输出10个浮点数</h2><pre class="code-block program-full" data-positive-program="float-array-sort">#include &lt;stdio.h&gt;
+
+void sort(double a[], int n);
+
+int main()
+{
+    double a[10];
+    int i;
+
+    for (i = 0; i &lt; 10; i++)
+    {
+        scanf("%lf", &amp;a[i]);
+    }
+
+    sort(a, 10);
+
+    for (i = 0; i &lt; 10; i++)
+    {
+        if (i &gt; 0)
+        {
+            printf(" ");
+        }
+
+        printf("%.2f", a[i]);
+    }
+
+    printf("\n");
+    return 0;
+}
+
+void sort(double a[], int n)
+{
+    int i, j;
+    double t;
+
+    for (i = 0; i &lt; n - 1; i++)
+    {
+        for (j = 0; j &lt; n - 1 - i; j++)
+        {
+            if (a[j] &gt; a[j + 1])
+            {
+                t = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = t;
+            }
+        }
+    }
+}</pre><div class="rule">输入约束：程序运行时提供恰好10个合法实数。</div></div></section>
+
+<section class="slide" data-slide data-section="sort-first-pass"><div class="slide-inner"><div class="eyebrow">28 · 第一趟执行器</div><h2>sort中的j依次产生相邻元素下标</h2><div class="array-strip" id="sort-pass-strip"></div><div class="button-row"><button id="sort-pass-next">下一次比较</button><button class="secondary" id="sort-pass-reset">重置</button></div><table class="center"><tr><th>j</th><th>比较</th><th>是否交换</th><th>进度</th></tr><tbody id="sort-pass-state"><tr><td colspan="4">等待执行</td></tr></tbody></table><div class="feedback" id="sort-pass-feedback">第一趟共进行9次相邻比较。</div></div></section>
+
+<section class="slide" data-slide data-section="sort-all-passes"><div class="slide-inner"><div class="eyebrow">29 · 全部趟数</div><h2>sort完成后，main看到升序数组</h2><div class="array-strip" id="sort-all-strip"></div><div class="button-row"><button id="sort-all-next">完成下一趟</button><button class="secondary" id="sort-all-reset">重置</button></div><table class="center"><tr><th>已完成趟数</th><th>本趟比较次数</th><th>已就位元素</th></tr><tbody id="sort-all-state"><tr><td>0</td><td>—</td><td>0</td></tr></tbody></table><div class="feedback" id="sort-all-feedback">调用sort后开始第一趟。</div></div></section>
+
+<section class="slide" data-slide data-section="question-tf004"><div class="slide-inner"><div class="eyebrow">30 · QB-TF-004</div><h2>形参的建立与失效</h2><article class="question-card" data-question-id="QB-TF-004"><p class="question-text">判断下列说法是否正确：</p><blockquote>函数调用时，普通局部形参的存储在进入函数时建立，函数返回后失效。</blockquote><div class="button-row"><button class="option" data-question-option="A" data-correct="true" data-feedback="正确。这描述了普通自动存储期形参在一次调用中的生命周期。">正确</button><button class="option" data-question-option="B" data-correct="false" data-feedback="该说法正确；下一次调用会重新建立该次调用使用的形参。">错误</button></div><div class="feedback" data-question-feedback>作出判断。</div></article><div class="rule">形参属于被调用函数的一次执行过程，函数返回后本次形参不再存在。</div></div></section>
+
+<section class="slide" data-slide data-section="function-errors"><div class="slide-inner"><div class="eyebrow">31 · 错误诊断</div><h2>检查声明、参数和返回类型</h2><div class="grid-2"><button data-function-error="prototype">1. 调用前缺少可见声明</button><button data-function-error="count">2. 调用sort(a)少一个实参</button><button data-function-error="length">3. 对10个元素调用sort(a, 9)</button><button data-function-error="void">4. result = sort(a, 10)</button></div><div class="feedback" id="function-error-feedback">选择一种故意错误。</div><div class="card error"><h3>故意错误示例</h3><pre class="error-code">void sort(double a[], int n);
+
+int result;
+result = sort(a, 10);</pre><p><code>void</code>函数没有返回结果值，调用语句不能参与赋值。</p></div></div></section>
+
+<section class="slide" data-slide data-section="summary"><div class="slide-inner"><div class="eyebrow">32 · 测试、总结与自检</div><h2>函数接口连接调用者与被调用函数</h2><div class="grid-2"><div><table class="center"><tr><th>数据</th><th>结果</th></tr><tr><td>9至0</td><td>0.00至9.00升序</td></tr><tr><td>0至9</td><td>次序保持不变</td></tr><tr><td>负数与重复值</td><td>-1.00 … 3.50</td></tr></table><pre class="code-block">gcc sort.c -o sort.exe
+.\sort.exe</pre><div class="button-row"><a class="button-link" href="../../../题库/编程题/qb_pg_013.md">QB-PG-013</a><a class="button-link" href="../../../题库/程序填空/qb_fb_003.md">QB-FB-003</a><a class="button-link" href="../../../题库/程序填空/qb_fb_013.md">QB-FB-013</a><a class="button-link" href="../../../题库/判断题/qb_tf_004.md">QB-TF-004</a><a class="button-link" href="../../../题库/判断题/qb_tf_005.md">QB-TF-005</a><a class="button-link" href="../../../例程/chapters/07-functions/ex_c07_012_7_12.c">EX-C07-012</a></div></div><div><div class="review-grid"><button class="review" data-review data-answer="void表示函数不返回结果值。">void表示什么？</button><button class="review" data-review data-answer="数组a对应数组形参。">数组实参对应谁？</button><button class="review" data-review data-answer="整数10对应长度形参n。">10对应谁？</button><button class="review" data-review data-answer="main负责输入、调用和输出。">main的职责？</button><button class="review" data-review data-answer="sort负责排列数组元素。">sort的职责？</button><button class="review" data-review data-answer="sort结束后继续执行调用语句之后的代码。">调用结束后执行哪里？</button><button class="review" data-review data-answer="循环用n控制本次处理范围。">n的作用？</button></div><div class="feedback review-feedback">点击问题查看答案。</div><p class="small">浏览器进行确定性预演，不执行真实C代码。</p></div></div></div></section>
+</main>
+<footer><div class="nav-buttons"><button id="prev">上一页</button><button id="next">下一页</button></div><div class="progress"><span id="progress"></span></div><div class="page"><span id="page">1</span> / 32 · Kevin@SUT</div></footer>
+<script>
+"use strict";
+var slides=Array.from(document.querySelectorAll("[data-slide]")),slideIndex=0;
+function show(n){slideIndex=Math.max(0,Math.min(31,n));slides.forEach(function(s,i){s.classList.toggle("active",i===slideIndex);});document.getElementById("page").textContent=slideIndex+1;document.getElementById("progress").style.width=((slideIndex+1)/32*100)+"%";}
+document.getElementById("prev").onclick=function(){show(slideIndex-1);};document.getElementById("next").onclick=function(){show(slideIndex+1);};document.addEventListener("keydown",function(e){if(["ArrowRight","PageDown"].includes(e.key))show(slideIndex+1);if(["ArrowLeft","PageUp"].includes(e.key))show(slideIndex-1);if(e.key==="Home")show(0);if(e.key==="End")show(31);});
+function setFeedback(el,text,good){el.textContent=text;el.classList.remove("good","bad");if(good!==undefined)el.classList.add(good?"good":"bad");}
+function drawArray(el,values,active,locked){el.innerHTML=values.map(function(v,i){return'<div class="array-cell '+(i===active?'active ':'')+(locked&&i>=10-locked?'locked':'')+'"><span class="index">a['+i+']</span><span class="value">'+v+'</span></div>';}).join("");}
+document.querySelectorAll("[data-values]").forEach(function(el){drawArray(el,el.dataset.values.split(","),-1,Number(el.dataset.locked||0));});
+document.querySelectorAll("article.question-card").forEach(function(q){q.querySelectorAll(".option").forEach(function(b){b.onclick=function(){q.querySelectorAll(".option").forEach(function(x){x.classList.remove("correct","wrong");});var ok=b.dataset.correct==="true";b.classList.add(ok?"correct":"wrong");setFeedback(q.querySelector("[data-question-feedback]"),b.dataset.feedback,ok);};});});
+document.getElementById("copy-values").onclick=function(){document.getElementById("copy-x").textContent="x = 8";document.getElementById("copy-y").textContent="y = 5";setFeedback(document.getElementById("copy-feedback"),"实参a、b的当前值分别复制给形参x、y。",true);};document.getElementById("copy-reset").onclick=function(){document.getElementById("copy-x").textContent="x = —";document.getElementById("copy-y").textContent="y = —";setFeedback(document.getElementById("copy-feedback"),"调用前，max函数中的本次形参尚未建立。");};
+var returnStep=0,returnTexts=["开始执行max(a,b)，实参值进入形参。","函数内比较后得到result=8。","return result交回整数8，并结束max。","main中的result得到8，从调用语句之后继续。"];document.getElementById("return-next").onclick=function(){if(returnStep<4){setFeedback(document.getElementById("return-feedback"),returnTexts[returnStep],true);returnStep++;}};document.getElementById("return-reset").onclick=function(){returnStep=0;setFeedback(document.getElementById("return-feedback"),"调用表达式尚未开始执行。");};
+var fb013={1:"sum=0.0",2:"i<=n",3:"sum+=1.0/i",4:"part(1,10)"};document.querySelectorAll("[data-fill-answer]").forEach(function(b){b.onclick=function(){var n=b.dataset.fillAnswer;document.getElementById("fb013-answers").innerHTML="<tr><td>〔"+n+"〕</td><td><code>"+fb013[n]+"</code></td></tr>";setFeedback(document.getElementById("fb013-feedback"),"该空与函数的初始化、循环或调用接口共同形成完整程序。",true);};});
+var maxCases={positive:[8,5],negative:[-3,-7],equal:[4,4]},maxData=null,maxStage=0;document.querySelectorAll("[data-max-case]").forEach(function(b){b.onclick=function(){maxData=maxCases[b.dataset.maxCase];maxStage=0;document.getElementById("max-main-state").textContent="main：a="+maxData[0]+"，b="+maxData[1];document.getElementById("max-function-state").textContent="max：尚未调用";document.getElementById("max-result-state").textContent="输出：—";setFeedback(document.getElementById("max-feedback"),"输入已保存，准备调用max。",true);};});
+document.getElementById("max-next").onclick=function(){if(!maxData)return;maxStage=Math.min(3,maxStage+1);if(maxStage===1){document.getElementById("max-function-state").textContent="max：x="+maxData[0]+"，y="+maxData[1];setFeedback(document.getElementById("max-feedback"),"实参值进入对应形参。",true);}else if(maxStage===2){var v=maxData[0]>maxData[1]?maxData[0]:maxData[1];document.getElementById("max-function-state").textContent="max：return "+v;setFeedback(document.getElementById("max-feedback"),"函数得到较大值并执行return。",true);}else{document.getElementById("max-result-state").textContent="输出："+Math.max(maxData[0],maxData[1]);setFeedback(document.getElementById("max-feedback"),"返回值保存到main中的result并输出。",true);}};document.getElementById("max-reset").onclick=function(){maxData=null;maxStage=0;document.getElementById("max-main-state").textContent="main：等待输入";document.getElementById("max-function-state").textContent="max：尚未调用";document.getElementById("max-result-state").textContent="输出：—";setFeedback(document.getElementById("max-feedback"),"选择一组输入，然后逐步执行。");};
+var bubbleData=[9,8,7,6,5,4,3,2,1,0],bubbleAt=0,bubbleEl=document.getElementById("bubble-strip");function resetBubble(){bubbleData=[9,8,7,6,5,4,3,2,1,0];bubbleAt=0;drawArray(bubbleEl,bubbleData,-1,0);document.getElementById("bubble-state").innerHTML='<tr><td colspan="4">等待第一趟</td></tr>';setFeedback(document.getElementById("bubble-feedback"),"第一趟从a[0]与a[1]开始。");}resetBubble();
+document.getElementById("bubble-next").onclick=function(){if(bubbleAt>=9)return;var l=bubbleData[bubbleAt],r=bubbleData[bubbleAt+1],swap=l>r;if(swap){bubbleData[bubbleAt]=r;bubbleData[bubbleAt+1]=l;}drawArray(bubbleEl,bubbleData,bubbleAt,0);document.getElementById("bubble-state").innerHTML="<tr><td>"+bubbleAt+"</td><td>"+l+" 与 "+r+"</td><td>"+(swap?"是":"否")+"</td><td>"+bubbleData.join(" ")+"</td></tr>";bubbleAt++;setFeedback(document.getElementById("bubble-feedback"),bubbleAt===9?"第一趟结束，9到达末尾。":"继续比较下一对。",true);};document.getElementById("bubble-reset").onclick=resetBubble;
+var fb003={1:"i < n - 1",2:"j < n - 1 - i",3:"a[j] > a[j + 1]",4:"bubble(a, 10)"};document.querySelectorAll("[data-fb003-answer]").forEach(function(b){b.onclick=function(){var n=b.dataset.fb003Answer,body=document.getElementById("fb003-answers"),row=document.createElement("tr"),label=document.createElement("td"),answer=document.createElement("td"),code=document.createElement("code");label.textContent="〔"+n+"〕";code.textContent=fb003[n];answer.appendChild(code);row.appendChild(label);row.appendChild(answer);body.replaceChildren(row);setFeedback(document.getElementById("fb003-feedback"),"该空连接冒泡循环边界、比较条件或函数调用。",true);};});
+var callStage=-1;function resetCall(){callStage=-1;document.querySelectorAll("[data-call-stage]").forEach(function(n){n.classList.remove("active");});setFeedback(document.getElementById("call-feedback"),"程序先在main中保存10个数据。");}resetCall();document.getElementById("call-next").onclick=function(){callStage=Math.min(3,callStage+1);document.querySelectorAll("[data-call-stage]").forEach(function(n,i){n.classList.toggle("active",i===callStage);});var texts=["main完成10个数据的输入。","执行sort(a,10)，进入排序函数。","sort使用a和n完成全部排序趟数。","sort结束，main从调用语句之后继续输出。"];setFeedback(document.getElementById("call-feedback"),texts[callStage],true);};document.getElementById("call-reset").onclick=resetCall;
+function passController(prefix){var a=[9,8,7,6,5,4,3,2,1,0],j=0,el=document.getElementById(prefix+"-strip");function reset(){a=[9,8,7,6,5,4,3,2,1,0];j=0;drawArray(el,a,-1,0);document.getElementById(prefix+"-state").innerHTML='<tr><td colspan="4">等待执行</td></tr>';setFeedback(document.getElementById(prefix+"-feedback"),"第一趟共进行9次相邻比较。");}document.getElementById(prefix+"-next").onclick=function(){if(j>=9)return;var l=a[j],r=a[j+1],swap=l>r;if(swap){a[j]=r;a[j+1]=l;}drawArray(el,a,j,0);document.getElementById(prefix+"-state").innerHTML="<tr><td>"+j+"</td><td>"+l+" 与 "+r+"</td><td>"+(swap?"是":"否")+"</td><td>"+(j+1)+" / 9</td></tr>";j++;setFeedback(document.getElementById(prefix+"-feedback"),j===9?"第一趟结束，9已经就位。":"继续下一对。",true);};document.getElementById(prefix+"-reset").onclick=reset;reset();}passController("sort-pass");
+var all=[9,8,7,6,5,4,3,2,1,0],passes=0,allEl=document.getElementById("sort-all-strip");function resetAll(){all=[9,8,7,6,5,4,3,2,1,0];passes=0;drawArray(allEl,all,-1,0);document.getElementById("sort-all-state").innerHTML='<tr><td>0</td><td>—</td><td>0</td></tr>';setFeedback(document.getElementById("sort-all-feedback"),"调用sort后开始第一趟。");}resetAll();document.getElementById("sort-all-next").onclick=function(){if(passes>=9)return;for(var j=0;j<9-passes;j++){if(all[j]>all[j+1]){var t=all[j];all[j]=all[j+1];all[j+1]=t;}}passes++;drawArray(allEl,all,-1,passes);document.getElementById("sort-all-state").innerHTML="<tr><td>"+passes+"</td><td>"+(10-passes)+"</td><td>"+passes+"</td></tr>";setFeedback(document.getElementById("sort-all-feedback"),passes===9?"sort结束，main中的数组已经升序排列。":"末尾"+passes+"个元素已经就位。",true);};document.getElementById("sort-all-reset").onclick=resetAll;
+var functionErrors={prototype:"调用位置之前没有可见接口时，编译器无法按正确原型检查调用。",count:"sort需要数组和元素数量两个实参，缺少n对应的实参。",length:"函数只会处理前9个元素，最后一个元素不在本次排序范围内。",void:"void函数没有返回结果值，不能把调用结果赋给变量。"};document.querySelectorAll("[data-function-error]").forEach(function(b){b.onclick=function(){setFeedback(document.getElementById("function-error-feedback"),functionErrors[b.dataset.functionError],false);};});
+document.querySelectorAll("[data-review]").forEach(function(b){b.onclick=function(){b.classList.toggle("done");setFeedback(b.closest(".slide").querySelector(".review-feedback"),b.dataset.answer,true);};});show(0);
+</script>
+</body>
+</html>

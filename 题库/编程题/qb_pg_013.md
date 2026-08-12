@@ -43,42 +43,33 @@ legacy_features: 无
 
 ## 常见失分点
 
-
-
-围绕“浮点数组子函数排序”检查输入合法性、临界值、数组或循环边界，并严格匹配题目规定的输出格式。
+- 在 `main` 调用 `sort` 之前给出与函数定义一致的函数原型。
+- 调用时数组实参和元素数量实参必须与两个形参按位置对应。
+- 长度形参 `n` 应控制排序循环边界，不能把函数内部的元素数量写死。
+- 排序函数完成数组处理后，`main` 再按题目格式输出结果。
+- 相邻数据之间输出一个空格，行末只输出换行。
 
 <details>
 <summary>参考答案与解析</summary>
 
-**解题思路：** 在子函数中完成数组排序，主函数负责输入输出。
+**解题思路：** `main` 负责输入、调用与输出；`sort` 通过数组形参和长度形参完成冒泡排序。
 
 **评分建议：** 输入与边界处理2分，核心算法5分，正确输出2分，代码规范1分。
 
-**正常与边界测试：** 逆序数据；含相等元素的数据。
+**正常与边界测试：** 逆序数据；已有序数据；含负数和相等元素的数据。
 
 ### 完整参考程序
 
 <!-- reference-c:start -->
 ```c
 #include <stdio.h>
-static void sort(double a[], int n)
-{
-    for (int j = 0; j < n - 1; j++)
-    {
-        for (int i = 0; i < n - 1 - j; i++)
-        {
-            if (a[i] > a[i + 1])
-            {
-                double t = a[i];
-                a[i] = a[i + 1];
-                a[i + 1] = t;
-            }
-        }
-    }
-}
+
+void sort(double a[], int n);
+
 int main(void)
 {
     double a[10];
+
     for (int i = 0; i < 10; i++)
     {
         if (scanf("%lf", &a[i]) != 1)
@@ -87,11 +78,35 @@ int main(void)
         }
     }
     sort(a, 10);
+
     for (int i = 0; i < 10; i++)
     {
-        printf("%.2f%c", a[i], i == 9 ? '\n' : ' ');
+        if (i > 0)
+        {
+            printf(" ");
+        }
+
+        printf("%.2f", a[i]);
     }
+
+    printf("\n");
     return 0;
+}
+
+void sort(double a[], int n)
+{
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = 0; j < n - 1 - i; j++)
+        {
+            if (a[j] > a[j + 1])
+            {
+                double t = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = t;
+            }
+        }
+    }
 }
 ```
 <!-- reference-c:end -->

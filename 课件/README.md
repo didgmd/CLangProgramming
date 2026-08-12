@@ -2,7 +2,7 @@
 
 本目录依据《C语言程序设计A》教学大纲组织，共48学时：16次讲授课、8次上机课，每次2课时、每课时45分钟。
 
-当前已完成课次结构、制作约束、CW-L01课程引入PPTX和Hello World HTML交互课件，以及CW-L02、CW-L03两份25页、CW-L04和CW-L05两份26页、CW-L06一份28页、CW-L07和CW-L08两份30页、CW-L09一份34页学生端HTML。讲授课采用16:9离线交互式HTML，上机课使用VS Code和MinGW GCC完成指定考试型编程题。
+当前已完成课次结构、制作约束、CW-L01课程引入PPTX和Hello World HTML交互课件，以及CW-L02、CW-L03两份25页、CW-L04和CW-L05两份26页、CW-L06一份28页、CW-L07和CW-L08两份30页、CW-L09一份34页、CW-L10一份32页学生端HTML。讲授课采用16:9离线交互式HTML，上机课使用VS Code和MinGW GCC完成指定考试型编程题。
 
 ## 使用入口
 
@@ -21,6 +21,7 @@
 - [CW-L07 嵌套循环 HTML](讲授/07-nested-loops-and-primes/index.html)
 - [CW-L08 一维数组 HTML](讲授/08-one-dimensional-arrays/index.html)
 - [CW-L09 二维数组与字符串 HTML](讲授/09-matrices-and-strings/index.html)
+- [CW-L10 函数、实与形参 HTML](讲授/10-functions-and-parameters/index.html)
 - [例程索引](../例程/README.md)
 - [题库索引](../题库/README.md)
 
@@ -36,9 +37,9 @@
 
 | 板块 | 数量 | 学时 | 状态 |
 |---|---:|---:|---|
-| 讲授 | 16次 | 32 | 课次结构完成；CW-L01至CW-L09共9项正式HTML已通过验证 |
+| 讲授 | 16次 | 32 | 课次结构完成；CW-L01至CW-L10共10项正式HTML已通过验证 |
 | 上机 | 8次 | 16 | 目录与设计契约完成，正式任务单为0 |
-| 合计 | 24次 | 48 | 结构规划完成，正式PPTX已完成1项、讲授HTML已完成9项 |
+| 合计 | 24次 | 48 | 结构规划完成，正式PPTX已完成1项、讲授HTML已完成10项 |
 
 `QB-PG-041`和`QB-PG-042`是上机1、上机8的题库前置任务，目前只保留编号与任务定义，不创建失效链接。正式制作对应上机任务单前，必须先将两题补入题库并通过题库校验。
 
@@ -94,4 +95,10 @@ CW-L09 HTML的日常校验命令：
 
 ```powershell
 conda run -n base python tools/validate_courseware.py --id CW-L09
+```
+
+CW-L10 HTML的日常校验命令：
+
+```powershell
+conda run -n base python tools/validate_courseware.py --id CW-L10
 ```
