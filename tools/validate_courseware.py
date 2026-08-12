@@ -31,6 +31,7 @@ CW_L09 = ROOT / "课件" / "讲授" / "09-matrices-and-strings" / "index.html"
 CW_L10 = ROOT / "课件" / "讲授" / "10-functions-and-parameters" / "index.html"
 CW_L11 = ROOT / "课件" / "讲授" / "11-recursion" / "index.html"
 CW_L12 = ROOT / "课件" / "讲授" / "12-pointer-model-and-arrays" / "index.html"
+CW_L13 = ROOT / "课件" / "讲授" / "13-pointer-parameters-and-strings" / "index.html"
 ALLOWED_EXTERNAL_HREFS = frozenset({"https://w3schools.org.cn/c/index.php"})
 
 REQUIRED_MARKERS = (
@@ -255,6 +256,8 @@ def target_for(course_id: str) -> Path:
         return CW_L11
     if course_id == "CW-L12":
         return CW_L12
+    if course_id == "CW-L13":
+        return CW_L13
     raise ValueError(f"unknown courseware id: {course_id}")
 
 
@@ -2824,7 +2827,235 @@ def compile_cw_l11_programs(
                     fail(failures, f"CW-L11 {program_id} output mismatch: exit={result.returncode}, actual={actual!r}")
 
 
+def validate_cw_l13(path: Path) -> list[str]:
+    failures: list[str] = []
+    if not path.exists():
+        return [f"file not found: {path}"]
+    raw = path.read_bytes()
+    if raw.startswith(b"\xef\xbb\xbf"):
+        fail(failures, "UTF-8 BOM is not allowed")
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        return [f"invalid UTF-8: {exc}"]
+    if "\t" in text:
+        fail(failures, "tab characters are not allowed")
+    required = (
+        'data-course-id="CW-L13"',
+        'data-chapter="8"',
+        'data-routines="EX-C08-003,EX-C08-004,EX-C08-028"',
+        'data-questions="QB-TR-028,QB-PG-017,QB-SC-064,QB-TF-007,QB-SC-045,QB-FB-008,QB-FB-004"',
+        'data-lesson-variants="swap-caller-values-through-pointer-parameters,copy-no-space-string-through-pointer-parameters"',
+        'data-positive-program="pointer-parameter-swap"',
+        'data-positive-program="pointer-string-copy"',
+        'data-programming-question-id="QB-PG-017"',
+        'data-trace-question-id="QB-TR-028"',
+        'data-true-false="QB-TF-007"',
+        'data-fill-question-id="QB-FB-008"',
+        'data-fill-question-id="QB-FB-004"',
+        '<meta name="author" content="Kevin@SUT">',
+        'data-attribution="Kevin@SUT"',
+    )
+    for marker in required:
+        if marker not in text:
+            fail(failures, f"missing CW-L13 marker: {marker}")
+    for pattern in EXTERNAL_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            fail(failures, f"external or persistent dependency found: {pattern}")
+    for pattern in TEACHER_ONLY_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            fail(failures, f"teacher-only content found: {pattern}")
+    for phrase in CW_L02_STUDENT_FORBIDDEN:
+        if phrase in text:
+            fail(failures, f"student-facing teacher-prep phrase found: {phrase}")
+    if len(SLIDE_PATTERN.findall(text)) != 36:
+        fail(failures, "CW-L13 must contain exactly 36 slides")
+    if text.count("<details") != 0:
+        fail(failures, "CW-L13 must expose all exercises directly")
+    if " / 36" not in text:
+        fail(failures, "CW-L13 footer total must be 36")
+
+    choice_text = "".join(
+        match.group(0)
+        for match in QUESTION_BLOCK_PATTERN.finditer(text)
+        if match.group("id") in {"QB-SC-064", "QB-SC-045"}
+    )
+    validate_embedded_questions(
+        choice_text, failures, ("QB-SC-064", "QB-SC-045"), "CW-L13"
+    )
+    if text.count('data-question-option="') != 8:
+        fail(failures, "CW-L13 must expose eight choice options")
+
+    questions = scan_questions()
+    source_prompt = re.search(
+        r"## 题目\s*(.*?)\s*### 输入格式",
+        questions["QB-PG-017"].text,
+        re.DOTALL,
+    )
+    pg_block = re.search(
+        r'<article\b[^>]*data-programming-question-id="QB-PG-017"[^>]*>(.*?)</article>',
+        text,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if not source_prompt or not pg_block or normalize_visible_text(source_prompt.group(1)) not in normalize_visible_text(pg_block.group(1)):
+        fail(failures, "CW-L13 must visibly embed the QB-PG-017 prompt")
+
+    source_code = re.search(r"```c\s*(.*?)```", questions["QB-TR-028"].text, re.DOTALL)
+    html_code = re.search(r'<pre\b[^>]*data-trace-code[^>]*>(.*?)</pre>', text, re.DOTALL)
+    source_tokens = re.sub(r"\s+", "", source_code.group(1)) if source_code else ""
+    html_tokens = re.sub(
+        r"\s+", "", html.unescape(re.sub(r"<[^>]+>", "", html_code.group(1)))
+    ) if html_code else ""
+    if source_tokens != html_tokens:
+        fail(failures, "QB-TR-028 program differs from the question bank")
+    if "指针变量只能作为函数形参，不能作为实参。" not in normalize_visible_text(text):
+        fail(failures, "CW-L13 must visibly embed the QB-TF-007 statement")
+    for question_id, answers in (
+        ("QB-FB-008", ("*d=*s", "d++", "s++", "*d='\\0'")),
+        ("QB-FB-004", ("i=m", "s[i]!='\\0'", "d[j++]=s[i++]", "d[j]='\\0'")),
+    ):
+        if f'data-fill-question-id="{question_id}"' not in text:
+            fail(failures, f"CW-L13 must visibly embed {question_id}")
+        for answer in answers:
+            escaped_answer = answer.replace("\\", "\\\\")
+            if answer not in text and escaped_answer not in text:
+                fail(failures, f"CW-L13 {question_id} answer is missing: {answer}")
+
+    program_blocks = {
+        match.group("id"): html.unescape(re.sub(r"<[^>]+>", "", match.group("body")))
+        for match in re.finditer(
+            r'<pre\b[^>]*data-positive-program="(?P<id>[^"]+)"[^>]*>(?P<body>.*?)</pre>',
+            text,
+            re.IGNORECASE | re.DOTALL,
+        )
+    }
+    if set(program_blocks) != {"pointer-parameter-swap", "pointer-string-copy"}:
+        fail(failures, "CW-L13 must contain exactly the two declared positive programs")
+    validate_cw_l13_programs(text, program_blocks, failures)
+    check_links(text, path, failures, require_optional_external=False)
+    return failures
+
+
+def validate_cw_l13_programs(
+    text: str,
+    program_blocks: dict[str, str],
+    failures: list[str],
+) -> None:
+    code_text = "\n".join(program_blocks.values())
+    for forbidden, label in (
+        (r"\*\s*\*", "double pointer"),
+        (r"\bstruct\b", "structure"),
+        (r"\b(?:FILE|fopen|fclose|fprintf|fscanf|fread|fwrite)\b", "file API"),
+        (r"\b(?:malloc|calloc|realloc|free)\s*\(", "dynamic memory"),
+        (r"\(\s*\*\s*\w+\s*\)\s*\(", "function pointer"),
+        (r"\b(?:strcpy|strncpy|strlen|strcmp|strcat)\s*\(", "string library function"),
+        (r"\bfgets\s*\(", "fgets input"),
+    ):
+        if re.search(forbidden, code_text):
+            fail(failures, f"CW-L13 positive programs must not introduce {label}")
+    if re.search(r"if\s*\(\s*scanf|scanf\s*\([^;]+\)\s*[!=]=", code_text):
+        fail(failures, "CW-L13 student programs must not check scanf return values")
+
+    swap = program_blocks.get("pointer-parameter-swap", "")
+    for marker in (
+        "void swap(int *a, int *b);", "swap(&x, &y);", "t = *a;",
+        "*a = *b;", "*b = t;", 'printf("%d %d\\n", x, y);',
+    ):
+        if marker not in swap:
+            fail(failures, f"CW-L13 swap program is incomplete: {marker}")
+    if re.search(r"^\s*(?:t\s*=\s*a|a\s*=\s*b|b\s*=\s*t)\s*;", swap, re.MULTILINE):
+        fail(failures, "CW-L13 swap program must exchange pointed-to values, not pointer copies")
+
+    copy = program_blocks.get("pointer-string-copy", "")
+    for marker in (
+        "void copy_string(char *from, char *to);", "char source[80];",
+        "char destination[80];", 'scanf("%79s", source);',
+        "copy_string(source, destination);", "while (*from != '\\0')",
+        "*to = *from;", "from++;", "to++;", "*to = '\\0';",
+    ):
+        if marker not in copy:
+            fail(failures, f"CW-L13 copy program is incomplete: {marker}")
+
+    visible = normalize_visible_text(text)
+    for marker in (
+        "地址副本", "调用者对象", "交换所指对象", "源数组", "目标数组",
+        "同步移动", "结束符", "长度不超过79", "不含空白字符",
+    ):
+        if marker not in text and marker not in visible:
+            fail(failures, f"CW-L13 student explanation is incomplete: {marker}")
+    counts = (
+        ('data-swap-error="', 4, "swap diagnosis cases"),
+        ('data-copy-error="', 4, "copy diagnosis cases"),
+        ('data-swap-case="', 4, "swap test selectors"),
+        ('data-copy-case="', 4, "copy test selectors"),
+        ('data-fill="', 8, "fill-answer controls"),
+        ('data-trace-reveal>', 1, "trace answer control"),
+        ('data-tf-answer="', 2, "true-false controls"),
+        ('data-review>', 14, "review questions"),
+    )
+    for marker, expected, label in counts:
+        actual = text.count(marker)
+        if actual != expected:
+            fail(failures, f"CW-L13 expected {expected} {label}, found {actual}")
+    for command in (
+        "gcc swap.c -o swap.exe\n.\\swap.exe",
+        "gcc copy_string.c -o copy_string.exe\n.\\copy_string.exe",
+    ):
+        if command not in text:
+            fail(failures, f"CW-L13 beginner command is missing: {command.splitlines()[0]}")
+    compile_cw_l13_programs(program_blocks, failures)
+
+
+def compile_cw_l13_programs(
+    program_blocks: dict[str, str],
+    failures: list[str],
+) -> None:
+    gcc = shutil.which("gcc")
+    if not gcc:
+        fail(failures, "CW-L13 MinGW GCC was not found")
+        return
+    machine = subprocess.run(
+        [gcc, "-dumpmachine"], text=True, encoding="utf-8", errors="replace",
+        capture_output=True, check=False,
+    )
+    if machine.returncode != 0 or "mingw" not in machine.stdout.lower():
+        fail(failures, f"CW-L13 compiler is not MinGW GCC: {machine.stdout.strip()}")
+        return
+    fixtures = {
+        "pointer-parameter-swap": (("", "8 3\n"),),
+        "pointer-string-copy": (
+            ("C_language\n", "C_language\n"),
+            ("pointer\n", "pointer\n"),
+            ("A\n", "A\n"),
+            ("x" * 79 + "\n", "x" * 79 + "\n"),
+        ),
+    }
+    with tempfile.TemporaryDirectory(prefix="cw-l13-validation-") as temp_name:
+        temp_dir = Path(temp_name)
+        for program_id, cases in fixtures.items():
+            source = temp_dir / f"{program_id}.c"
+            executable = temp_dir / f"{program_id}.exe"
+            source.write_text(program_blocks[program_id], encoding="utf-8", newline="\n")
+            build = subprocess.run(
+                [gcc, "-std=c11", "-Wall", "-Wextra", "-Wpedantic", "-Werror", str(source), "-o", str(executable)],
+                text=True, encoding="utf-8", errors="replace", capture_output=True, check=False,
+            )
+            if build.returncode != 0:
+                fail(failures, f"CW-L13 {program_id} compile failed: {build.stderr.strip()}")
+                continue
+            for stdin_text, expected in cases:
+                result = subprocess.run(
+                    [str(executable)], input=stdin_text, text=True, encoding="utf-8",
+                    errors="replace", capture_output=True, check=False, timeout=10,
+                )
+                actual = result.stdout.replace("\r\n", "\n")
+                if result.returncode != 0 or actual != expected:
+                    fail(failures, f"CW-L13 {program_id} output mismatch: exit={result.returncode}, actual={actual!r}")
+
+
 def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
+    if course_id == "CW-L13":
+        return validate_cw_l13(path)
     if course_id == "CW-L12":
         return validate_cw_l12(path)
     if course_id == "CW-L11":
@@ -2939,7 +3170,7 @@ def validate(path: Path, course_id: str = "CW-L01") -> list[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--id", default="CW-L01", help="courseware id: CW-L01 through CW-L12")
+    parser.add_argument("--id", default="CW-L01", help="courseware id: CW-L01 through CW-L13")
     parser.add_argument("--path", type=Path, help="explicit HTML path for local validation")
     args = parser.parse_args()
 
@@ -2956,7 +3187,7 @@ def main() -> int:
             print(f"- {item}")
         return 1
 
-    slide_count = 36 if args.id == "CW-L12" else 34 if args.id in {"CW-L09", "CW-L11"} else 32 if args.id == "CW-L10" else 12 if args.id == "CW-L01" else 30 if args.id in {"CW-L07", "CW-L08"} else 28 if args.id == "CW-L06" else 26 if args.id in {"CW-L04", "CW-L05"} else 25
+    slide_count = 36 if args.id in {"CW-L12", "CW-L13"} else 34 if args.id in {"CW-L09", "CW-L11"} else 32 if args.id == "CW-L10" else 12 if args.id == "CW-L01" else 30 if args.id in {"CW-L07", "CW-L08"} else 28 if args.id == "CW-L06" else 26 if args.id in {"CW-L04", "CW-L05"} else 25
     optional_external = 1 if args.id == "CW-L01" else 0
     print(f"COURSEWARE VALIDATION PASS: {args.id}, slides={slide_count}, offline-core=ok, optional_external={optional_external}, links=ok, text_encoding=UTF-8, bom=utf8-no-bom")
     return 0

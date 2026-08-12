@@ -23,8 +23,7 @@ int main(void)
 {
     char s[100], d[100];
     int m;
-    if (scanf("%99s%d", s, &m) != 2)
-    return 1;
+    scanf("%99s %d", s, &m);
     int /*〔1〕*/, j = 0;
     while ( /*〔2〕*/ )
     /*〔3〕*/;
@@ -62,10 +61,7 @@ int main(void)
 {
     char s[100], d[100];
     int m;
-    if (scanf("%99s%d", s, &m) != 2)
-    {
-        return 1;
-    }
+    scanf("%99s %d", s, &m);
     int i = m, j = 0;
     while (s[i] != '\0')
     {

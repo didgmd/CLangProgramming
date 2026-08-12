@@ -21,9 +21,13 @@ legacy_features: 无
 #include <stdio.h>
 void copy(char * d, const char * s)
 {
-    while (( /*〔1〕*/ = /*〔2〕*/ ) != /*〔3〕*/ )
+    while (* s != '\0')
     {
+        /*〔1〕*/;
+        /*〔2〕*/;
+        /*〔3〕*/;
     }
+    /*〔4〕*/;
 }
 int main(void)
 {
@@ -44,9 +48,10 @@ int main(void)
 
 ### 各空答案
 
-1. `〔1〕`：`*d++`
-2. `〔2〕`：`*s++`
-3. `〔3〕`：`'\0'`
+1. `〔1〕`：`*d=*s`
+2. `〔2〕`：`d++`
+3. `〔3〕`：`s++`
+4. `〔4〕`：`*d='\0'`
 
 ### 关键说明
 
@@ -59,9 +64,13 @@ int main(void)
 #include <stdio.h>
 void copy(char * d, const char * s)
 {
-    while ((* d++ = * s++) != '\0')
+    while (* s != '\0')
     {
+        * d = * s;
+        d++;
+        s++;
     }
+    * d = '\0';
 }
 int main(void)
 {

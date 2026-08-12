@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="Kevin@SUT">
+<meta name="copyright" content="Kevin@SUT">
+<title>CW-L13 指针参数与字符串复制：交换数值与复制字符</title>
+<style>
+:root{--ink:#10243a;--muted:#52677b;--paper:#f5f8fb;--panel:#fff;--cyan:#0f7f8d;--amber:#c56b16;--line:#cbd8e5;--code:#0b1726;--good:#155e35;--bad:#9f2d2d}*{box-sizing:border-box}html,body{margin:0;height:100%;overflow: hidden;background:var(--paper);color:var(--ink);font-family:"Microsoft YaHei",Arial,sans-serif}body{display:grid;grid-template-rows:1fr 64px}.deck{position:relative;min-height:0}.slide{display:none;height:100%;padding:22px 40px}.slide.active{display:block}.slide-inner{height:100%;max-width:1220px;margin:auto;display:flex;flex-direction:column;gap:11px}.eyebrow{color:var(--cyan);font-weight:800;letter-spacing:.08em}h1{font-size:43px;margin:4px 0 8px}h2{font-size:31px;margin:0}h3{font-size:21px;margin:0 0 7px}p,li,td,th,button{font-size:18px;line-height:1.45}.lead{font-size:22px;color:var(--muted)}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:15px;min-height:0}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.card,.question,.state,.feedback,.terminal{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px}.rule,.card strong{color:var(--cyan)}pre{margin:0;background:var(--code);color:#eef7ff;border-radius:12px;padding:13px;font:17px/1.42 Consolas,monospace;white-space:pre-wrap}.code-small{font-size:15px}.compact p,.compact li,.compact button{font-size:16px}.feedback{min-height:56px;color:var(--muted)}.feedback.good{background:#dff3e7;color:var(--good);border-color:#8ccba4}.feedback.bad{background:#fde8e8;color:var(--bad);border-color:#e8a0a0}.button-row,.options{display:flex;flex-wrap:wrap;gap:8px}.options{flex-direction:column}button{border:1px solid #9fb4c8;background:#fff;color:var(--ink);border-radius:10px;padding:8px 13px;cursor:pointer;text-align:left}button:hover,button:focus-visible{outline:3px solid #78d4dd;outline-offset:1px}button.primary{background:var(--cyan);color:#fff;border-color:var(--cyan)}.memory{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}.cell{min-width:94px;background:#fff;border:2px solid var(--line);border-radius:12px;padding:10px;text-align:center}.cell.active{border-color:var(--amber);box-shadow:0 0 0 3px #ffd79a}.active-code-line{outline:3px solid var(--amber)}.arrow{font-size:26px;color:var(--cyan)}.char-strip{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:5px}.char-strip .cell{min-width:0;padding:7px 2px}table{width:100%;border-collapse:collapse;background:#fff}th,td{border:1px solid var(--line);padding:7px;text-align:left}th{background:#e9f3f6}.note{border-left:5px solid var(--amber);background:#fff4df;padding:9px 13px}.danger{border-left-color:var(--bad);background:#fff0f0}.nav{display:flex;align-items:center;gap:12px;padding:8px 22px;background:#0b1726;color:#fff}.nav button{font-size:17px;padding:7px 13px}.progress{height:8px;background:#30465d;flex:1;border-radius:9px;overflow:hidden}.progress span{display:block;height:100%;background:#31c6d4;width:0}.counter{min-width:120px;text-align:center}.footer{font-size:14px;color:#c8d6e4}.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.review-item.done{background:#dff3e7;color:#155e35;border-color:#78b994}.review-item.done strong,.review-item.done code{color:#155e35}.hidden-marker{display:none}@media(max-width:850px){html,body{overflow:auto}body{display:block}.slide{min-height:100vh;height:auto;padding:18px}.grid-2,.grid-3,.review-grid{grid-template-columns:1fr}h1{font-size:35px}h2{font-size:27px}}
+</style>
+</head>
+<body data-courseware="c-freshman-interactive-html" data-layout="slide-page" data-course-id="CW-L13" data-chapter="8" data-routines="EX-C08-003,EX-C08-004,EX-C08-028" data-questions="QB-TR-028,QB-PG-017,QB-SC-064,QB-TF-007,QB-SC-045,QB-FB-008,QB-FB-004" data-lesson-variants="swap-caller-values-through-pointer-parameters,copy-no-space-string-through-pointer-parameters" data-attribution="Kevin@SUT">
+<main class="deck" data-deck data-interaction="ask-wait-reveal">
+<span class="hidden-marker" data-section="objectives"></span><span class="hidden-marker" data-section="concept"></span><span class="hidden-marker" data-section="interaction"></span><span class="hidden-marker" data-section="quiz"></span><span class="hidden-marker" data-section="exercise"></span><span class="hidden-marker" data-section="summary"></span><span class="hidden-marker" data-code-line></span>
+
+<section class="slide active" data-slide><div class="slide-inner"><div class="eyebrow">01 · 学习目标</div><h1>指针参数与字符串复制</h1><p class="lead">地址按值传入函数；通过解引用访问并修改调用者对象。</p><div class="grid-2"><div class="card"><h3>交换数值</h3><ul><li>对应指针实参与形参</li><li>区分地址副本与所指对象</li><li>通过 <code>*a</code>、<code>*b</code> 修改调用者数据</li></ul></div><div class="card"><h3>复制字符</h3><ul><li>同步移动源指针与目标指针</li><li>逐字符写入目标数组</li><li>显式补写字符串结束符 <code>\0</code></li></ul></div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">02 · QB-TR-028</div><h2>指针参数交换值：写出准确输出</h2><article class="question" data-trace-question-id="QB-TR-028"><pre data-trace-code>#include &lt;stdio.h&gt;
+static void swap(int * a, int * b)
+{
+    int t = * a;
+    * a = * b;
+    * b = t;
+}
+int main(void)
+{
+    int x = 3, y = 8;
+    swap(&amp;x, &amp;y);
+    printf("%d %d\n", x, y);
+    return 0;
+}</pre><button class="primary" data-trace-reveal>揭示输出与原因</button><div class="feedback" aria-live="polite">先跟踪函数调用前后 x、y 的值。</div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">03 · 参数传递对比</div><h2>普通参数传数值，指针参数传地址</h2><div class="grid-2"><div class="card"><h3>普通参数：修改副本</h3><pre>void change_value(int a)
+{
+    a = 9;
+}
+
+int x = 3;
+change_value(x);
+/* x仍为3 */</pre><p>形参<code>a</code>获得数值3的副本；修改<code>a</code>不会修改<code>x</code>。</p></div><div class="card"><h3>指针参数：修改所指对象</h3><pre>void change_object(int *p)
+{
+    *p = 9;
+}
+
+int x = 3;
+change_object(&amp;x);
+/* x变为9 */</pre><p>形参<code>p</code>获得<code>&amp;x</code>的副本；<code>*p</code>仍访问并修改<code>x</code>。</p></div></div><p class="rule">两种调用都按值传递；区别在于被复制的是普通数值还是对象地址。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">04 · 指针实参</div><h2><code>swap(&amp;x, &amp;y)</code>传入两个对象的位置</h2><div class="grid-2"><div class="card"><h3><code>&amp;x</code></h3><p>整数对象<code>x</code>的地址。</p></div><div class="card"><h3><code>&amp;y</code></h3><p>整数对象<code>y</code>的地址。</p></div></div><div class="memory"><div class="cell">x<br><strong>3</strong></div><div class="arrow">← &amp;x</div><div class="cell">实参1</div><div class="cell">实参2</div><div class="arrow">&amp;y →</div><div class="cell">y<br><strong>8</strong></div></div><p class="note">实参提供地址，使函数能够找到调用者中的对象。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">05 · 指针形参</div><h2>拆解 <code>void swap(int *a, int *b)</code></h2><div class="grid-3"><div class="card"><h3><code>void</code></h3><p>函数不返回结果值。</p></div><div class="card"><h3><code>swap</code></h3><p>函数名称。</p></div><div class="card"><h3><code>int *a, int *b</code></h3><p>两个指向整数的形参。</p></div></div><pre>void swap(int *a, int *b);</pre><p class="rule">形参声明规定调用接口：两个实参都应提供整数对象的地址。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">06 · 对应关系</div><h2>实参与形参按位置对应</h2><table><tr><th>调用表达式</th><th>形参</th><th>函数内可访问的对象</th></tr><tr><td><code>&amp;x</code></td><td><code>int *a</code></td><td><code>*a</code>就是调用者中的<code>x</code></td></tr><tr><td><code>&amp;y</code></td><td><code>int *b</code></td><td><code>*b</code>就是调用者中的<code>y</code></td></tr></table><div class="memory"><div class="cell">x = 3</div><div class="arrow">← a 指向</div><div class="cell">a保存&amp;x</div><div class="cell">b保存&amp;y</div><div class="arrow">b 指向 →</div><div class="cell">y = 8</div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">07 · 地址也按值传递</div><h2>形参保存地址副本，解引用仍访问原对象</h2><div class="grid-2"><div class="card"><h3>形参本身</h3><p><code>a</code>和<code>b</code>是函数调用期间建立的局部变量，保存地址副本。</p></div><div class="card"><h3>所指对象</h3><p><code>*a</code>和<code>*b</code>访问调用者的<code>x</code>和<code>y</code>。</p></div></div><p class="note">交换<code>a</code>、<code>b</code>只改变局部地址副本；交换<code>*a</code>、<code>*b</code>才会修改调用者对象。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">08 · 交换第一步</div><h2><code>t = *a;</code>先保存原值</h2><pre>int t;
+t = *a;</pre><table><tr><th>对象</th><th>执行前</th><th>执行后</th></tr><tr><td><code>x / *a</code></td><td>3</td><td>3</td></tr><tr><td><code>y / *b</code></td><td>8</td><td>8</td></tr><tr><td><code>t</code></td><td>未赋值</td><td>3</td></tr></table><p class="rule">临时变量保留将被覆盖的原值。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">09 · 交换第二步</div><h2><code>*a = *b;</code>只完成一半交换</h2><pre>*a = *b;</pre><div class="memory"><div class="cell active">x / *a<br><strong>8</strong></div><div class="cell">y / *b<br><strong>8</strong></div><div class="cell">t<br><strong>3</strong></div></div><p class="note">此时两个对象都为8。若没有<code>t</code>保存原来的3，原值将无法恢复。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">10 · 交换第三步</div><h2><code>*b = t;</code>完成交换</h2><pre>*b = t;</pre><div class="memory"><div class="cell">x / *a<br><strong>8</strong></div><div class="cell active">y / *b<br><strong>3</strong></div><div class="cell">t<br><strong>3</strong></div></div><p class="rule">函数返回后形参<code>a</code>、<code>b</code>和局部变量<code>t</code>失效，但<code>x=8</code>、<code>y=3</code>保留。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">11 · 完整程序</div><h2>通过指针形参交换调用者数据</h2><pre data-positive-program="pointer-parameter-swap">#include &lt;stdio.h&gt;
+
+void swap(int *a, int *b);
+
+int main()
+{
+    int x = 3;
+    int y = 8;
+
+    swap(&amp;x, &amp;y);
+    printf("%d %d\n", x, y);
+
+    return 0;
+}
+
+void swap(int *a, int *b)
+{
+    int t;
+
+    t = *a;
+    *a = *b;
+    *b = t;
+}</pre></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">12 · 交换执行器</div><h2>从调用到返回，观察三个赋值步骤</h2><div class="button-row"><button class="primary" id="swap-next">执行下一步</button><button id="swap-play">完整执行</button><button id="swap-reset">重置</button></div><div class="grid-2"><div class="state" id="swap-state">调用前：x=3，y=8。</div><div class="terminal" id="swap-output">输出：等待执行</div></div><div class="memory" id="swap-memory"></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">13 · QB-SC-064</div><h2>只交换形参指针为什么无效</h2><article class="question" data-question-id="QB-SC-064"><p class="question-text">函数 <code>void swap(int *a,int *b){int *t=a;a=b;b=t;}</code> 调用后未交换两个整数，原因是（ ）。</p><div class="options"><button data-question-option="A" data-correct="false" data-feedback="指针可以作为函数参数">A. 指针不能作参数</button><button data-question-option="B" data-correct="true" data-feedback="a和b只是调用期间的地址副本">B. 只交换了形参指针副本</button><button data-question-option="C" data-correct="false" data-feedback="交换整数不需要数组">C. 需要使用数组</button><button data-question-option="D" data-correct="false" data-feedback="整数当然可以交换">D. 整数不能交换</button></div><div class="feedback" aria-live="polite">选择一个选项，查看完整解释。</div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">14 · 两种交换</div><h2>交换所指对象与交换地址副本，结果不同</h2><div class="grid-2"><div class="card"><h3>交换 <code>*a</code>、<code>*b</code></h3><pre>t = *a;
+*a = *b;
+*b = t;</pre><p>修改调用者中的<code>x</code>、<code>y</code>。</p></div><div class="card"><h3>交换 <code>a</code>、<code>b</code></h3><pre>t = a;
+a = b;
+b = t;</pre><p>只修改形参保存的地址副本。</p></div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">15 · QB-TF-007</div><h2>指针值既可作为实参，也可由形参接收</h2><article class="question" data-true-false="QB-TF-007"><p class="question-text">指针变量只能作为函数形参，不能作为实参。</p><div class="button-row"><button data-tf-answer="true">正确</button><button data-tf-answer="false">错误</button></div><div class="feedback" aria-live="polite">判断绝对表述是否成立。</div></article><p class="note">指针值可以作为实参传给指针形参；传递规则仍然是按值传递。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">16 · 多组状态</div><h2>不同初值采用相同的交换过程</h2><div class="button-row"><button data-swap-case="3,8">3 与 8</button><button data-swap-case="5,5">5 与 5</button><button data-swap-case="-2,7">-2 与 7</button><button data-swap-case="10,-4">10 与 -4</button></div><div class="feedback" id="swap-case-feedback">选择一组初值，查看调用前、函数内和返回后的状态。</div><table><tr><th>调用</th><th>函数内</th><th>返回后</th></tr><tr><td>提供<code>&amp;x</code>、<code>&amp;y</code></td><td>交换<code>*a</code>、<code>*b</code></td><td>调用者对象保持新值</td></tr></table></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">17 · 错误诊断</div><h2>先确认接口需要地址还是对象值</h2><div class="button-row"><button data-swap-error="address">漏写&amp;</button><button data-swap-error="star">漏写*</button><button data-swap-error="copies">交换形参指针</button><button data-swap-error="uninitialized">未初始化指针</button></div><div class="feedback" id="swap-error-feedback">选择一个错误，查看原因与正确写法。</div><p class="note danger">以上均为诊断材料，不是可运行正例。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">18 · 前半部分总结</div><h2>指针形参使函数能够定位调用者对象</h2><div class="grid-2"><div class="review-grid"><button class="review-item" data-review>地址作为实参传入</button><button class="review-item" data-review>形参保存地址副本</button><button class="review-item" data-review><code>*a</code>访问调用者对象</button><button class="review-item" data-review>交换对象会保留修改</button><button class="review-item" data-review>交换形参地址副本无效</button><button class="review-item" data-review>临时变量防止原值丢失</button><button class="review-item" data-review>函数返回后局部形参失效</button></div><div class="card"><h3>精确输出</h3><pre>8 3</pre><h3>编译与运行</h3><pre>gcc swap.c -o swap.exe
+.\swap.exe</pre><p><a href="../../../题库/读程序写结果/qb_tr_028.md">QB-TR-028</a> · <a href="../../../例程/chapters/08-pointers/ex_c08_003_8_3.c">EX-C08-003</a> · <a href="../../../例程/chapters/08-pointers/ex_c08_004_8_4.c">EX-C08-004</a></p></div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">19 · QB-PG-017</div><h2>不用字符串库复制</h2><article class="question" data-programming-question-id="QB-PG-017"><p class="question-text">输入一个不含空白字符的字符串，调用自定义函数复制并输出。</p><div class="grid-2"><div class="card"><p><strong>输入格式：</strong>一个长度不超过79且不含空白字符的字符串。</p><p><strong>输出格式：</strong>输出复制后的字符串。</p><p><strong>边界：</strong>为目标数组末尾的<code>\0</code>留出位置。</p></div><div class="card"><pre>输入：C_language
+输出：C_language</pre></div></div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">20 · 两个数组</div><h2>源数组提供字符，目标数组接收副本</h2><div class="grid-2"><div class="card"><h3><code>source[80]</code></h3><p>保存原字符串；复制过程读取它，不改变其中字符。</p></div><div class="card"><h3><code>destination[80]</code></h3><p>初始内容未确定；复制过程逐位置写入字符。</p></div></div><p class="rule">复制方向：<code>source → destination</code>。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">21 · 字符串存储</div><h2><code>C_language</code>后还有一个结束符</h2><div class="char-strip"><div class="cell">C<br>0</div><div class="cell">_<br>1</div><div class="cell">l<br>2</div><div class="cell">a<br>3</div><div class="cell">n<br>4</div><div class="cell">g<br>5</div><div class="cell">u<br>6</div><div class="cell">a<br>7</div><div class="cell">g<br>8</div><div class="cell">e<br>9</div><div class="cell active">\0<br>10</div></div><p class="note">10个可见字符需要11个数组元素；<code>\0</code>标记字符串结束。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">22 · QB-SC-045</div><h2>字符串复制需要为结束符保留空间</h2><article class="question" data-question-id="QB-SC-045"><p class="question-text">把字符串 <code>HELLO2</code> 复制到 <code>char s[7]</code> 中（ ）。</p><div class="options"><button data-question-option="A" data-correct="true" data-feedback="6个可见字符加一个结束符正好占7个元素">A. 空间足够</button><button data-question-option="B" data-correct="false" data-feedback="数组已经包含结束符所需的第7个位置">B. 缺少结束符空间</button><button data-question-option="C" data-correct="false" data-feedback="数组可保存6个可见字符及结束符">C. 只能存两个字符</button><button data-question-option="D" data-correct="false" data-feedback="容量足够，不会因此必定编译错误">D. 必定编译错误</button></div><div class="feedback" aria-live="polite">计算可见字符数，再加一个结束符位置。</div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">23 · 复制函数接口</div><h2>拆解 <code>void copy_string(char *from, char *to)</code></h2><div class="grid-3"><div class="card"><h3><code>void</code></h3><p>不返回结果值。</p></div><div class="card"><h3><code>char *from</code></h3><p>指向当前待读取字符。</p></div><div class="card"><h3><code>char *to</code></h3><p>指向当前待写入位置。</p></div></div><p class="rule">形参顺序与函数名共同表达复制方向：从<code>from</code>复制到<code>to</code>。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">24 · 数组实参与指针形参</div><h2>调用时传递两个数组的首位置</h2><pre>copy_string(source, destination);</pre><table><tr><th>实参</th><th>形参</th><th>作用</th></tr><tr><td><code>source</code></td><td><code>from</code></td><td>读取源字符</td></tr><tr><td><code>destination</code></td><td><code>to</code></td><td>写入目标字符</td></tr></table><p class="note">数组名在调用表达式中提供首元素位置；本函数不需要返回目标数组。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">25 · 复制一个字符</div><h2><code>*to = *from;</code>读取源字符并写入目标位置</h2><div class="memory"><div class="cell active">源位置<br><strong>C</strong></div><div class="arrow">读取 →</div><div class="cell"><code>*to = *from</code></div><div class="arrow">→ 写入</div><div class="cell active">目标位置<br><strong>C</strong></div></div><p class="rule">赋值方向从右向左：读取<code>*from</code>，写入<code>*to</code>。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">26 · 同步移动</div><h2>两个指针都要移到下一位置</h2><pre>*to = *from;
+from++;
+to++;</pre><div class="grid-2"><div class="card"><h3><code>from++</code></h3><p>指向下一个待读取字符。</p></div><div class="card"><h3><code>to++</code></h3><p>指向下一个待写入位置。</p></div></div><p class="note">只移动一个指针会重复读取或覆盖同一目标位置。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">27 · 逐字符状态</div><h2>源与目标保持相同进度</h2><table><tr><th>步骤</th><th><code>*from</code></th><th>写入后目标前缀</th><th>下一位置</th></tr><tr><td>0</td><td>C</td><td>C</td><td>下标1</td></tr><tr><td>1</td><td>_</td><td>C_</td><td>下标2</td></tr><tr><td>2</td><td>l</td><td>C_l</td><td>下标3</td></tr><tr><td>…</td><td>…</td><td>…</td><td>同步前进</td></tr></table><p class="rule">任一时刻，已复制字符数等于两个指针各自移动的次数。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">28 · 循环条件</div><h2>结束符不在循环体中复制</h2><pre>while (*from != '\0')
+{
+    *to = *from;
+    from++;
+    to++;
+}</pre><div class="grid-2"><div class="card"><h3>条件为真</h3><p>当前位置是可见字符，复制并移动。</p></div><div class="card"><h3>条件为假</h3><p>当前位置是<code>\0</code>，立即离开循环。</p></div></div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">29 · 补写结束符</div><h2>循环结束后执行 <code>*to = '\0';</code></h2><div class="char-strip"><div class="cell">C</div><div class="cell">_</div><div class="cell">l</div><div class="cell">a</div><div class="cell">n</div><div class="cell">g</div><div class="cell">u</div><div class="cell">a</div><div class="cell">g</div><div class="cell">e</div><div class="cell active">\0</div></div><p class="note">缺少<code>\0</code>时，目标数组没有形成完整C字符串，使用<code>%s</code>输出的行为不可靠。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">30 · QB-FB-008</div><h2>补全字符串复制函数</h2><article class="question" data-fill-question-id="QB-FB-008"><p class="question-text">补全字符串复制函数，并输出复制得到的字符串。无输入；输出：复制后的字符串。</p><pre>#include &lt;stdio.h&gt;
+void copy(char * d, const char * s)
+{
+    while (* s != '\0')
+    {
+        /*〔1〕*/;
+        /*〔2〕*/;
+        /*〔3〕*/;
+    }
+    /*〔4〕*/;
+}
+int main(void)
+{
+    char d[100];
+    copy(d, "pointer copy");
+    puts(d);
+    return 0;
+}</pre><div class="button-row"><button data-fill="fb8-1">揭示第1空</button><button data-fill="fb8-2">揭示第2空</button><button data-fill="fb8-3">揭示第3空</button><button data-fill="fb8-4">揭示第4空</button></div><div class="feedback" id="fb8-feedback">循环条件只判断是否到达末尾；循环体依次完成复制和两个指针的移动，最后补写结束符。</div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">31 · 完整程序</div><h2>字符指针形参逐字符复制</h2><pre data-positive-program="pointer-string-copy">#include &lt;stdio.h&gt;
+
+void copy_string(char *from, char *to);
+
+int main()
+{
+    char source[80];
+    char destination[80];
+
+    scanf("%79s", source);
+    copy_string(source, destination);
+    printf("%s\n", destination);
+
+    return 0;
+}
+
+void copy_string(char *from, char *to)
+{
+    while (*from != '\0')
+    {
+        *to = *from;
+        from++;
+        to++;
+    }
+
+    *to = '\0';
+}</pre><p>输入约束：字符串长度不超过79且不含空白字符。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">32 · 复制执行器</div><h2><code>C_language</code>逐字符进入目标数组</h2><div class="button-row"><button class="primary" id="copy-next">复制一个字符</button><button id="copy-play">完整复制</button><button id="copy-reset">重置</button></div><div class="char-strip" id="copy-source"></div><div class="char-strip" id="copy-destination"></div><div class="feedback" id="copy-feedback">from和to均指向下标0，目标数组尚未形成字符串。</div></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">33 · 边界状态</div><h2>单字符、普通字符串与79字符上界</h2><div class="button-row"><button data-copy-case="C_language">C_language</button><button data-copy-case="pointer">pointer</button><button data-copy-case="A">单字符 A</button><button data-copy-case="max">79字符</button></div><div class="feedback" id="copy-case-feedback">选择一组数据，查看容量与复制结果。</div><table><tr><th>源字符串</th><th>可见字符</th><th>结束符位置</th></tr><tr><td>C_language</td><td>10</td><td>下标10</td></tr><tr><td>pointer</td><td>7</td><td>下标7</td></tr><tr><td>A</td><td>1</td><td>下标1</td></tr><tr><td>79字符</td><td>79</td><td>下标79，正好位于80元素数组末项</td></tr></table></div></section>
+
+<section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">34 · QB-FB-004</div><h2>复制指定位置后的字符串</h2><article class="question" data-fill-question-id="QB-FB-004"><p class="question-text">输入字符串和下标 <code>m</code>，把源串从下标 <code>m</code> 开始的后缀复制到目标数组。</p><pre>#include &lt;stdio.h&gt;
+int main(void)
+{
+    char s[100], d[100];
+    int m;
+    scanf("%99s %d", s, &amp;m);
+    int /*〔1〕*/, j = 0;
+    while ( /*〔2〕*/ )
+    /*〔3〕*/;
+    /*〔4〕*/;
+    puts(d);
+    return 0;
+}</pre><div class="button-row"><button data-fill="fb4-1">第1空</button><button data-fill="fb4-2">第2空</button><button data-fill="fb4-3">第3空</button><button data-fill="fb4-4">第4空</button></div><div class="feedback" id="fb4-feedback">输入abcdef和2时，应得到cdef。</div></article></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">35 · 错误诊断</div><h2>复制方向、移动进度和结束符必须完整</h2><div class="button-row"><button data-copy-error="direction">源与目标颠倒</button><button data-copy-error="one-pointer">只移动一个指针</button><button data-copy-error="terminator">漏写\0</button><button data-copy-error="capacity">目标容量不足</button></div><div class="feedback" id="copy-error-feedback">选择一个错误，查看原因与修正方式。</div><p class="note danger">以上均为诊断材料。越界写入和把未结束的字符数组当作字符串输出都不属于合法正例。</p></div></section>
+
+<section class="slide" data-slide><div class="slide-inner"><div class="eyebrow">36 · 全课总结</div><h2>地址定位对象，指针参数完成跨函数修改</h2><div class="grid-2"><div class="review-grid"><button class="review-item" data-review>指针实参提供对象地址</button><button class="review-item" data-review>指针形参保存地址副本</button><button class="review-item" data-review>解引用修改调用者对象</button><button class="review-item" data-review>交换对象不同于交换形参</button><button class="review-item" data-review>源与目标指针同步移动</button><button class="review-item" data-review>复制方向从from到to</button><button class="review-item" data-review>目标字符串必须以\0结束</button></div><div class="card"><h3>复制测试</h3><pre>C_language → C_language
+pointer  → pointer
+A        → A
+79字符   → 原样复制</pre><h3>编译与运行</h3><pre>gcc copy_string.c -o copy_string.exe
+.\copy_string.exe</pre><p><a href="../../../题库/编程题/qb_pg_017.md">QB-PG-017</a> · <a href="../../../例程/chapters/08-pointers/ex_c08_028_8_20_3.c">EX-C08-028</a></p></div></div></div></section>
+</main>
+
+<nav class="nav" aria-label="课件导航"><button id="prev">上一页</button><button id="next">下一页</button><div class="progress" aria-hidden="true"><span id="progress"></span></div><div class="counter"><span id="current">1</span> / 36</div><div class="footer">CW-L13 · Kevin@SUT</div></nav>
+
+<script>
+const slides=[...document.querySelectorAll('[data-slide]')];let current=0;
+function showSlide(index){current=Math.max(0,Math.min(slides.length-1,index));slides.forEach((slide,i)=>slide.classList.toggle('active',i===current));document.getElementById('current').textContent=current+1;document.getElementById('progress').style.width=((current+1)/slides.length*100)+'%';}
+document.getElementById('prev').onclick=()=>showSlide(current-1);document.getElementById('next').onclick=()=>showSlide(current+1);addEventListener('keydown',event=>{if(['ArrowRight','PageDown'].includes(event.key))showSlide(current+1);if(['ArrowLeft','PageUp'].includes(event.key))showSlide(current-1);if(event.key==='Home')showSlide(0);if(event.key==='End')showSlide(slides.length-1);});
+const answers={'QB-SC-064':{right:'B',why:'a和b只是在本次调用中建立的地址副本。交换它们不会修改所指的两个整数；必须交换*a与*b。'},'QB-SC-045':{right:'A',why:'HELLO2有6个可见字符，再加末尾的\\0正好需要7个数组元素。'}};
+document.querySelectorAll('[data-question-id]').forEach(box=>box.querySelectorAll('[data-question-option]').forEach(button=>button.onclick=()=>{const item=answers[box.dataset.questionId];const ok=button.dataset.questionOption===item.right;const feedback=box.querySelector('.feedback');feedback.className='feedback '+(ok?'good':'bad');feedback.textContent=(ok?'正确。':'不正确。')+item.why;}));
+document.querySelector('[data-trace-reveal]').onclick=event=>{const feedback=event.target.nextElementSibling;feedback.className='feedback good';feedback.textContent='输出：8 3。swap通过*a和*b修改调用者中的x与y。';};
+document.querySelectorAll('[data-tf-answer]').forEach(button=>button.onclick=()=>{const ok=button.dataset.tfAnswer==='false';const feedback=button.closest('article').querySelector('.feedback');feedback.className='feedback '+(ok?'good':'bad');feedback.textContent=(ok?'正确。':'不正确。')+'指针值既可以作为实参，也可以由指针形参接收；传递规则仍是按值传递。';});
+let swapStep=0;const swapStates=[['调用前：x=3，y=8。','x=3','y=8','t=—'],['进入swap：a指向x，b指向y。','*a=3','*b=8','t=—'],['执行t=*a：保存原来的3。','*a=3','*b=8','t=3'],['执行*a=*b：x变为8。','*a=8','*b=8','t=3'],['执行*b=t：y变为3。','*a=8','*b=3','t=3'],['返回main：修改保留。','x=8','y=3','t已失效']];
+function renderSwap(){const state=swapStates[swapStep];document.getElementById('swap-state').textContent=state[0];document.getElementById('swap-output').textContent=swapStep===5?'输出：8 3':'输出：等待执行';document.getElementById('swap-memory').innerHTML=state.slice(1).map(value=>`<div class="cell">${value}</div>`).join('');}
+document.getElementById('swap-next').onclick=()=>{swapStep=Math.min(5,swapStep+1);renderSwap();};document.getElementById('swap-play').onclick=()=>{swapStep=5;renderSwap();};document.getElementById('swap-reset').onclick=()=>{swapStep=0;renderSwap();};renderSwap();
+document.querySelectorAll('[data-swap-case]').forEach(button=>button.onclick=()=>{const [x,y]=button.dataset.swapCase.split(',').map(Number);const feedback=document.getElementById('swap-case-feedback');feedback.className='feedback good';feedback.textContent=`调用前x=${x}, y=${y}；函数内交换*x与*y；返回后x=${y}, y=${x}。`;});
+const swapErrors={address:'调用swap时漏写&，传入的是整数值而不是地址。正确调用为swap(&x, &y)。',star:'若写a=b，只改变形参地址副本。应写*a=*b来修改调用者对象。',copies:'交换a和b只交换地址副本，函数返回后效果消失；应交换*a和*b。',uninitialized:'未初始化指针没有指向有效对象，不能解引用。应先传入或赋予有效对象地址。'};document.querySelectorAll('[data-swap-error]').forEach(button=>button.onclick=()=>{const feedback=document.getElementById('swap-error-feedback');feedback.className='feedback bad';feedback.textContent=swapErrors[button.dataset.swapError];});
+const fillAnswers={'fb8-1':'第1空：*d=*s。把当前源字符复制到当前目标位置。','fb8-2':'第2空：d++。目标指针移到下一个待写入位置。','fb8-3':'第3空：s++。源指针移到下一个待读取字符。','fb8-4':"第4空：*d='\\0'。循环结束后为目标字符串补写结束符。",'fb4-1':'第1空：i=m。源下标从m开始。','fb4-2':"第2空：s[i]!='\\0'。尚未到源串末尾时继续。",'fb4-3':'第3空：d[j++]=s[i++]。复制当前字符并同步移动两个下标。','fb4-4':"第4空：d[j]='\\0'。为目标字符串补写结束符。"};document.querySelectorAll('[data-fill]').forEach(button=>button.onclick=()=>{const feedback=button.closest('article').querySelector('.feedback');feedback.className='feedback good';feedback.textContent=fillAnswers[button.dataset.fill];});
+const copyWord='C_language';let copyIndex=0;function renderCopy(){const make=(target,values,active)=>{target.innerHTML=values.map((value,i)=>`<div class="cell${i===active?' active':''}">${value}</div>`).join('');};make(document.getElementById('copy-source'),[...copyWord,'\\0'],Math.min(copyIndex,copyWord.length));const target=[...copyWord].map((character,i)=>i<copyIndex?character:'·');if(copyIndex===copyWord.length)target.push('\\0');else target.push('·');make(document.getElementById('copy-destination'),target,Math.min(copyIndex,copyWord.length));document.getElementById('copy-feedback').textContent=copyIndex<copyWord.length?`已复制${copyIndex}个字符；当前*from='${copyWord[copyIndex]}'，to指向下标${copyIndex}。`:`10个可见字符复制完成，已在目标下标10写入\\0。`;}
+document.getElementById('copy-next').onclick=()=>{copyIndex=Math.min(copyWord.length,copyIndex+1);renderCopy();};document.getElementById('copy-play').onclick=()=>{copyIndex=copyWord.length;renderCopy();};document.getElementById('copy-reset').onclick=()=>{copyIndex=0;renderCopy();};renderCopy();
+document.querySelectorAll('[data-copy-case]').forEach(button=>button.onclick=()=>{const value=button.dataset.copyCase==='max'?'x'.repeat(79):button.dataset.copyCase;const feedback=document.getElementById('copy-case-feedback');feedback.className='feedback good';feedback.textContent=`复制${value.length}个可见字符，并在目标下标${value.length}补写\\0；输出与源字符串一致。`;});
+const copyErrors={direction:'若把源和目标颠倒，会读取未初始化的目标数组并覆盖源数组。调用和形参顺序必须保持source→from、destination→to。','one-pointer':'只移动from会反复覆盖同一目标位置；只移动to会重复复制同一源字符。两个指针必须同步移动。',terminator:'循环没有复制\\0，因此结束后必须显式执行*to=\\0，目标数组才是有效C字符串。',capacity:'目标数组必须至少容纳全部可见字符和一个\\0；%79s与80元素数组共同保证容量边界。'};document.querySelectorAll('[data-copy-error]').forEach(button=>button.onclick=()=>{const feedback=document.getElementById('copy-error-feedback');feedback.className='feedback bad';feedback.textContent=copyErrors[button.dataset.copyError];});
+document.querySelectorAll('[data-review]').forEach(button=>button.onclick=()=>button.classList.toggle('done'));showSlide(0);
+</script>
+</body>
+</html>
