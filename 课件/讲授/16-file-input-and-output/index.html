@@ -125,7 +125,10 @@ if (out == NULL)
     fclose(in);
     printf("cannot open copy\n");
     return 1;
-}</pre><p class="rule">离开程序路径前释放已经成功取得的文件资源。</p></div></section>
+}</pre><div class="grid-2"><p class="rule">离开程序路径前释放已经成功取得的文件资源。</p><div class="card"><h3>低频识别：<code>exit()</code></h3><pre>#include &lt;stdlib.h&gt;
+
+fclose(in);
+exit(1);</pre><p><code>exit(1)</code>结束整个程序。已经打开的文件仍应先关闭；本课正例继续使用<code>fclose()</code>后<code>return 1</code>。</p></div></div></div></section>
 
 <section class="slide" data-slide><div class="slide-inner compact"><div class="eyebrow">30 · 完整程序</div><h2>逐字符复制文本文件</h2><pre class="code-dense" data-positive-program="character-file-copy">#include &lt;stdio.h&gt;
 

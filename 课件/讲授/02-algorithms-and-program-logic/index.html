@@ -580,7 +580,7 @@
   data-chapter="2"
   data-routines="EX-C01-001"
   data-lesson-variants="hello-world-to-variable,scanf-score-input,three-score-practice"
-  data-questions="QB-SC-003,QB-SC-004,QB-SC-005,QB-SC-007,QB-SC-036,QB-SC-037,QB-SC-055,QB-SC-059"
+  data-questions="QB-SC-003,QB-SC-004,QB-SC-005,QB-SC-007,QB-SC-036,QB-SC-037,QB-SC-055,QB-SC-059,QB-FB-017,QB-SC-053"
   data-attribution="Kevin@SUT">
   <div class="app">
     <header class="topbar" aria-label="课件导航">
@@ -592,7 +592,7 @@
         </div>
       </div>
       <div class="progress-wrap" aria-label="课件进度">
-        <span id="progress-label">1 / 25</span>
+        <span id="progress-label">1 / 29</span>
         <div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div>
       </div>
     </header>
@@ -913,7 +913,55 @@ score=95 average=86.5</div>
           </div>
         </section>
 
-        <section class="slide" data-slide="14" data-section="input-introduction">
+        <section class="slide" data-slide="14" data-section="ascii-char-output">
+          <div class="slide-inner">
+            <div class="eyebrow">字符编码与显示</div>
+            <h2>同一个字符，可以按字符和整数两种方式输出</h2>
+            <div class="grid-2">
+              <div class="code-panel"><div class="code-head"><span>ASCII/char 双输出</span><span>无输入</span></div><pre class="code-block"><span class="code-line"><span class="kw">#include</span> &lt;stdio.h&gt;</span><span class="code-line"><span class="type">int</span> main()</span><span class="code-line">{</span><span class="code-line">    <span class="type">char</span> ch = <span class="str">'A'</span>;</span><span class="code-line">    printf(<span class="str">"char=%c code=%d\n"</span>, ch, ch);</span><span class="code-line">    <span class="kw">return</span> 0;</span><span class="code-line">}</span></pre></div>
+              <div class="panel soft"><h3>运行结果</h3><div class="terminal">char=A code=65</div><p><code>%c</code> 按字符解释编码值，<code>%d</code> 按整数显示同一个 <code>char</code> 值。字符变量保存的是编码值，不是屏幕图形。</p></div>
+            </div>
+            <div class="definition">先看数据本身，再选择显示方式：同一个 <code>ch</code>，格式说明符不同，观察角度就不同。</div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="15" data-section="case-conversion-fill" data-fill-question-id="QB-FB-017">
+          <div class="slide-inner compact">
+            <div class="eyebrow">字符大小写转换 · QB-FB-017</div>
+            <h2>补全程序：小写转大写、大写转小写</h2>
+            <div class="grid-2">
+              <div class="code-panel"><div class="code-head"><span>完整题干与程序</span><span>输入：两个字符</span></div><pre class="code-block"><span class="code-line"><span class="kw">#include</span> &lt;stdio.h&gt;</span><span class="code-line"><span class="type">int</span> main(<span class="type">void</span>)</span><span class="code-line">{</span><span class="code-line">    <span class="type">char</span> a, b;</span><span class="code-line">    scanf(<span class="str">" %c %c"</span>, &amp;a, &amp;b);</span><span class="code-line">    <span class="kw">if</span> (a &gt;= <span class="str">'a'</span> &amp;&amp; a &lt;= <span class="str">'z'</span>)</span><span class="code-line">        a = (char) (a - <span class="str">'a'</span> + <span class="str">'A'</span>);</span><span class="code-line">    <span class="kw">if</span> (b &gt;= <span class="str">'A'</span> &amp;&amp; b &lt;= <span class="str">'Z'</span>)</span><span class="code-line">        b = (char) (b - <span class="str">'A'</span> + <span class="str">'a'</span>);</span><span class="code-line">    printf(<span class="str">"%c %c\n"</span>, a, b);</span><span class="code-line">    <span class="kw">return</span> 0;</span><span class="code-line">}</span></pre></div>
+              <div class="panel soft"><p class="question-text">输入两个字符，分别把小写字母转为大写、大写字母转为小写。</p><p><strong>样例：</strong>输入 <code>g Q</code>，输出 <code>G q</code>。</p><div class="button-row"><button class="choice" data-case-input="g Q">模拟输入 g Q</button><button class="choice" data-case-input="7 ?">模拟输入 7 ?</button></div><div id="case-conversion-feedback" class="feedback" aria-live="polite">选择一组字符，观察条件是否触发。</div><div id="case-conversion-terminal" class="terminal">尚未运行</div></div>
+            </div>
+            <div class="notice">字符运算利用相邻编码的差值：<code>a-'a'+'A'</code> 保留字母位置，只改变大小写。</div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="16" data-section="getchar-putchar">
+          <div class="slide-inner">
+            <div class="eyebrow">字符输入 · QB-SC-053</div>
+            <h2><code>getchar()</code> 与 <code>putchar()</code> 一次处理一个字符</h2>
+            <div class="grid-2">
+              <div class="code-panel"><div class="code-head"><span>字符读写</span><span>标准输入输出</span></div><pre class="code-block"><span class="code-line"><span class="type">int</span> ch;</span><span class="code-line">ch = getchar();</span><span class="code-line">putchar(ch);</span></pre></div>
+              <div class="panel soft"><p><code>getchar()</code> 每次调用通常读取一个字符，并以 <code>int</code> 返回；<code>putchar(ch)</code> 把一个字符写到标准输出。</p><article class="question-card" data-question-id="QB-SC-053"><div class="question-id">QB-SC-053 · getchar功能</div><p class="question-text"><code>getchar()</code> 每次调用通常读取（ ）。</p><div class="option-grid"><button class="option-button" data-question-option="A" data-correct="true" data-feedback="正确。getchar 从标准输入读取一个字符，并以 int 返回。">A. 一个字符</button><button class="option-button" data-question-option="B" data-correct="false" data-feedback="getchar 不会一次读取一个字符串；字符串需要循环读取字符。">B. 一个字符串</button><button class="option-button" data-question-option="C" data-correct="false" data-feedback="它读取字符，不负责读取一整行整数。">C. 一行整数</button><button class="option-button" data-question-option="D" data-correct="false" data-feedback="文件需要使用文件流函数；getchar 面向标准输入。">D. 一个文件</button></div><div class="feedback question-feedback" aria-live="polite">选择答案后显示判断依据。</div></article></div>
+            </div>
+            <div class="definition">字符输入函数和 <code>scanf(" %c", &amp;ch)</code> 都能获得字符；本页只建立“一个调用处理一个字符”的状态模型。</div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="17" data-section="character-input-state">
+          <div class="slide-inner">
+            <div class="eyebrow">字符输入状态</div>
+            <h2>输入字符后，状态从“等待”变为“已读取”</h2>
+            <div class="stepper">
+              <div class="code-panel"><div class="code-head"><span>逐步执行</span><span id="char-input-step-label">第1步</span></div><pre class="code-block"><span class="code-line" data-char-step="1"><span class="type">int</span> ch;</span><span class="code-line" data-char-step="2">ch = getchar();</span><span class="code-line" data-char-step="3">putchar(ch);</span></pre></div>
+              <div class="panel soft"><div id="char-input-explanation" class="notice" aria-live="polite">先声明变量，尚未从输入流读取字符。</div><div class="state-grid"><div class="state"><strong>输入流</strong><code id="char-input-stream">等待</code></div><div class="state"><strong>ch</strong><code id="char-input-value">—</code></div><div class="state"><strong>输出</strong><code id="char-input-output">—</code></div></div><div class="button-row"><button data-char-input="K">输入 K</button><button data-char-input="7">输入 7</button><button data-char-next>下一步</button><button class="ghost" data-char-reset>重置</button></div></div>
+            </div>
+            <div class="definition">读取之后，变量才有当前字符值；输出使用的是 <code>ch</code> 保存的值。浏览器交互是确定性预演，不执行真实 C 输入流。</div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="18" data-section="input-introduction">
           <div class="slide-inner hero">
             <div class="eyebrow">让数据在运行时改变</div>
             <h2>让程序从外部获得数据</h2>
@@ -926,7 +974,7 @@ score=95 average=86.5</div>
           </div>
         </section>
 
-        <section class="slide" data-slide="15" data-section="scanf-parts">
+        <section class="slide" data-slide="19" data-section="scanf-parts">
           <div class="slide-inner">
             <div class="eyebrow">标准输入函数</div>
             <h2><code>scanf()</code>接收数据</h2>
@@ -947,7 +995,7 @@ score=95 average=86.5</div>
           </div>
         </section>
 
-        <section class="slide" data-slide="16" data-section="scanf-type-formats">
+        <section class="slide" data-slide="20" data-section="scanf-type-formats">
           <div class="slide-inner">
             <div class="eyebrow">格式必须与类型对应</div>
             <h2>四种变量的输入写法</h2>
@@ -962,7 +1010,7 @@ score=95 average=86.5</div>
           </div>
         </section>
 
-        <section class="slide" data-slide="17" data-section="double-input-question">
+        <section class="slide" data-slide="21" data-section="double-input-question">
           <div class="slide-inner">
             <div class="eyebrow">输入格式练习</div>
             <h2>读取 <code>double</code> 变量</h2>
@@ -982,7 +1030,7 @@ score=95 average=86.5</div>
           </div>
         </section>
 
-        <section class="slide" data-slide="18" data-section="literal-format-question">
+        <section class="slide" data-slide="22" data-section="literal-format-question">
           <div class="slide-inner">
             <div class="eyebrow">普通字符也属于格式串</div>
             <h2>输入文本必须与格式串对应</h2>
@@ -1004,7 +1052,7 @@ score=95 average=86.5</div>
           </div>
         </section>
 
-        <section class="slide" data-slide="19" data-section="input-program-stepper">
+        <section class="slide" data-slide="23" data-section="input-program-stepper">
           <div class="slide-inner">
             <div class="eyebrow">输入程序逐行执行</div>
             <h2>从输入文本到屏幕输出</h2>
@@ -1024,7 +1072,7 @@ score=95 average=86.5</div>
           </div>
         </section>
 
-        <section class="slide" data-slide="20" data-section="input-value-simulator">
+        <section class="slide" data-slide="24" data-section="input-value-simulator">
           <div class="slide-inner">
             <div class="eyebrow">变量接收不同数值</div>
             <h2>同一程序，不同输入</h2>
@@ -1040,7 +1088,7 @@ score=95 average=86.5</div>
           </div>
         </section>
 
-        <section class="slide" data-slide="21" data-section="address-marker">
+        <section class="slide" data-slide="25" data-section="address-marker">
           <div class="slide-inner">
             <div class="eyebrow">存放位置</div>
             <h2><code>scanf()</code>为什么需要 <code>&amp;</code></h2>
@@ -1055,7 +1103,7 @@ scanf("%d", score);</pre><p class="small">第二个参数没有提供变量的�
           </div>
         </section>
 
-        <section class="slide" data-slide="22" data-section="input-diagnostics">
+        <section class="slide" data-slide="26" data-section="input-diagnostics">
           <div class="slide-inner">
             <div class="eyebrow">格式、类型和分隔方式</div>
             <h2>输入语句必须匹配数据形式</h2>
@@ -1083,7 +1131,7 @@ scanf("%d,%d,%d", &amp;a, &amp;b, &amp;c);</pre>
           </div>
         </section>
 
-        <section class="slide" data-slide="23" data-section="three-score-task">
+        <section class="slide" data-slide="27" data-section="three-score-task">
           <div class="slide-inner">
             <div class="eyebrow">综合练习</div>
             <h2>三门成绩的总分和平均分</h2>
@@ -1110,7 +1158,7 @@ average=80.00</div>
           </div>
         </section>
 
-        <section class="slide" data-slide="24" data-section="three-score-solution">
+        <section class="slide" data-slide="28" data-section="three-score-solution">
           <div class="slide-inner">
             <div class="eyebrow">完整程序与运行结果</div>
             <h2>三门成绩程序</h2>
@@ -1125,7 +1173,7 @@ average=80.00</div>
           </div>
         </section>
 
-        <section class="slide" data-slide="25" data-section="summary-review">
+        <section class="slide" data-slide="29" data-section="summary-review">
           <div class="slide-inner">
             <div class="eyebrow">知识总结</div>
             <h2>五条规则与七项自检</h2>
@@ -1160,10 +1208,10 @@ average=80.00</div>
 
     <div class="nav" aria-label="页面切换">
       <button id="prev" class="ghost">上一页</button>
-      <span id="slide-number" class="slide-number">01 / 25</span>
+      <span id="slide-number" class="slide-number">01 / 29</span>
       <button id="next">下一页</button>
     </div>
-    <div class="footer">CW-L02 · Kevin@SUT · <span id="footer-page">01</span>/25</div>
+    <div class="footer">CW-L02 · Kevin@SUT · <span id="footer-page">01</span>/29</div>
   </div>
 
   <script>
@@ -1382,6 +1430,49 @@ average=80.00</div>
         });
       });
 
+      const caseConversion = {
+        "g Q": ["G", "q", "a 为小写，执行 a-'a'+'A'；b 为大写，执行 b-'A'+'a'。"],
+        "7 ?": ["7", "?", "两个字符都不在大小写字母范围内，两个 if 条件都跳过。"]
+      };
+      document.querySelectorAll("[data-case-input]").forEach(button => {
+        button.addEventListener("click", () => {
+          const value = button.dataset.caseInput;
+          const state = caseConversion[value];
+          document.querySelectorAll("[data-case-input]").forEach(item => item.classList.remove("selected"));
+          button.classList.add("selected");
+          document.getElementById("case-conversion-feedback").textContent = state[2];
+          document.getElementById("case-conversion-feedback").className = "feedback ok";
+          document.getElementById("case-conversion-terminal").textContent = `输入：${value}\n输出：${state[0]} ${state[1]}`;
+        });
+      });
+
+      const charSteps = [
+        { stream: "等待", value: "—", output: "—", text: "声明 ch，尚未从输入流读取字符。" },
+        { stream: "已提供 K", value: "K", output: "—", text: "getchar() 读取一个字符并把它保存到 ch。" },
+        { stream: "已提供 K", value: "K", output: "K", text: "putchar(ch) 输出 ch 当前保存的字符。" }
+      ];
+      let charIndex = 0;
+      function renderCharStep() {
+        const state = charSteps[charIndex];
+        document.querySelectorAll("[data-char-step]").forEach(line => line.classList.toggle("is-active", Number(line.dataset.charStep) === charIndex + 1));
+        document.getElementById("char-input-step-label").textContent = `第${charIndex + 1}步`;
+        document.getElementById("char-input-explanation").textContent = state.text;
+        document.getElementById("char-input-stream").textContent = state.stream;
+        document.getElementById("char-input-value").textContent = state.value;
+        document.getElementById("char-input-output").textContent = state.output;
+      }
+      document.querySelectorAll("[data-char-input]").forEach(button => {
+        button.addEventListener("click", () => {
+          const value = button.dataset.charInput;
+          charSteps[1] = { stream: `已提供 ${value}`, value, output: "—", text: `getchar() 读取字符 ${value} 并把它保存到 ch。` };
+          charSteps[2] = { stream: `已提供 ${value}`, value, output: value, text: `putchar(ch) 输出 ch 当前保存的字符 ${value}。` };
+          charIndex = 1;
+          renderCharStep();
+        });
+      });
+      document.querySelector("[data-char-next]").addEventListener("click", () => { charIndex = (charIndex + 1) % charSteps.length; renderCharStep(); });
+      document.querySelector("[data-char-reset]").addEventListener("click", () => { charIndex = 0; renderCharStep(); });
+
       document.querySelectorAll("[data-review-item]").forEach(button => {
         button.addEventListener("click", () => {
           const feedback = document.getElementById("review-feedback");
@@ -1393,6 +1484,7 @@ average=80.00</div>
       renderVariableStep();
       renderFixedStep();
       renderInputStep();
+      renderCharStep();
       showSlide(0);
     })();
   </script>

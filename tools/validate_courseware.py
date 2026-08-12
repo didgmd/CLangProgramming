@@ -234,6 +234,40 @@ def validate_embedded_questions(
             fail(failures, f"{question_id} options differ from the question bank")
 
 
+def validate_question_interaction_contract(
+    text: str,
+    failures: list[str],
+    course_id: str,
+) -> None:
+    covered_options = 0
+    for block in QUESTION_BLOCK_PATTERN.finditer(text):
+        question_id = block.group("id")
+        body = block.group("body")
+        options = list(QUESTION_OPTION_PATTERN.finditer(body))
+        covered_options += len(options)
+        if options and not re.search(
+            r'<div\b[^>]*class="[^"]*\bfeedback\b[^"]*"',
+            body,
+            re.IGNORECASE,
+        ):
+            fail(failures, f"{course_id} {question_id} lacks its own feedback node")
+        for option in options:
+            attrs = option.group("attrs") + option.group("rest")
+            correct = re.search(r'data-correct="(true|false)"', attrs)
+            feedback = re.search(r'data-feedback="([^"]+)"', attrs)
+            if not correct:
+                fail(failures, f"{course_id} {question_id} option {option.group('label')} lacks data-correct")
+            if not feedback or not feedback.group(1).strip():
+                fail(failures, f"{course_id} {question_id} option {option.group('label')} lacks non-empty data-feedback")
+
+    total_options = len(re.findall(r'data-question-option="[A-D]"', text))
+    if covered_options != total_options:
+        fail(
+            failures,
+            f"{course_id} has {total_options - covered_options} question options outside a data-question-id container",
+        )
+
+
 def target_for(course_id: str) -> Path:
     if course_id == "CW-L01":
         return CW_L01
@@ -341,7 +375,7 @@ def validate_cw_l02(path: Path) -> list[str]:
         'data-chapter="2"',
         'data-routines="EX-C01-001"',
         'data-lesson-variants="hello-world-to-variable,scanf-score-input,three-score-practice"',
-        'data-questions="QB-SC-003,QB-SC-004,QB-SC-005,QB-SC-007,QB-SC-036,QB-SC-037,QB-SC-055,QB-SC-059"',
+        'data-questions="QB-SC-003,QB-SC-004,QB-SC-005,QB-SC-007,QB-SC-036,QB-SC-037,QB-SC-055,QB-SC-059,QB-FB-017,QB-SC-053"',
         'data-attribution="Kevin@SUT"',
         '<meta name="author" content="Kevin@SUT">',
         '<meta name="copyright" content="Kevin@SUT">',
@@ -372,26 +406,26 @@ def validate_cw_l02(path: Path) -> list[str]:
 
     slides = SLIDE_PATTERN.findall(text)
     sections = SECTION_PATTERN.findall(text)
-    if len(slides) != 25:
-        fail(failures, f"CW-L02 expected 25 slides, found {len(slides)}")
+    if len(slides) != 29:
+        fail(failures, f"CW-L02 expected 29 slides, found {len(slides)}")
     if len(sections) != len(set(sections)):
         fail(failures, "CW-L02 slide sections are not unique")
     section_blocks = SECTION_BLOCK_PATTERN.findall(text)
-    if len(section_blocks) != 25:
-        fail(failures, f"CW-L02 expected 25 complete section blocks, found {len(section_blocks)}")
+    if len(section_blocks) != 29:
+        fail(failures, f"CW-L02 expected 29 complete section blocks, found {len(section_blocks)}")
     for section_id, block in section_blocks:
         if not re.search(r"\b(definition|rule-card|code-panel|data-table|feedback|review-item)\b", block):
             fail(failures, f"CW-L02 slide lacks a student-facing explanation or example: {section_id}")
 
-    first_half = section_blocks[:13]
+    first_half = section_blocks[:14]
     for index, (section_id, block) in enumerate(first_half, start=1):
         visible = normalize_visible_text(block)
-        forbidden_first_half = ("scanf", "%lf", "&score", "输入函数", "变量地址", "输入格式说明符")
+        forbidden_first_half = ("scanf", "%lf", "&score", "输入函数", "变量地址", "输入格式说明符", "getchar", "putchar")
         for marker in forbidden_first_half:
             if marker.lower() in visible.lower():
                 fail(failures, f"CW-L02 slide {index} introduces input content early: {marker} ({section_id})")
-    if "scanf" not in normalize_visible_text(section_blocks[13][1]).lower():
-        fail(failures, "CW-L02 slide 14 must be the first visible scanf introduction")
+    if "scanf" not in normalize_visible_text(section_blocks[17][1]).lower():
+        fail(failures, "CW-L02 slide 18 must be the first visible scanf introduction")
 
     if text.count("<details") != 0:
         fail(failures, "CW-L02 must not hide knowledge or exercises in details elements")
@@ -417,12 +451,19 @@ def validate_cw_l02(path: Path) -> list[str]:
         fail(failures, "CW-L02 input diagnosis must contain two repair cases")
     if len(re.findall(r'data-review-item(?:\s|>)', text)) != 7:
         fail(failures, "CW-L02 review checklist must contain seven items")
-    validate_embedded_questions(text, failures, CW_L02_QUESTION_IDS, "CW-L02")
+    choice_text = "".join(
+        match.group(0)
+        for match in QUESTION_BLOCK_PATTERN.finditer(text)
+        if match.group("id") in set(CW_L02_QUESTION_IDS)
+    )
+    validate_embedded_questions(choice_text, failures, CW_L02_QUESTION_IDS, "CW-L02")
+    if "QB-SC-053 · getchar功能" not in text or "getchar() 每次调用通常读取" not in normalize_visible_text(text):
+        fail(failures, "CW-L02 must visibly embed QB-SC-053")
 
     pre_blocks = "\n".join(re.findall(r"<pre\b[^>]*>(.*?)</pre>", text, re.IGNORECASE | re.DOTALL))
     code_text = html.unescape(re.sub(r"<[^>]+>", "", pre_blocks))
-    if re.search(r"\bif\s*\(", code_text):
-        fail(failures, "CW-L02 C blocks must not introduce if")
+    if re.search(r"\bif\s*\(", code_text) and 'data-fill-question-id="QB-FB-017"' not in text:
+        fail(failures, "CW-L02 C blocks must not introduce if outside the declared character-conversion exercise")
     if re.search(r"\breturn\s+1\s*;", code_text):
         fail(failures, "CW-L02 C blocks must not introduce return 1")
     if "scanf(\"%d\", &score);" not in code_text:
@@ -433,8 +474,9 @@ def validate_cw_l02(path: Path) -> list[str]:
         fail(failures, "CW-L02 must state input constraints near the scanf examples")
     if "sum=240\naverage=80.00" not in text:
         fail(failures, "CW-L02 fixed-data program must declare its exact output")
-    if len(re.findall(r'data-question-option="[A-D]"', text)) != 32:
-        fail(failures, "CW-L02 must expose four options for each of eight questions")
+    if len(re.findall(r'data-question-option="[A-D]"', text)) != 36:
+        fail(failures, "CW-L02 must expose four options for each of nine choice questions")
+    validate_question_interaction_contract(text, failures, "CW-L02")
 
     diagnostics = next((block for section_id, block in section_blocks if section_id == "input-diagnostics"), "")
     diagnostics_visible = normalize_visible_text(diagnostics)
@@ -675,8 +717,8 @@ def validate_cw_l04(path: Path) -> list[str]:
         'data-course-id="CW-L04"',
         'data-chapter="4"',
         'data-routines="EX-C04-002"',
-        'data-questions="QB-PG-003,QB-SC-009,QB-SC-035,QB-SC-039,QB-TR-013"',
-        'data-lesson-variants="two-number-ordering-normalized-io,leap-year-if-else"',
+        'data-questions="QB-PG-003,QB-SC-009,QB-SC-035,QB-SC-039,QB-TR-013,QB-TR-001,QB-SC-062,QB-TR-030,QB-SC-041,QB-TR-019"',
+        'data-lesson-variants="two-number-ordering-normalized-io,leap-year-if-else,short-circuit-and-conditional-operator"',
         'data-attribution="Kevin@SUT"',
         '<meta name="author" content="Kevin@SUT">',
         '<meta name="copyright" content="Kevin@SUT">',
@@ -702,21 +744,62 @@ def validate_cw_l04(path: Path) -> list[str]:
 
     slides = SLIDE_PATTERN.findall(text)
     section_blocks = SECTION_BLOCK_PATTERN.findall(text)
-    if len(slides) != 26:
-        fail(failures, f"CW-L04 expected 26 slides, found {len(slides)}")
-    if len(section_blocks) != 26:
-        fail(failures, f"CW-L04 expected 26 complete section blocks, found {len(section_blocks)}")
+    if len(slides) != 30:
+        fail(failures, f"CW-L04 expected 30 slides, found {len(slides)}")
+    if len(section_blocks) != 30:
+        fail(failures, f"CW-L04 expected 30 complete section blocks, found {len(section_blocks)}")
     if text.count("<details") != 0:
         fail(failures, "CW-L04 must expose all knowledge and exercises directly")
 
+    choice_text = "".join(
+        match.group(0)
+        for match in QUESTION_BLOCK_PATTERN.finditer(text)
+        if match.group("id") in {"QB-SC-009", "QB-SC-035", "QB-SC-039", "QB-SC-062"}
+    )
+    if "QB-SC-041 · 条件运算符" not in text or "a&gt;b ? a : b" not in text:
+        fail(failures, "CW-L04 must visibly embed QB-SC-041")
     validate_embedded_questions(
-        text,
+        choice_text,
         failures,
-        ("QB-SC-009", "QB-SC-035", "QB-SC-039"),
+        ("QB-SC-009", "QB-SC-035", "QB-SC-039", "QB-SC-062"),
         "CW-L04",
     )
-    if text.count('data-question-option="') != 12:
-        fail(failures, "CW-L04 must expose four options for each choice question")
+    if text.count('data-question-option="') != 20:
+        fail(failures, "CW-L04 must expose four options for each of five choice questions")
+    validate_question_interaction_contract(text, failures, "CW-L04")
+    for marker, expected_count in (
+        ('data-trace-assignment="', 4),
+        ('data-trace-short="', 4),
+        ('data-trace-conditional="', 4),
+    ):
+        if text.count(marker) != expected_count:
+            fail(failures, f"CW-L04 expected {expected_count} options for {marker[:-2]}")
+    for marker in (
+        "document.querySelectorAll('[data-trace-assignment]')",
+        "document.querySelectorAll('[data-trace-short]')",
+        "document.querySelectorAll('[data-trace-conditional]')",
+    ):
+        if marker not in text:
+            fail(failures, f"CW-L04 lacks interaction binding: {marker}")
+    for question_id in ("QB-TR-030", "QB-TR-019"):
+        block = re.search(
+            rf'<article\b[^>]*data-question-id="{question_id}"[^>]*>(.*?)</article>',
+            text,
+            re.IGNORECASE | re.DOTALL,
+        )
+        if not block or not re.search(
+            r'<pre\b[^>]*class="[^"]*\bquestion-trace-code\b[^"]*"',
+            block.group(1),
+            re.IGNORECASE,
+        ):
+            fail(failures, f"CW-L04 {question_id} must use the high-contrast question code class")
+    for css_marker in (
+        ".question-trace-code",
+        "background:var(--code)",
+        "color:var(--code-text)",
+    ):
+        if css_marker not in text:
+            fail(failures, f"CW-L04 high-contrast code CSS is incomplete: {css_marker}")
 
     programming_source = scan_questions()["QB-PG-003"].text
     source_prompt_match = re.search(
@@ -1129,7 +1212,7 @@ def validate_cw_l06(path: Path) -> list[str]:
         'data-course-id="CW-L06"',
         'data-chapter="5"',
         'data-routines="EX-C05-001,EX-C05-002"',
-        'data-questions="QB-PG-006,QB-PG-011,QB-TR-020,QB-SC-032,QB-SC-033"',
+        'data-questions="QB-PG-006,QB-PG-011,QB-TR-020,QB-SC-032,QB-SC-033,QB-SC-006"',
         'data-lesson-variants="prime-check-while-state,narcissistic-number-single-for"',
         'data-attribution="Kevin@SUT"',
         '<meta name="author" content="Kevin@SUT">',
@@ -1158,18 +1241,25 @@ def validate_cw_l06(path: Path) -> list[str]:
 
     slides = len(SLIDE_PATTERN.findall(text))
     sections = len(SECTION_BLOCK_PATTERN.findall(text))
-    if slides != 28:
-        fail(failures, f"CW-L06 expected 28 slides, found {slides}")
-    if sections != 28:
-        fail(failures, f"CW-L06 expected 28 complete section blocks, found {sections}")
+    if slides != 29:
+        fail(failures, f"CW-L06 expected 29 slides, found {slides}")
+    if sections != 29:
+        fail(failures, f"CW-L06 expected 29 complete section blocks, found {sections}")
     if text.count("<details") != 0:
         fail(failures, "CW-L06 must expose all knowledge and exercises directly")
-    if " / 28 · Kevin@SUT" not in text:
-        fail(failures, "CW-L06 footer total must be 28")
+    if " / 29 · Kevin@SUT" not in text:
+        fail(failures, "CW-L06 footer total must be 29")
 
-    validate_embedded_questions(text, failures, ("QB-SC-032", "QB-SC-033"), "CW-L06")
-    if text.count('data-question-option="') != 8:
-        fail(failures, "CW-L06 must expose eight options across two choice questions")
+    choice_text = "".join(
+        match.group(0)
+        for match in QUESTION_BLOCK_PATTERN.finditer(text)
+        if match.group("id") in {"QB-SC-032", "QB-SC-033"}
+    )
+    validate_embedded_questions(choice_text, failures, ("QB-SC-032", "QB-SC-033"), "CW-L06")
+    if "QB-SC-006" not in text or "j = i++" not in normalize_visible_text(text):
+        fail(failures, "CW-L06 must visibly embed QB-SC-006")
+    if text.count('data-question-option="') != 12:
+        fail(failures, "CW-L06 must expose twelve options across three choice questions")
 
     questions = scan_questions()
     for question_id in ("QB-PG-006", "QB-PG-011"):
@@ -1345,7 +1435,7 @@ def validate_cw_l07(path: Path) -> list[str]:
         'data-course-id="CW-L07"',
         'data-chapter="5"',
         'data-routines="EX-C05-007"',
-        'data-questions="QB-PG-009,QB-FB-012,QB-SC-011,QB-SC-057"',
+        'data-questions="QB-PG-009,QB-FB-012,QB-SC-011,QB-SC-057,QB-TF-001,QB-SC-034,QB-TR-003"',
         'data-lesson-variants="four-by-five-product-table,interval-primes-nested-break"',
         'data-attribution="Kevin@SUT"',
         '<meta name="author" content="Kevin@SUT">',
@@ -1373,18 +1463,25 @@ def validate_cw_l07(path: Path) -> list[str]:
 
     slides = len(SLIDE_PATTERN.findall(text))
     sections = len(SECTION_BLOCK_PATTERN.findall(text))
-    if slides != 30:
-        fail(failures, f"CW-L07 expected 30 slides, found {slides}")
-    if sections != 30:
-        fail(failures, f"CW-L07 expected 30 complete section blocks, found {sections}")
+    if slides != 32:
+        fail(failures, f"CW-L07 expected 32 slides, found {slides}")
+    if sections != 32:
+        fail(failures, f"CW-L07 expected 32 complete section blocks, found {sections}")
     if text.count("<details") != 0:
         fail(failures, "CW-L07 must expose all knowledge and exercises directly")
-    if " / 30 · Kevin@SUT" not in text:
-        fail(failures, "CW-L07 footer total must be 30")
+    if " / 32 · Kevin@SUT" not in text:
+        fail(failures, "CW-L07 footer total must be 32")
 
-    validate_embedded_questions(text, failures, ("QB-SC-011", "QB-SC-057"), "CW-L07")
-    if text.count('data-question-option="') != 8:
-        fail(failures, "CW-L07 must expose eight options across two choice questions")
+    choice_text = "".join(
+        match.group(0)
+        for match in QUESTION_BLOCK_PATTERN.finditer(text)
+        if match.group("id") in {"QB-SC-011", "QB-SC-057"}
+    )
+    validate_embedded_questions(choice_text, failures, ("QB-SC-011", "QB-SC-057"), "CW-L07")
+    if "QB-SC-034" not in text or "死循环" not in text:
+        fail(failures, "CW-L07 must visibly embed QB-SC-034")
+    if text.count('data-question-option="') != 16:
+        fail(failures, "CW-L07 must expose twelve choice options and four output-prediction options")
 
     questions = scan_questions()
     source = questions["QB-PG-009"].text
@@ -1919,14 +2016,13 @@ def validate_cw_l09(path: Path) -> list[str]:
         'data-course-id="CW-L09"',
         'data-chapter="6"',
         'data-routines="EX-C06-005,EX-C06-006"',
-        'data-questions="QB-PG-008,QB-PG-010,QB-TR-029,QB-SC-014,QB-SC-052,QB-SC-015,QB-SC-016,QB-SC-061"',
-        'data-lesson-variants="selection-sort-fixed-ten,matrix-maximum-three-by-four,string-terminator-basics"',
+        'data-questions="QB-PG-008,QB-PG-010,QB-TR-029,QB-SC-014,QB-SC-052,QB-SC-047,QB-SC-051,QB-SC-054,QB-FB-016,QB-SC-020,QB-FB-006,QB-TR-009"',
+        'data-lesson-variants="selection-sort-fixed-ten,matrix-maximum-three-by-four,string-library-and-two-dimensional-character-arrays"',
         'data-positive-program="selection-sort"',
         'data-positive-program="matrix-maximum"',
         'data-programming-question-id="QB-PG-008"',
         'data-programming-question-id="QB-PG-010"',
         'data-trace-question-id="QB-TR-029"',
-        'data-string-snippet',
         '<meta name="author" content="Kevin@SUT">',
         'data-attribution="Kevin@SUT"',
     )
@@ -1943,23 +2039,31 @@ def validate_cw_l09(path: Path) -> list[str]:
         if phrase in text:
             fail(failures, f"student-facing teacher-prep phrase found: {phrase}")
 
-    if len(SLIDE_PATTERN.findall(text)) != 34:
-        fail(failures, "CW-L09 must contain exactly 34 slides")
-    if len(SECTION_BLOCK_PATTERN.findall(text)) != 34:
-        fail(failures, "CW-L09 must contain exactly 34 complete slide sections")
+    if len(SLIDE_PATTERN.findall(text)) != 36:
+        fail(failures, "CW-L09 must contain exactly 36 slides")
+    if len(SECTION_BLOCK_PATTERN.findall(text)) != 36:
+        fail(failures, "CW-L09 must contain exactly 36 complete slide sections")
     if text.count("<details") != 0:
         fail(failures, "CW-L09 must expose all exercises directly")
-    if " / 34 · Kevin@SUT" not in text:
-        fail(failures, "CW-L09 footer total must be 34")
+    if " / 36 · Kevin@SUT" not in text:
+        fail(failures, "CW-L09 footer total must be 36")
 
+    choice_text = "".join(
+        match.group(0)
+        for match in QUESTION_BLOCK_PATTERN.finditer(text)
+        if match.group("id") in {
+            "QB-SC-014", "QB-SC-052", "QB-SC-047",
+            "QB-SC-051", "QB-SC-054", "QB-SC-020",
+        }
+    )
     validate_embedded_questions(
-        text,
+        choice_text,
         failures,
-        ("QB-SC-014", "QB-SC-052", "QB-SC-015", "QB-SC-016", "QB-SC-061"),
+        ("QB-SC-014", "QB-SC-052", "QB-SC-047", "QB-SC-051", "QB-SC-054", "QB-SC-020"),
         "CW-L09",
     )
-    if text.count('data-question-option="') != 20:
-        fail(failures, "CW-L09 must expose twenty options across five choice questions")
+    if text.count('data-question-option="') != 24:
+        fail(failures, "CW-L09 must expose twenty-four options across six choice questions")
 
     questions = scan_questions()
     for question_id in ("QB-PG-008", "QB-PG-010"):
@@ -2053,8 +2157,9 @@ def validate_cw_l09_programs(
     visible = normalize_visible_text(text)
     for marker in (
         "9 + 8 + 7 + … + 1 = 45", "行下标", "列下标", "全负矩阵",
-        "C字符串必须以空字符 \\0 结束", "\\n表示换行", "\\0表示字符串结束",
-        "while (s[i] != '\\0')", "浏览器进行确定性预演",
+        "char words[3][4]", "'\\n'", "'\\0'",
+        "strlen", "strcpy", "strcmp", "strcat", "gets", "puts", "abcbcc",
+        "浏览器进行确定性预演",
     ):
         if marker not in text and marker not in visible:
             fail(failures, f"CW-L09 student explanation is incomplete: {marker}")
@@ -2063,7 +2168,7 @@ def validate_cw_l09_programs(
         ('data-matrix-cell="', 3, "matrix cell demonstrations"),
         ('data-matrix-case="', 3, "matrix behavior cases"),
         ('data-matrix-error="', 4, "matrix diagnosis cases"),
-        ("data-review ", 21, "review questions"),
+        ("data-review ", 14, "review questions"),
     )
     for marker, expected, label in counts:
         actual = text.count(marker)
@@ -2146,8 +2251,8 @@ def validate_cw_l10(path: Path) -> list[str]:
         'data-course-id="CW-L10"',
         'data-chapter="7"',
         'data-routines="EX-C07-002,EX-C07-012"',
-        'data-questions="QB-PG-013,QB-FB-003,QB-FB-013,QB-SC-019,QB-SC-044,QB-TF-004,QB-TF-005"',
-        'data-lesson-variants="scalar-max-value-parameters,float-array-sort-function"',
+        'data-questions="QB-PG-013,QB-FB-003,QB-FB-013,QB-SC-018,QB-SC-019,QB-SC-043,QB-SC-044,QB-TF-004,QB-TF-005,QB-TF-012"',
+        'data-lesson-variants="scalar-max-value-parameters,float-array-sort-function,function-definition-and-return-rules"',
         'data-positive-program="scalar-maximum"',
         'data-positive-program="float-array-sort"',
         'data-programming-question-id="QB-PG-013"',
@@ -2169,28 +2274,28 @@ def validate_cw_l10(path: Path) -> list[str]:
         if phrase in text:
             fail(failures, f"student-facing teacher-prep phrase found: {phrase}")
 
-    if len(SLIDE_PATTERN.findall(text)) != 32:
-        fail(failures, "CW-L10 must contain exactly 32 slides")
-    if len(SECTION_BLOCK_PATTERN.findall(text)) != 32:
-        fail(failures, "CW-L10 must contain exactly 32 complete slide sections")
+    if len(SLIDE_PATTERN.findall(text)) != 34:
+        fail(failures, "CW-L10 must contain exactly 34 slides")
+    if len(SECTION_BLOCK_PATTERN.findall(text)) != 34:
+        fail(failures, "CW-L10 must contain exactly 34 complete slide sections")
     if text.count("<details") != 0:
         fail(failures, "CW-L10 must expose all exercises directly")
-    if " / 32 · Kevin@SUT" not in text:
-        fail(failures, "CW-L10 footer total must be 32")
+    if " / 34 · Kevin@SUT" not in text:
+        fail(failures, "CW-L10 footer total must be 34")
 
     choice_text = "".join(
         match.group(0)
         for match in QUESTION_BLOCK_PATTERN.finditer(text)
-        if match.group("id") in {"QB-SC-019", "QB-SC-044"}
+        if match.group("id") in {"QB-SC-018", "QB-SC-019", "QB-SC-043", "QB-SC-044"}
     )
     validate_embedded_questions(
         choice_text,
         failures,
-        ("QB-SC-019", "QB-SC-044"),
+        ("QB-SC-018", "QB-SC-019", "QB-SC-043", "QB-SC-044"),
         "CW-L10",
     )
-    if text.count('data-question-option="') != 12:
-        fail(failures, "CW-L10 must expose eight choice options and four true/false options")
+    if text.count('data-question-option="') != 22:
+        fail(failures, "CW-L10 must expose sixteen choice options and six true/false options")
 
     questions = scan_questions()
     pg_source = questions["QB-PG-013"].text
@@ -2507,8 +2612,8 @@ def validate_cw_l12(path: Path) -> list[str]:
         'data-course-id="CW-L12"',
         'data-chapter="8"',
         'data-routines="EX-C08-002,EX-C08-008"',
-        'data-questions="QB-PG-038,QB-SC-058,QB-SC-023,QB-SC-065,QB-SC-021,QB-SC-049,QB-TR-018,QB-TF-014"',
-        'data-lesson-variants="pointer-order-by-swapping-addresses,string-length-pointer-difference"',
+        'data-questions="QB-PG-038,QB-SC-058,QB-SC-023,QB-SC-065,QB-SC-021,QB-SC-022,QB-SC-024,QB-SC-048,QB-SC-049,QB-TR-018,QB-TF-008,QB-TF-009,QB-TF-013,QB-TF-014"',
+        'data-lesson-variants="pointer-order-by-swapping-addresses,string-length-pointer-difference,array-name-and-double-pointer-basics"',
         'data-positive-program="pointer-order"',
         'data-positive-program="pointer-string-length"',
         'data-programming-question-id="QB-PG-038"',
@@ -2539,16 +2644,23 @@ def validate_cw_l12(path: Path) -> list[str]:
     choice_text = "".join(
         match.group(0)
         for match in QUESTION_BLOCK_PATTERN.finditer(text)
-        if match.group("id") in {"QB-SC-058", "QB-SC-023", "QB-SC-065", "QB-SC-021", "QB-SC-049"}
+        if match.group("id") in {"QB-SC-058", "QB-SC-023", "QB-SC-065", "QB-SC-021", "QB-SC-022", "QB-SC-024", "QB-SC-048", "QB-SC-049"}
     )
     validate_embedded_questions(
         choice_text,
         failures,
-        ("QB-SC-058", "QB-SC-023", "QB-SC-065", "QB-SC-021", "QB-SC-049"),
+        ("QB-SC-058", "QB-SC-023", "QB-SC-065", "QB-SC-021", "QB-SC-022", "QB-SC-024", "QB-SC-048", "QB-SC-049"),
         "CW-L12",
     )
-    if text.count('data-question-option="') != 20:
-        fail(failures, "CW-L12 must expose twenty choice options")
+    if text.count('data-question-option="') != 38:
+        fail(failures, "CW-L12 must expose thirty-two choice options and six added true/false options")
+    validate_question_interaction_contract(text, failures, "CW-L12")
+    for marker in (
+        "button.dataset.correct==='true'",
+        "feedback.textContent=button.dataset.feedback",
+    ):
+        if marker not in text:
+            fail(failures, f"CW-L12 generic question binding is incomplete: {marker}")
 
     questions = scan_questions()
     source_prompt = re.search(
@@ -2636,7 +2748,7 @@ def validate_cw_l12_programs(
 
     visible = normalize_visible_text(text)
     for marker in (
-        "存储位置", "取地址", "解引用", "指针指向改变", "数组名不能自增",
+        "存储位置", "取地址", "解引用", "指针指向改变", "数组名", "自增", "二级指针",
         "同一数组", "不能再解引用", "换行符", "字符串结束标志",
     ):
         if marker not in text and marker not in visible:
@@ -3955,7 +4067,7 @@ def main() -> int:
             print(f"- {item}")
         return 1
 
-    slide_count = 35 if args.id == "CW-L15" else 36 if args.id in {"CW-L12", "CW-L13", "CW-L14", "CW-L16"} else 34 if args.id in {"CW-L09", "CW-L11"} else 32 if args.id == "CW-L10" else 12 if args.id == "CW-L01" else 30 if args.id in {"CW-L07", "CW-L08"} else 28 if args.id == "CW-L06" else 26 if args.id in {"CW-L04", "CW-L05"} else 25
+    slide_count = 35 if args.id == "CW-L15" else 36 if args.id in {"CW-L09", "CW-L12", "CW-L13", "CW-L14", "CW-L16"} else 34 if args.id in {"CW-L10", "CW-L11"} else 12 if args.id == "CW-L01" else 32 if args.id == "CW-L07" else 30 if args.id in {"CW-L04", "CW-L08"} else 29 if args.id in {"CW-L02", "CW-L06"} else 26 if args.id == "CW-L05" else 25
     optional_external = 1 if args.id == "CW-L01" else 0
     print(f"COURSEWARE VALIDATION PASS: {args.id}, slides={slide_count}, offline-core=ok, optional_external={optional_external}, links=ok, text_encoding=UTF-8, bom=utf8-no-bom")
     return 0
