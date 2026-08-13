@@ -91,36 +91,25 @@ def render_index(routines: dict[str, Routine] | None = None) -> str:
     lines = [
         "# C 语言例程库",
         "",
-        "本目录以谭浩强《C程序设计（第五版）》第 1–10 章为主轴，"
-        "仅支持 MinGW-w64 GCC。例程元数据以源码文件头为准。",
+        "本目录以谭浩强《C程序设计（第五版）》第1—10章为主轴，提供可查找、可编译的章节示例程序。",
         "",
         f"当前共 {len(routines)} 个例程：{strict_count} 个 `c11-strict`，"
         f"{textbook_count} 个 `gnu99-textbook`。",
         "",
-        "源码头中的 `来源` 字段保留历史 provenance；旧学期路径不再是工作区目录，需通过 Git 历史恢复原始文件。",
+        "## 使用方法",
         "",
-        "## 最短使用路径",
+        "1. 按下方章节或渐进项目选择例程。",
+        "2. 打开源码，先阅读文件头中的知识点、编译模式和兼容性。",
+        "3. 在仓库根目录使用GNU GCC编译运行。",
         "",
-        "```powershell",
-        "# 验证全部例程",
-        "conda run -n base python tools/validate_routines.py",
-        "",
-        "# 验证单个例程（多文件例程会自动整体构建）",
-        "conda run -n base python tools/validate_routines.py --id EX-C05-010",
-        "",
-        "# 检查本索引是否与源码头一致",
-        "conda run -n base python tools/generate_routine_index.py --check",
-        "```",
-        "",
-        "单文件例程也可在仓库根目录直接编译，例如：",
+        "单文件例程示例：",
         "",
         "```powershell",
-        "gcc -std=c11 -Wall -Wextra -Wpedantic -Werror \"例程/chapters/01-programming-and-c/ex_c01_001_1_1.c\" -o hello.exe",
+        "gcc \"例程/chapters/01-programming-and-c/ex_c01_001_1_1.c\" -o hello.exe",
         ".\\hello.exe",
-        "Remove-Item -LiteralPath .\\hello.exe",
         "```",
         "",
-        "`gets()`、`conio.h` 等教材旧接口的适用边界写在对应源码文件头。",
+        "`c11-strict`表示标准C11例程；`gnu99-textbook`用于保留具有识别价值的教材兼容写法。`gets()`、`conio.h`等旧接口的适用边界写在对应源码文件头。",
     ]
     for chapter_name in CHAPTER_TITLES:
         rows = sorted(chapter_groups.get(chapter_name, []), key=lambda item: item.routine_id)
@@ -134,12 +123,13 @@ def render_index(routines: dict[str, Routine] | None = None) -> str:
         lines.append("")
     lines.extend(
         (
-            "## 维护约定",
+            "## 更多入口",
             "",
-            "- 不手工维护机器可读目录；索引由源码文件头生成。",
-            "- 单个例程的所有源码必须使用同一个例程 ID，且只能有一个 `main()`。",
-            "- 编译和运行产物只进入仓库根的隔离临时目录，命令结束时必须删除。",
-            "- 本页由 `tools/generate_routine_index.py` 生成。",
+            "- [返回仓库首页](../README.md)",
+            "- [GNU GCC环境配置](../环境配置/README.md)",
+            "- [MIT License](../LICENSE)",
+            "- [第三方内容与来源说明](../THIRD_PARTY_NOTICES.md)",
+            "- [维护工具与索引生成说明](../tools/README.md)",
             "",
         )
     )

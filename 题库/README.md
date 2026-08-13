@@ -1,28 +1,12 @@
 # C 语言程序设计题库
 
-本题库首先服务于学生掌握解题方法、减少常见失分并通过课程考试。兴趣拓展是辅助目标，不能替代基础题型和考试题训练。
+本题库提供选择题、判断题、程序填空、读程序写结果和编程题，适合按题型、章节或知识点自主练习。
 
-教材配套 PPT 适合课前预习和课后复习；课堂交互课件将通过稳定题目 ID 引用本题库，每次集中讲解少量程序、关联知识点和对应题型。
+## 使用方法
 
-## 使用原则
-
-- 先独立作答，再展开“参考答案与解析”。
-- 同一知识点的不同代码、陷阱和输入作为变式保留。
-- 题库不标注试卷年度、考试性质或试卷版本。
-- 参考程序以 MinGW-w64 GCC 为验证边界。
-
-## 最短使用路径
-
-```powershell
-# 检查全部题目、答案和参考程序
-conda run -n base python tools/validate_questions.py
-
-# 检查一道题
-conda run -n base python tools/validate_questions.py --id QB-PG-001
-
-# 检查本索引是否最新
-conda run -n base python tools/generate_question_index.py --check
-```
+1. 从下方题型列表选择题目。
+2. 先独立作答，再展开同一文件中的“参考答案与解析”。
+3. 对照解析重新跟踪变量或编译参考程序。
 
 当前共 173 道题：选择题65道、判断题14道、程序填空22道、读程序写结果31道、编程题41道。
 
@@ -378,9 +362,10 @@ conda run -n base python tools/generate_question_index.py --check
 - 顺序if：[QB-TR-006 多分支最大值](读程序写结果/qb_tr_006.md)
 - 顺序结构：[QB-PG-014 四位数各位立方和](编程题/qb_pg_014.md)
 
-## 维护约定
+## 更多入口
 
-- 每道题独立保存为 Markdown，文件头是唯一元数据来源。
-- 参考答案与解析必须与题目保存在同一文件并默认折叠。
-- 编程题和程序填空题的完整参考程序必须通过 MinGW GCC 编译。
-- 本页由 `tools/generate_question_index.py` 生成，不手工维护题目清单。
+- [返回仓库首页](../README.md)
+- [交互讲授课](../课件/讲授/README.md)
+- [MIT License](../LICENSE)
+- [第三方内容与来源说明](../THIRD_PARTY_NOTICES.md)
+- [维护工具与索引生成说明](../tools/README.md)

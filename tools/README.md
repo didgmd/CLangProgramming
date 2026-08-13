@@ -1,6 +1,6 @@
 # 仓库维护工具
 
-本目录保存当前正式维护链路中的10个Python脚本。命令行入口负责校验或生成索引，共享模块由这些入口导入；共享模块没有独立命令入口并不表示其生命周期已经结束。
+本页面向仓库维护者，不是学生入门必读材料。本目录保存当前正式维护链路中的10个Python脚本。命令行入口负责校验或生成索引，共享模块由这些入口导入；共享模块没有独立命令入口并不表示其生命周期已经结束。
 
 ## 命令行入口
 
@@ -32,13 +32,38 @@
 - 共享模块属于内部接口；不得仅因它们不能直接执行而判定为冗余。
 - Python工具只使用标准库；课程C程序的临时源码和运行产物由校验器在隔离临时目录中创建并清理。
 
-## 完整维护检查
+## 内容与历史契约
+
+- 例程库固定为195个稳定ID，题库固定为173道题，上机任务单固定为8份；数量变化必须同时修改内容契约和相应校验器。
+- 8份历史试卷已经由242条逐题映射和学生端证据吸收，日常题库校验读取版本化映射，不依赖原卷。
+- 两份教材PDF、教学大纲DOC和MinGW压缩包已经退役；`validate_routines.py`检查这些制品没有重新出现在根目录、Git跟踪或`.gitignore`中。
+- 源码头保留教材位置和历史来源字符串。来源证据不表示第三方内容自动适用仓库MIT许可证，授权边界见[第三方内容与来源说明](../THIRD_PARTY_NOTICES.md)。
+
+## CI与诊断
+
+- [GitHub Actions](../.github/workflows/routines.yml)在Windows上定位MinGW-w64 GCC，并运行例程、题库和上机任务单校验。
+- 正式最低编译基线为MinGW-w64 GCC 8.1；CI使用较新版本进行向前兼容复验。
+- `EX-C06-012`保留无`\0`字符数组与`%s`的教学诊断，并使用例程级允许规则；其他新告警仍会导致失败。
+- MSVC兼容pragma仅在源码声明相应旧语法且诊断精确匹配时允许，不通过全局关闭警告放宽校验。
+
+## 发布前检查
 
 ```powershell
+conda run -n base python tools/generate_routine_index.py
+conda run -n base python tools/generate_question_index.py
 conda run -n base python tools/validate_routines.py
 conda run -n base python tools/validate_questions.py
 conda run -n base python tools/validate_labs.py
+
+$ids = 1..16 | ForEach-Object { "CW-L{0:D2}" -f $_ }
+foreach ($id in $ids)
+{
+    conda run -n base python tools/validate_courseware.py --id $id
+}
+
 conda run -n base python tools/generate_routine_index.py --check
 conda run -n base python tools/generate_question_index.py --check
 git diff --check
 ```
+
+校验过程必须保持仓库中无`.exe`、`.o`、`.obj`、缓存、截图或临时服务器残留。所有新增或修改文本使用UTF-8无BOM和LF。

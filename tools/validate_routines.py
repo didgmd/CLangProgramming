@@ -56,6 +56,7 @@ BEHAVIOR_CASES = {
     "EX-C09-001": ("", "NO.:10101\nname:Li Lin\nsex:M\naddress:123 Beijing Road\n"),
 }
 MAIN_PATTERN = re.compile(r"\b(?:int|void)\s+main\s*\(")
+MARKDOWN_LINK_PATTERN = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 MSVC_PRAGMA_WARNING_PATTERN = re.compile(r"ignoring\s+['\"]?#pragma\s+warning", re.IGNORECASE)
 EXPECTED_DIAGNOSTICS = {
     "EX-C06-012": re.compile(
@@ -175,10 +176,48 @@ def validate_retired_root_artifacts() -> None:
 def validate_maintenance_docs() -> None:
     tools_doc_path = ROOT / "tools" / "README.md"
     environment_doc_path = ROOT / "环境配置" / "README.md"
+    root_readme_path = ROOT / "README.md"
+    license_path = ROOT / "LICENSE"
+    notices_path = ROOT / "THIRD_PARTY_NOTICES.md"
     if not tools_doc_path.is_file():
         raise ValidationError("Missing tools lifecycle document: tools/README.md")
     if not environment_doc_path.is_file():
         raise ValidationError("Missing GCC setup guide: 环境配置/README.md")
+    if not license_path.is_file():
+        raise ValidationError("Missing root MIT license: LICENSE")
+    if not notices_path.is_file():
+        raise ValidationError("Missing third-party notice: THIRD_PARTY_NOTICES.md")
+
+    license_text = license_path.read_text(encoding="utf-8")
+    required_license_terms = (
+        "MIT License",
+        "Copyright (c) 2026 Kevin Yang",
+        "Permission is hereby granted, free of charge",
+        'THE SOFTWARE IS PROVIDED "AS IS"',
+    )
+    absent_license_terms = [
+        term for term in required_license_terms if term not in license_text
+    ]
+    if absent_license_terms:
+        raise ValidationError(
+            "LICENSE is not the expected MIT text: "
+            + ", ".join(absent_license_terms)
+        )
+
+    root_readme = root_readme_path.read_text(encoding="utf-8")
+    for link in ("[MIT License](LICENSE)", "[第三方内容与来源说明](THIRD_PARTY_NOTICES.md)"):
+        if link not in root_readme:
+            raise ValidationError(f"Root README is missing license navigation: {link}")
+    notices_text = notices_path.read_text(encoding="utf-8")
+    required_notice_terms = ("有权授权", "教材", "往届试卷", "第三方", "MIT")
+    absent_notice_terms = [
+        term for term in required_notice_terms if term not in notices_text
+    ]
+    if absent_notice_terms:
+        raise ValidationError(
+            "THIRD_PARTY_NOTICES.md is missing required boundaries: "
+            + ", ".join(absent_notice_terms)
+        )
 
     tool_names = {path.name for path in (ROOT / "tools").glob("*.py")}
     if tool_names != ACTIVE_TOOL_NAMES:
@@ -223,6 +262,34 @@ def validate_maintenance_docs() -> None:
         raise ValidationError(
             "macOS guide contains a forbidden compiler route: "
             + ", ".join(present_forbidden)
+        )
+
+    public_docs = (
+        root_readme_path,
+        ROOT / "例程" / "README.md",
+        ROOT / "题库" / "README.md",
+        ROOT / "课件" / "README.md",
+        ROOT / "课件" / "讲授" / "README.md",
+        ROOT / "课件" / "上机" / "README.md",
+        tools_doc_path,
+        environment_doc_path,
+        notices_path,
+    )
+    broken_links = []
+    for document in public_docs:
+        document_text = document.read_text(encoding="utf-8")
+        for raw_target in MARKDOWN_LINK_PATTERN.findall(document_text):
+            target = raw_target.strip().split("#", 1)[0]
+            if not target or target.startswith(("http://", "https://", "mailto:")):
+                continue
+            resolved = (document.parent / target).resolve()
+            if not resolved.exists():
+                broken_links.append(
+                    f"{document.relative_to(ROOT)} -> {raw_target}"
+                )
+    if broken_links:
+        raise ValidationError(
+            "Broken links in public Markdown: " + "; ".join(broken_links)
         )
 
 
