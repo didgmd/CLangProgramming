@@ -2,21 +2,25 @@
 
 共8次上机课、16学时。每次2课时、90分钟，在无网络、无手机条件下使用VS Code和MinGW GCC独立完成1道考试型编程题。
 
-当前目录只保存设计契约，尚未形成正式学生任务单，也不提供任何`.c`骨架。
+学生在上机过程中完成程序编写、运行、调试和结果记录，并将过程与结果填写到教师发放的实验报告模板。完成后的实验报告保存为PDF格式并提交至超星学习通；程序源码和运行产物不属于提交材料。
 
-| ID | 章节 | 主题 | 唯一编程题 | 前置状态 |
+| ID | 已学章节 | 实验项目 | 题目ID | 状态 |
 |---|---|---|---|---|
-| [CW-LAB01](01-sequential-programming/README.md) | 第3章 | 顺序结构 | `QB-PG-041`：输入三门成绩，输出总分与平均分 | 题库待补 |
-| [CW-LAB02](02-selection/README.md) | 第4章 | 选择结构 | `QB-PG-003`：判断闰年 | 可用 |
-| [CW-LAB03](03-loops/README.md) | 第5章 | 循环结构 | `QB-PG-006`：判断整数是否为素数 | 可用 |
-| [CW-LAB04](04-arrays/README.md) | 第6章 | 数组 | `QB-PG-004`：十个整数冒泡排序 | 可用 |
-| [CW-LAB05](05-functions/README.md) | 第7章 | 函数与递归 | `QB-PG-018`：递归阶乘 | 可用 |
-| [CW-LAB06](06-pointers/README.md) | 第8章 | 指针 | `QB-PG-038`：指针法求字符串长度 | 可用 |
-| [CW-LAB07](07-structures/README.md) | 第9章 | 结构体 | `QB-PG-030`：结构体冒泡排序 | 可用 |
-| [CW-LAB08](08-files/README.md) | 第10章 | 文件 | `QB-PG-042`：成绩写入文本文件、重新读取并统计平均分与最高分 | 题库待补 |
+| [CW-LAB01](01-day-of-year/README.md) | 第1–4章 | 日期序号计算 | `QB-PG-005` | ready |
+| [CW-LAB02](02-character-count/README.md) | 第1–5章 | 四类字符统计 | `QB-PG-019` | ready |
+| [CW-LAB03](03-word-count/README.md) | 第1–5章 | 单词数量统计 | `QB-PG-012` | ready |
+| [CW-LAB04](04-matrix-transpose/README.md) | 第1–6章 | 三阶矩阵转置 | `QB-PG-021` | ready |
+| [CW-LAB05](05-string-to-integer/README.md) | 第1–6章 | 数字字符串转换 | `QB-PG-007` | ready |
+| [CW-LAB06](06-pascal-triangle/README.md) | 第1–6章 | 杨辉三角 | `QB-PG-020` | ready |
+| [CW-LAB07](07-scenic-sort/README.md) | 第1–6章 | 景点距离排序 | `QB-PG-016` | ready |
+| [CW-LAB08](08-file-score-statistics/README.md) | 第1–10章 | 成绩文件统计 | `QB-PG-042` | ready |
 
 ## 正式任务单接口
 
-每个课次目录的`README.md`未来直接扩展为学生任务单，必须包含目标、唯一题目ID、90分钟流程、VS Code与GCC命令、提交文件、正常/边界测试及验收标准。学生自行创建源码文件。
+每份任务单依次包含实验项目、实验目的、实验步骤、打印分页和参考完整程序。测试情形及预期结果直接纳入实验步骤。参考程序的严格编译和行为测试属于仓库维护校验，不作为学生任务单章节。
 
-`QB-PG-041`和`QB-PG-042`进入题库并通过验证前，对应上机课不得标记为`ready`。
+执行下列命令验证全部任务单：
+
+```powershell
+conda run -n base python tools/validate_labs.py
+```

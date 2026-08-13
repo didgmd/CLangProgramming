@@ -77,6 +77,17 @@ jobs:
           if ($code -ne 0) {
             exit $code
           }
+      - name: Validate lab task sheets
+        if: always()
+        shell: pwsh
+        run: |
+          $log = Join-Path $env:RUNNER_TEMP "labs-validation.log"
+          $output = & python tools/validate_labs.py --gcc $env:CLP_GCC 2>&1
+          $code = $LASTEXITCODE
+          $output | Tee-Object -FilePath $log
+          if ($code -ne 0) {
+            exit $code
+          }
       - name: Upload validation diagnostics
         if: failure()
         uses: actions/upload-artifact@v6

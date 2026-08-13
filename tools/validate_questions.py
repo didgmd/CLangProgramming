@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import shutil
 import subprocess
@@ -41,6 +42,9 @@ EXAM_FILES = {
     "C语言程序设计2025级试题A及答案.doc",
     "C语言程序设计2025级试题B.doc",
 }
+EXAM_MAPPING_PATH = ROOT / "课件" / "往届试卷题目映射.json"
+EXAM_SOURCE_COUNT = 8
+EXAM_QUESTION_COUNT = 242
 LEGACY_HANDOFF_SOURCE_COUNT = 39
 LEGACY_HANDOFF_IDS = {
     *{f"QB-PG-{number:03d}" for number in range(23, 41)},
@@ -71,6 +75,7 @@ class BehaviorCase:
     stdout: str
     exit_code: int = 0
     workdir: str | None = None
+    expected_files: tuple[tuple[str, str], ...] = ()
 
 
 BehaviorFixture = BehaviorCase | tuple[str, str]
@@ -189,6 +194,26 @@ BEHAVIOR_FIXTURES: dict[str, list[BehaviorFixture]] = {
         ("A\n", "1\n"),
         ("a" * 99 + "\n", "99\n"),
     ],
+    "QB-PG-042": [
+        BehaviorCase(
+            "60 70 80 90 100\n",
+            "average=80.00\nmaximum=100.00\n",
+            workdir="QB-PG-042-normal",
+            expected_files=(("scores.txt", "60.00\n70.00\n80.00\n90.00\n100.00\n"),),
+        ),
+        BehaviorCase(
+            "75 75 75 75 75\n",
+            "average=75.00\nmaximum=75.00\n",
+            workdir="QB-PG-042-equal",
+            expected_files=(("scores.txt", "75.00\n75.00\n75.00\n75.00\n75.00\n"),),
+        ),
+        BehaviorCase(
+            "60.5 70.25 80 90.75 98.5\n",
+            "average=80.00\nmaximum=98.50\n",
+            workdir="QB-PG-042-decimal",
+            expected_files=(("scores.txt", "60.50\n70.25\n80.00\n90.75\n98.50\n"),),
+        ),
+    ],
 }
 
 
@@ -244,7 +269,7 @@ def validate_layout() -> None:
         )
 
 
-def validate_source_boundary() -> None:
+def validate_source_boundary(question_ids: set[str]) -> None:
     git = shutil.which("git")
     if not git:
         raise ValidationError("git is required for source-paper checks")
@@ -255,10 +280,103 @@ def validate_source_boundary() -> None:
     leaked = EXAM_FILES & tracked_names
     if leaked:
         raise ValidationError("Original exam file is tracked: " + ", ".join(sorted(leaked)))
+    ignore_text = (ROOT / ".gitignore").read_text(encoding="utf-8")
     for name in EXAM_FILES:
-        ignored = run([git, "check-ignore", "-q", "--", name], cwd=ROOT)
-        if ignored.returncode != 0:
-            raise ValidationError(f"Original exam file is not ignored: {name}")
+        if (ROOT / name).exists():
+            raise ValidationError(f"Retired original exam file remains in workspace: {name}")
+        if name in ignore_text:
+            raise ValidationError(f"Retired original exam rule remains in .gitignore: {name}")
+    validate_exam_mapping(question_ids)
+
+
+def validate_exam_mapping(question_ids: set[str]) -> None:
+    if not EXAM_MAPPING_PATH.is_file():
+        raise ValidationError(f"Missing retired-source mapping: {EXAM_MAPPING_PATH}")
+    try:
+        document = json.loads(EXAM_MAPPING_PATH.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+        raise ValidationError(f"Invalid retired-source mapping: {exc}") from exc
+    sources = document.get("sources")
+    records = document.get("records")
+    if not isinstance(sources, list) or len(sources) != EXAM_SOURCE_COUNT:
+        raise ValidationError(f"Retired-source mapping must contain {EXAM_SOURCE_COUNT} sources")
+    if not isinstance(records, list) or len(records) != EXAM_QUESTION_COUNT:
+        raise ValidationError(f"Retired-source mapping must contain {EXAM_QUESTION_COUNT} records")
+    source_ids = {source.get("source_id") for source in sources}
+    if len(source_ids) != EXAM_SOURCE_COUNT or None in source_ids:
+        raise ValidationError("Retired-source mapping source IDs are incomplete or duplicated")
+    if sum(int(source.get("question_count", 0)) for source in sources) != EXAM_QUESTION_COUNT:
+        raise ValidationError("Retired-source mapping source question counts do not total 242")
+    keys: set[tuple[object, object, object]] = set()
+    allowed_statuses = {"exact", "normalized", "duplicate", "corrected"}
+    required = {
+        "source_id", "section", "question_number", "question_type",
+        "short_signature", "source_text_sha256", "question_status",
+        "question_ids", "knowledge_points", "courseware_evidence",
+        "answer_disposition", "review_note",
+    }
+    evidence_texts: dict[str, str] = {}
+    for html_path in (ROOT / "课件" / "讲授").glob("*/index.html"):
+        html_text = html_path.read_text(encoding="utf-8")
+        match = re.search(r'data-course-id="(CW-L\d{2})"', html_text)
+        if match:
+            evidence_texts[match.group(1)] = html_text
+    for readme_path in (ROOT / "课件" / "上机").glob("*/README.md"):
+        readme_text = readme_path.read_text(encoding="utf-8")
+        match = re.search(r"^#\s+(CW-LAB\d{2})\b", readme_text, re.MULTILINE)
+        if match:
+            evidence_texts[match.group(1)] = readme_text
+    for record in records:
+        missing = required - set(record)
+        if missing:
+            raise ValidationError(f"Retired-source record missing fields: {sorted(missing)}")
+        key = (record["source_id"], record["section"], record["question_number"])
+        if key in keys:
+            raise ValidationError(f"Duplicate retired-source record: {key}")
+        keys.add(key)
+        if record["source_id"] not in source_ids:
+            raise ValidationError(f"Unknown source ID in retired-source record: {record['source_id']}")
+        if record["question_status"] not in allowed_statuses:
+            raise ValidationError(f"Unfinished retired-source record: {key}")
+        targets = record["question_ids"]
+        if not isinstance(targets, list) or not targets:
+            raise ValidationError(f"Retired-source record has no stable question target: {key}")
+        unknown = set(targets) - question_ids
+        if unknown:
+            raise ValidationError(f"Retired-source record targets unknown IDs {sorted(unknown)}: {key}")
+        digest = record["source_text_sha256"]
+        if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+            raise ValidationError(f"Invalid source fingerprint for retired-source record: {key}")
+        if not record["knowledge_points"] or not record["courseware_evidence"]:
+            raise ValidationError(f"Retired-source record lacks student-facing knowledge evidence: {key}")
+        for evidence in record["courseware_evidence"]:
+            courseware_id = evidence.get("courseware_id", "")
+            if not re.fullmatch(r"CW-(?:L\d{2}|LAB\d{2})", courseware_id):
+                raise ValidationError(f"Invalid courseware evidence for retired-source record: {key}")
+            evidence_text = evidence_texts.get(courseware_id)
+            if evidence_text is None:
+                raise ValidationError(
+                    f"Courseware evidence target does not exist ({courseware_id}): {key}"
+                )
+            location = evidence.get("location", "")
+            if not isinstance(location, str) or not location:
+                raise ValidationError(f"Courseware evidence has no location: {key}")
+            if re.fullmatch(r"QB-[A-Z]{2}-\d{3}", location):
+                if location not in evidence_text:
+                    raise ValidationError(
+                        f"Courseware evidence does not display {location} in {courseware_id}: {key}"
+                    )
+                continue
+            terms = evidence.get("evidence_terms")
+            if not isinstance(terms, list) or not terms or not all(
+                isinstance(term, str) and term for term in terms
+            ):
+                raise ValidationError(f"Concept evidence lacks literal terms: {key}")
+            absent = [term for term in terms if term not in evidence_text]
+            if absent:
+                raise ValidationError(
+                    f"Courseware evidence terms {absent} are absent from {courseware_id}: {key}"
+                )
 
 
 def validate_question(question: Question) -> None:
@@ -368,6 +486,7 @@ def run_case(
     expected_stdout: str,
     normalize_final_newline: bool = False,
     expected_exit_code: int = 0,
+    expected_files: tuple[tuple[str, str], ...] = (),
 ) -> None:
     behavior = run([str(executable)], cwd=cwd, input_text=stdin_text)
     actual = behavior.stdout.replace("\r\n", "\n")
@@ -386,6 +505,18 @@ def run_case(
             f"expected {expected_stdout!r}, got {actual!r}; "
             f"exit={behavior.returncode}; stderr={behavior.stderr.strip()!r}"
         )
+    for relative_name, expected_content in expected_files:
+        output_path = cwd / relative_name
+        if not output_path.is_file():
+            raise ValidationError(
+                f"Behavior failed for {question_id}: missing file {relative_name}"
+            )
+        actual_content = output_path.read_text(encoding="utf-8").replace("\r\n", "\n")
+        if actual_content != expected_content:
+            raise ValidationError(
+                f"Behavior failed for {question_id}: file {relative_name} "
+                f"expected {expected_content!r}, got {actual_content!r}"
+            )
 
 def compile_answers(
     questions: dict[str, Question],
@@ -439,6 +570,7 @@ def compile_answers(
                         case.stdin,
                         case.stdout,
                         expected_exit_code=case.exit_code,
+                        expected_files=case.expected_files,
                     )
                     behaviors += 1
                 if question.category == "编程题":
@@ -498,8 +630,8 @@ def main() -> int:
     args = parser.parse_args()
     try:
         validate_layout()
-        validate_source_boundary()
         questions = scan_questions()
+        validate_source_boundary(set(questions))
         if args.question_id:
             if args.question_id not in questions:
                 raise ValidationError(f"Unknown question ID: {args.question_id}")

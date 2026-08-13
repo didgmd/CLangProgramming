@@ -1,0 +1,6585 @@
+{
+  "schema_version": 1,
+  "audit_scope": "8份本地历史试卷；程序填空按完整程序任务计1题",
+  "fingerprint_method": "SHA-256(source_id|section|question_number|reviewer-normalized short_signature)；不发布完整原题文本",
+  "sources": [
+    {
+      "source_id": "EXAM-01",
+      "file_name": "C语言程序设计（2023-2024-1）A卷答案.pdf",
+      "format": "PDF",
+      "pages": 3,
+      "question_count": 34,
+      "size_bytes": 345691,
+      "sha256": "43973B7357EE91C9DB6B807EA8E22C8004A95F1F39720DB69D39BBE489909035"
+    },
+    {
+      "source_id": "EXAM-02",
+      "file_name": "C语言程序设计（2023-2024-1）B卷答案.pdf",
+      "format": "PDF",
+      "pages": 3,
+      "question_count": 34,
+      "size_bytes": 371495,
+      "sha256": "2130AD50BEAC0E8A5B59D87105D74C76F91647C18AAFFD68E7B1106769242468"
+    },
+    {
+      "source_id": "EXAM-03",
+      "file_name": "C语言程序设计（2024-2025-1）A卷答案.pdf",
+      "format": "PDF",
+      "pages": 6,
+      "question_count": 29,
+      "size_bytes": 338631,
+      "sha256": "DA1CADC09BA589345938ADF2B02769B6B88E0F7EFE3F81A2D6509C608D62FA23"
+    },
+    {
+      "source_id": "EXAM-04",
+      "file_name": "C语言程序设计（2024-2025-1）B卷答案.pdf",
+      "format": "PDF",
+      "pages": 6,
+      "question_count": 29,
+      "size_bytes": 330189,
+      "sha256": "161BA084EA51C4B519DD0F999814F4EEAF2496277F8D99C2B95B62E29A998880"
+    },
+    {
+      "source_id": "EXAM-05",
+      "file_name": "C语言程序设计（2025-2026-1-R）A卷（答案）.doc",
+      "format": "DOC",
+      "pages": 4,
+      "question_count": 29,
+      "size_bytes": 94720,
+      "sha256": "CF3939C858B78B594731A4A8C323F3B5FCB089494B41F229617882C5591FCCA0"
+    },
+    {
+      "source_id": "EXAM-06",
+      "file_name": "C语言程序设计（2025-2026-1-R）B卷（答案）.doc",
+      "format": "DOC",
+      "pages": 5,
+      "question_count": 29,
+      "size_bytes": 107008,
+      "sha256": "9CB0B171F73703659F802FF83F22E7820029D09EB525E9E0F3A17A60A7F74161"
+    },
+    {
+      "source_id": "EXAM-07",
+      "file_name": "C语言程序设计2025级试题A及答案.doc",
+      "format": "DOC",
+      "pages": 4,
+      "question_count": 29,
+      "size_bytes": 75776,
+      "sha256": "AE8E6C7C84BF9C0F3CAF973CB2EC5DF6F37093462A99DE43221EC25C34B7E6E3"
+    },
+    {
+      "source_id": "EXAM-08",
+      "file_name": "C语言程序设计2025级试题B.doc",
+      "format": "DOC",
+      "pages": 3,
+      "question_count": 29,
+      "size_bytes": 60928,
+      "sha256": "FD8A0D10976D3F1E294EFC4C03F76AB2CB3963FB960804F0C7F414783D266367"
+    }
+  ],
+  "records": [
+    {
+      "source_id": "EXAM-01",
+      "section": "SC",
+      "question_number": 1,
+      "question_type": "选择题",
+      "short_signature": "关键字不能作标识符",
+      "source_text_sha256": "b5f06dee64119a9ab9c0d3ee7d6205a2921958e8bbdaba5ee8f09d4e51f6bc32",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-002"
+      ],
+      "knowledge_points": [
+        "标识符",
+        "关键字"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L01",
+          "location": "QB-SC-002",
+          "evidence_terms": [
+            "QB-SC-002"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "SC",
+      "question_number": 2,
+      "question_type": "选择题",
+      "short_signature": "未定义求值顺序诊断",
+      "source_text_sha256": "1beb996fb69d407546a89940a5c4b7568e5ca2cd6d4267528a00e03f8c02e5c0",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-063"
+      ],
+      "knowledge_points": [
+        "未定义行为",
+        "求值顺序"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L06",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "未定义行为",
+            "求值顺序"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "SC",
+      "question_number": 3,
+      "question_type": "选择题",
+      "short_signature": "嵌套if与后续语句",
+      "source_text_sha256": "8b9e3af29acbaf1179300a6ea28038b0a1fd8ee057dc9f1a3a6220f80bb207dd",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-002"
+      ],
+      "knowledge_points": [
+        "嵌套if"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L05",
+          "location": "QB-TR-002",
+          "evidence_terms": [
+            "QB-TR-002"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "SC",
+      "question_number": 4,
+      "question_type": "选择题",
+      "short_signature": "科学计数法",
+      "source_text_sha256": "5fd7bce557c40007dd0c9b03e568dae6b5fb910e00a542860c33f3505cfbd92e",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-055"
+      ],
+      "knowledge_points": [
+        "浮点常量"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-055",
+          "evidence_terms": [
+            "QB-SC-055"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "SC",
+      "question_number": 5,
+      "question_type": "选择题",
+      "short_signature": "switch贯穿",
+      "source_text_sha256": "2ae4f90df23a89fa116c1cdd618777021904504f94d6d5ece9ca020897817340",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-010"
+      ],
+      "knowledge_points": [
+        "switch",
+        "贯穿"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L05",
+          "location": "QB-SC-010",
+          "evidence_terms": [
+            "QB-SC-010"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "SC",
+      "question_number": 6,
+      "question_type": "选择题",
+      "short_signature": "循环结束值",
+      "source_text_sha256": "d86a3b7d9c9a4b0b92ecb27dcf5c57ca752af691a10f8209808dbfc330285a42",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-032"
+      ],
+      "knowledge_points": [
+        "for循环"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L06",
+          "location": "QB-SC-032",
+          "evidence_terms": [
+            "QB-SC-032"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "SC",
+      "question_number": 7,
+      "question_type": "选择题",
+      "short_signature": "continue死循环",
+      "source_text_sha256": "2f8d8b3d8d4255a7907ce417b859b2a2e4cc98c00dcee59c361fa3da273dcb29",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-034"
+      ],
+      "knowledge_points": [
+        "continue",
+        "循环控制"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "QB-SC-034",
+          "evidence_terms": [
+            "QB-SC-034"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "SC",
+      "question_number": 8,
+      "question_type": "选择题",
+      "short_signature": "break与continue",
+      "source_text_sha256": "4e3bb1a60c30bfcf87fa14ecf4252b4d97b537e7f822e5707497df14ec77cdcd",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-011"
+      ],
+      "knowledge_points": [
+        "break",
+        "continue"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "QB-SC-011",
+          "evidence_terms": [
+            "QB-SC-011"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "SC",
+      "question_number": 9,
+      "question_type": "选择题",
+      "short_signature": "同号判断",
+      "source_text_sha256": "b8f382a80e90786056651ebbba1e9b55854bc216436a02ae144a19bea228534a",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-035"
+      ],
+      "knowledge_points": [
+        "逻辑表达式"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L04",
+          "location": "QB-SC-035",
+          "evidence_terms": [
+            "QB-SC-035"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "SC",
+      "question_number": 10,
+      "question_type": "选择题",
+      "short_signature": "字符串占用字节",
+      "source_text_sha256": "8fcec98a6be66265b6b1aa81875e3439b7e465387218d417728961eb7c5a7125",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-015"
+      ],
+      "knowledge_points": [
+        "字符数组",
+        "字符串结束符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "字符数组",
+            "字符串结束符"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "SC",
+      "question_number": 11,
+      "question_type": "选择题",
+      "short_signature": "函数原型作用域",
+      "source_text_sha256": "2fd1480e357325ea7d06b83df0e2409ad058a953a01e7879dc0fbdd3689c0c18",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-019"
+      ],
+      "knowledge_points": [
+        "函数声明",
+        "函数原型"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L10",
+          "location": "QB-SC-019",
+          "evidence_terms": [
+            "QB-SC-019"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "SC",
+      "question_number": 12,
+      "question_type": "选择题",
+      "short_signature": "字符串复制空间",
+      "source_text_sha256": "e440de622f4394fe4924354cbedff89dc7cf5b25eeb4555beea6100c361bdc83",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-045"
+      ],
+      "knowledge_points": [
+        "字符串复制",
+        "数组容量"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L13",
+          "location": "QB-SC-045",
+          "evidence_terms": [
+            "QB-SC-045"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "SC",
+      "question_number": 13,
+      "question_type": "选择题",
+      "short_signature": "字符指针后缀",
+      "source_text_sha256": "d73334d2573278708fae5b5c0bd33e45280504e115b6404eb2e8eb8533100a60",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-018"
+      ],
+      "knowledge_points": [
+        "字符指针"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L12",
+          "location": "QB-TR-018",
+          "evidence_terms": [
+            "QB-TR-018"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "SC",
+      "question_number": 14,
+      "question_type": "选择题",
+      "short_signature": "结构体关键字",
+      "source_text_sha256": "5be53ab67533f0d08fcc3446bbb5c4029ca66a0712e6e815aec35df70df83422",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-025"
+      ],
+      "knowledge_points": [
+        "结构体"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L14",
+          "location": "QB-SC-025",
+          "evidence_terms": [
+            "QB-SC-025"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "SC",
+      "question_number": 15,
+      "question_type": "选择题",
+      "short_signature": "文件指针数量",
+      "source_text_sha256": "a7edc1d4c06545a5e7cf02b0ee314191c0fc480a77e8dbac6b79789a979ae5bf",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-050"
+      ],
+      "knowledge_points": [
+        "文件指针"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L16",
+          "location": "QB-SC-050",
+          "evidence_terms": [
+            "QB-SC-050"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "TF",
+      "question_number": 1,
+      "question_type": "判断题",
+      "short_signature": "break只跳出一层",
+      "source_text_sha256": "26a06454c66486f0f1eaacb69401c04cfc189f27576b6d1c5773dfea0159a15c",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TF-001"
+      ],
+      "knowledge_points": [
+        "break",
+        "嵌套循环"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "QB-TF-001",
+          "evidence_terms": [
+            "QB-TF-001"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "TF",
+      "question_number": 2,
+      "question_type": "判断题",
+      "short_signature": "循环可以嵌套",
+      "source_text_sha256": "cae1ee8318d874191614aca5d07fdbd54ccae667cf24aef8e0d7a2ef2c9f2ed5",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TF-002"
+      ],
+      "knowledge_points": [
+        "循环嵌套"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "外层循环",
+            "内层循环"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "TF",
+      "question_number": 3,
+      "question_type": "判断题",
+      "short_signature": "二维数组部分初始化",
+      "source_text_sha256": "68b2c347ef4af5d554bfdb325c5f4ae2ca9d509a699c12426ba0993af8145f16",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TF-003"
+      ],
+      "knowledge_points": [
+        "二维数组初始化"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "二维数组",
+            "按行初始化"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "TF",
+      "question_number": 4,
+      "question_type": "判断题",
+      "short_signature": "形参存储期",
+      "source_text_sha256": "411fbdfbbc287d812cc600cd8fba1e24b3751e818acf6e4b00c3b4e18a0b0af1",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TF-004"
+      ],
+      "knowledge_points": [
+        "形参",
+        "存储期"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L10",
+          "location": "QB-TF-004",
+          "evidence_terms": [
+            "QB-TF-004"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "TF",
+      "question_number": 5,
+      "question_type": "判断题",
+      "short_signature": "函数返回类型",
+      "source_text_sha256": "69f7daa9a82de80186a80c09116d65be59d2623355cb643d4258e3eaeda8db0a",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TF-005"
+      ],
+      "knowledge_points": [
+        "函数返回值"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L10",
+          "location": "QB-TF-005",
+          "evidence_terms": [
+            "QB-TF-005"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "TF",
+      "question_number": 6,
+      "question_type": "判断题",
+      "short_signature": "地址标识存储位置",
+      "source_text_sha256": "dab505cd2843bd6c431d61558b1c6d844ffed5e6865916049aa88b5a6887d8ec",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TF-006"
+      ],
+      "knowledge_points": [
+        "地址"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L12",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "地址"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "TF",
+      "question_number": 7,
+      "question_type": "判断题",
+      "short_signature": "指针也可作实参",
+      "source_text_sha256": "e64b096d163cf92558dbd8b85a506ff85a12fd98025b65b1de8950e41756f6db",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TF-007"
+      ],
+      "knowledge_points": [
+        "指针参数"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L13",
+          "location": "QB-TF-007",
+          "evidence_terms": [
+            "QB-TF-007"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "TF",
+      "question_number": 8,
+      "question_type": "判断题",
+      "short_signature": "数组名可以自增",
+      "source_text_sha256": "0b7d471c08fbea37fe63cc4dfa2d61a2a0ddcea026c645b4a7f61f4c8b38da0a",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TF-008"
+      ],
+      "knowledge_points": [
+        "数组名",
+        "指针"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L12",
+          "location": "QB-TF-008",
+          "evidence_terms": [
+            "QB-TF-008"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "TF",
+      "question_number": 9,
+      "question_type": "判断题",
+      "short_signature": "字符指针初始化",
+      "source_text_sha256": "4ecf2a8530c0f1fa12159f20887ced1a7878540394ff4487ddeb93003f10faf3",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TF-009"
+      ],
+      "knowledge_points": [
+        "字符指针"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L12",
+          "location": "QB-TF-009",
+          "evidence_terms": [
+            "QB-TF-009"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "TF",
+      "question_number": 10,
+      "question_type": "判断题",
+      "short_signature": "结构体成员类型限制",
+      "source_text_sha256": "efe0af94e7d9d1b907df01dd67ca732982014412516591e57324d4b66aa33d88",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TF-010"
+      ],
+      "knowledge_points": [
+        "结构体成员"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L14",
+          "location": "QB-TF-010",
+          "evidence_terms": [
+            "QB-TF-010"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "TR",
+      "question_number": 1,
+      "question_type": "读程序写结果",
+      "short_signature": "一元二次方程",
+      "source_text_sha256": "130782536ca90640564db60d057ea9075f513668c8b2e82e207fa666c25e0ec8",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-001"
+      ],
+      "knowledge_points": [
+        "多分支",
+        "判别式",
+        "浮点运算"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L05",
+          "location": "QB-PG-001",
+          "evidence_terms": [
+            "QB-PG-001"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "TR",
+      "question_number": 2,
+      "question_type": "读程序写结果",
+      "short_signature": "二维数组筛选求和",
+      "source_text_sha256": "fc3c2895d35271182be2678990ee88a1fbf7b30bf11461d383036cdf9a212d06",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-015"
+      ],
+      "knowledge_points": [
+        "二维数组",
+        "循环"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "二维数组",
+            "循环"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "TR",
+      "question_number": 3,
+      "question_type": "读程序写结果",
+      "short_signature": "日期是当年第几天",
+      "source_text_sha256": "3975d111983c7526bdb71cc251e224cbe7141ca5d752bdce76b1dcf859f0e49b",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-005"
+      ],
+      "knowledge_points": [
+        "日期",
+        "闰年",
+        "数组"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB01",
+          "location": "QB-PG-005",
+          "evidence_terms": [
+            "QB-PG-005"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "TR",
+      "question_number": 4,
+      "question_type": "读程序写结果",
+      "short_signature": "带符号数字转换",
+      "source_text_sha256": "372ef1e91a1251be69fb179cbb18fd5dd22774f908a1b984b249abd1b0e39c70",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-008"
+      ],
+      "knowledge_points": [
+        "字符串",
+        "数值转换"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB05",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "字符串",
+            "逐位转换"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "TR",
+      "question_number": 5,
+      "question_type": "读程序写结果",
+      "short_signature": "字符串数字转换前导零",
+      "source_text_sha256": "9f265ff80e1b1636cc5493d27237c4cee4720a157ae4751ba120228907e1ab72",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-023"
+      ],
+      "knowledge_points": [
+        "数字字符串"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB05",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "数字字符串"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "PG",
+      "question_number": 1,
+      "question_type": "编程题",
+      "short_signature": "递归生成斐波那契数组",
+      "source_text_sha256": "b896ae4a51352c41dbd10abeec138f55ef37b5b6a16946d1bcd171f043a993cb",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-028"
+      ],
+      "knowledge_points": [
+        "递归",
+        "数组"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L11",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "递归",
+            "20项"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "PG",
+      "question_number": 2,
+      "question_type": "编程题",
+      "short_signature": "景点距离与编号同步排序",
+      "source_text_sha256": "e5d5294db400746778faf02693481ad664d984a1e5ae510d3e21b83921f7d064",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-016"
+      ],
+      "knowledge_points": [
+        "选择排序",
+        "平行数组"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB07",
+          "location": "QB-PG-016",
+          "evidence_terms": [
+            "QB-PG-016"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "PG",
+      "question_number": 3,
+      "question_type": "编程题",
+      "short_signature": "不用字符串库复制",
+      "source_text_sha256": "0e0c120b296c04f1e0b7148b73cc212a8b22abba054c67435a98e78153512c44",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-017"
+      ],
+      "knowledge_points": [
+        "字符串复制",
+        "指针"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L13",
+          "location": "QB-PG-017",
+          "evidence_terms": [
+            "QB-PG-017"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-01",
+      "section": "PG",
+      "question_number": 4,
+      "question_type": "编程题",
+      "short_signature": "指定区间输出素数",
+      "source_text_sha256": "14e0fdba982470bc18c888fdbe54e2418985e39775cbe9386a8c59ae2499e48d",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-034"
+      ],
+      "knowledge_points": [
+        "素数",
+        "格式控制"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "素数",
+            "每行5个"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "SC",
+      "question_number": 1,
+      "question_type": "选择题",
+      "short_signature": "合法标识符",
+      "source_text_sha256": "2f1596efbf81aed82397a2b9824e47bab3b84c38eefc1e22e3898a8c0fe6036c",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-001"
+      ],
+      "knowledge_points": [
+        "标识符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L01",
+          "location": "QB-SC-001",
+          "evidence_terms": [
+            "QB-SC-001"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "SC",
+      "question_number": 2,
+      "question_type": "选择题",
+      "short_signature": "后缀自增",
+      "source_text_sha256": "32599eb1da2a12322987af468ddc2bef67cb960d4d113509698779ca9520da7b",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-006"
+      ],
+      "knowledge_points": [
+        "自增运算符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L06",
+          "location": "QB-SC-006",
+          "evidence_terms": [
+            "QB-SC-006"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "SC",
+      "question_number": 3,
+      "question_type": "选择题",
+      "short_signature": "三目运算符求大值",
+      "source_text_sha256": "0806ad061217aa2d4cf9b7128f4e9fd9876582608e50fcce6e81540e5af1356e",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-019"
+      ],
+      "knowledge_points": [
+        "条件运算符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L04",
+          "location": "QB-TR-019",
+          "evidence_terms": [
+            "QB-TR-019"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "SC",
+      "question_number": 4,
+      "question_type": "选择题",
+      "short_signature": "合法常量",
+      "source_text_sha256": "77bc8582ab8db6d4258a67d7824756e52ad025e0640e1bdb66e63dc70ef7aebc",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-003"
+      ],
+      "knowledge_points": [
+        "常量",
+        "转义字符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-003",
+          "evidence_terms": [
+            "QB-SC-003"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "SC",
+      "question_number": 5,
+      "question_type": "选择题",
+      "short_signature": "switch贯穿",
+      "source_text_sha256": "ce7a59e38a85e5142584599d20d1cff46c0f70afbaaa8e53330725fcbdae56e5",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-010"
+      ],
+      "knowledge_points": [
+        "switch",
+        "贯穿"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L05",
+          "location": "QB-SC-010",
+          "evidence_terms": [
+            "QB-SC-010"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "SC",
+      "question_number": 6,
+      "question_type": "选择题",
+      "short_signature": "后缀自增",
+      "source_text_sha256": "0b7b2c1efc786d6b6a49689181077f36ff469d36497c5557fd935355bfa23ff3",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-006"
+      ],
+      "knowledge_points": [
+        "自增运算符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L06",
+          "location": "QB-SC-006",
+          "evidence_terms": [
+            "QB-SC-006"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "SC",
+      "question_number": 7,
+      "question_type": "选择题",
+      "short_signature": "循环后变量值",
+      "source_text_sha256": "3c9b1430259a5f545f0a310b8ca0870d26f87708072a50af6eea57c988080355",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-020"
+      ],
+      "knowledge_points": [
+        "while",
+        "自减"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L06",
+          "location": "QB-TR-020",
+          "evidence_terms": [
+            "QB-TR-020"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "SC",
+      "question_number": 8,
+      "question_type": "选择题",
+      "short_signature": "break与continue",
+      "source_text_sha256": "2049c2ff1e69f2feb8b8704bd98a232f9ae290f7054bc76269fc0a984f29cd6d",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-011"
+      ],
+      "knowledge_points": [
+        "break",
+        "continue"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "QB-SC-011",
+          "evidence_terms": [
+            "QB-SC-011"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "SC",
+      "question_number": 9,
+      "question_type": "选择题",
+      "short_signature": "逻辑非",
+      "source_text_sha256": "3d51d0ca2522e3b4b926bc5ae84239321d00b1937f96194862d941dbbff8290f",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-039"
+      ],
+      "knowledge_points": [
+        "逻辑运算"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L04",
+          "location": "QB-SC-039",
+          "evidence_terms": [
+            "QB-SC-039"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "SC",
+      "question_number": 10,
+      "question_type": "选择题",
+      "short_signature": "字符串占用字节",
+      "source_text_sha256": "9d5cdde4467ca469181ea67159ede0f09218e656631a4fa0ca92bb7384c1d0d7",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-015"
+      ],
+      "knowledge_points": [
+        "字符数组",
+        "字符串结束符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "字符数组",
+            "字符串结束符"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "SC",
+      "question_number": 11,
+      "question_type": "选择题",
+      "short_signature": "递归调用",
+      "source_text_sha256": "83a1a9939b44b8ad47d755f9afccfd6256b17c14b9d995107ff7cf699c3e6afd",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-017"
+      ],
+      "knowledge_points": [
+        "递归"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L11",
+          "location": "QB-SC-017",
+          "evidence_terms": [
+            "QB-SC-017"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "SC",
+      "question_number": 12,
+      "question_type": "选择题",
+      "short_signature": "指针偏移取字符",
+      "source_text_sha256": "286e1396638f864490c9e9b41998ada6d51bc72f93602baa0a24d1472adeaf2b",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-021"
+      ],
+      "knowledge_points": [
+        "字符指针",
+        "指针运算"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L12",
+          "location": "QB-SC-021",
+          "evidence_terms": [
+            "QB-SC-021"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "SC",
+      "question_number": 13,
+      "question_type": "选择题",
+      "short_signature": "字符串比较",
+      "source_text_sha256": "a8f865e205577c52ba7a8a6e60eeec0df40f629a01cbe6c4d8859b2d5831f63f",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-020"
+      ],
+      "knowledge_points": [
+        "字符串比较"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "QB-SC-020",
+          "evidence_terms": [
+            "QB-SC-020"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "SC",
+      "question_number": 14,
+      "question_type": "选择题",
+      "short_signature": "结构体成员访问",
+      "source_text_sha256": "9b67b5d0c243057ccfc646e94435bb745636c3f05a43a57a910c2d9fbc6c4ce2",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-026"
+      ],
+      "knowledge_points": [
+        "结构体成员"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L15",
+          "location": "QB-SC-026",
+          "evidence_terms": [
+            "QB-SC-026"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "SC",
+      "question_number": 15,
+      "question_type": "选择题",
+      "short_signature": "文件指针定义",
+      "source_text_sha256": "700f09530b7c2db3f8c08cec4afa7be7daa4d5fb6be58b797be8b4f550f58888",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-029"
+      ],
+      "knowledge_points": [
+        "文件指针"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L16",
+          "location": "QB-SC-029",
+          "evidence_terms": [
+            "QB-SC-029"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "TF",
+      "question_number": 1,
+      "question_type": "判断题",
+      "short_signature": "二维数组可省略行数",
+      "source_text_sha256": "d21637856e2104cf2b9e7a52e8985fb288d8cc18d2b18f5938a95104be8dc1af",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TF-011"
+      ],
+      "knowledge_points": [
+        "二维数组"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "二维数组"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "TF",
+      "question_number": 2,
+      "question_type": "判断题",
+      "short_signature": "读取含空格文本",
+      "source_text_sha256": "9914de9f351c6c22cda8ca483da7934d7c860f55abb08e790ea685fe3c77a2fe",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-038"
+      ],
+      "knowledge_points": [
+        "字符串输入",
+        "安全输入"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "gets()",
+            "含空格"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "TF",
+      "question_number": 3,
+      "question_type": "判断题",
+      "short_signature": "循环可以嵌套",
+      "source_text_sha256": "a2fbbd4208d359b20c8565d8ab8a9ded5f58a826e57cbe06d3f380e101ac569b",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TF-002"
+      ],
+      "knowledge_points": [
+        "循环嵌套"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "外层循环",
+            "内层循环"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "TF",
+      "question_number": 4,
+      "question_type": "判断题",
+      "short_signature": "头文件职责",
+      "source_text_sha256": "0960f9cf57eeff7b2fbf059dd7777f80ef108056e5b93ef905ef90548eebf135",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-054"
+      ],
+      "knowledge_points": [
+        "头文件",
+        "字符串函数"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "QB-SC-054",
+          "evidence_terms": [
+            "QB-SC-054"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "TF",
+      "question_number": 5,
+      "question_type": "判断题",
+      "short_signature": "结构体成员类型限制",
+      "source_text_sha256": "de33466f66c91dbc5196a77fc495806f6ef33395c42c26563bcfc6583fe43c1a",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TF-010"
+      ],
+      "knowledge_points": [
+        "结构体成员"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L14",
+          "location": "QB-TF-010",
+          "evidence_terms": [
+            "QB-TF-010"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "TF",
+      "question_number": 6,
+      "question_type": "判断题",
+      "short_signature": "scanf与指针",
+      "source_text_sha256": "063bddf7d2d0318f6fcfcd665807258b953f638b95b2aab55ab5099877e96625",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-023"
+      ],
+      "knowledge_points": [
+        "指针",
+        "scanf"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L12",
+          "location": "QB-SC-023",
+          "evidence_terms": [
+            "QB-SC-023"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "TF",
+      "question_number": 7,
+      "question_type": "判断题",
+      "short_signature": "字符数组初始化",
+      "source_text_sha256": "2f4d369278680450266ae9be1c67d3dbdc35663582daac98411162c840299014",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-051"
+      ],
+      "knowledge_points": [
+        "字符数组初始化"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "QB-SC-051",
+          "evidence_terms": [
+            "QB-SC-051"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "TF",
+      "question_number": 8,
+      "question_type": "判断题",
+      "short_signature": "函数原型作用域",
+      "source_text_sha256": "e3b847f3c4e164a76956757248c881df100d4ac767f4fc4e1aba0cbea56562de",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-019"
+      ],
+      "knowledge_points": [
+        "函数声明",
+        "函数原型"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L10",
+          "location": "QB-SC-019",
+          "evidence_terms": [
+            "QB-SC-019"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "TF",
+      "question_number": 9,
+      "question_type": "判断题",
+      "short_signature": "return返回一个值",
+      "source_text_sha256": "37c2cffcaf47c5a633abf5a26265fe57707f21b3ac993238f1e82bbc1b0abf6d",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TF-012"
+      ],
+      "knowledge_points": [
+        "return"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L10",
+          "location": "QB-TF-012",
+          "evidence_terms": [
+            "QB-TF-012"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "TF",
+      "question_number": 10,
+      "question_type": "判断题",
+      "short_signature": "未初始化指针诊断",
+      "source_text_sha256": "bc6f466b0855a19f01689e73c911ac70a0dc98855f5c992395dced63afd48483",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-065"
+      ],
+      "knowledge_points": [
+        "未初始化指针",
+        "未定义行为"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L12",
+          "location": "QB-SC-065",
+          "evidence_terms": [
+            "QB-SC-065"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "TR",
+      "question_number": 1,
+      "question_type": "读程序写结果",
+      "short_signature": "判断闰年",
+      "source_text_sha256": "ae2b30d730e8ad57978f055fe2d202ca662173f839a30bcb547d9519da0fd617",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-003"
+      ],
+      "knowledge_points": [
+        "条件",
+        "闰年"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L04",
+          "location": "QB-PG-003",
+          "evidence_terms": [
+            "QB-PG-003"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "TR",
+      "question_number": 2,
+      "question_type": "读程序写结果",
+      "short_signature": "字符替换下标",
+      "source_text_sha256": "1307c4ec0a8b9cc70645e923d9b24c2ee84b8f33142ca0ef344004b48b38c6fd",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-021"
+      ],
+      "knowledge_points": [
+        "字符串",
+        "字符替换"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "字符",
+            "大小写"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "TR",
+      "question_number": 3,
+      "question_type": "读程序写结果",
+      "short_signature": "遇零跳出内层",
+      "source_text_sha256": "7cc03b50517c7df072827d95e5386d86718e7396b4074bff4cecebba8f9ca280",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-022"
+      ],
+      "knowledge_points": [
+        "continue",
+        "break",
+        "二维数组"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "continue",
+            "break",
+            "内层循环"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "TR",
+      "question_number": 4,
+      "question_type": "读程序写结果",
+      "short_signature": "字符串数字转换前导零",
+      "source_text_sha256": "8c12a93124369cee8f1dc4e271b8e176a87f2e6fb52c26c88282fe83520b21ce",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-023"
+      ],
+      "knowledge_points": [
+        "数字字符串"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB05",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "数字字符串"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "TR",
+      "question_number": 5,
+      "question_type": "读程序写结果",
+      "short_signature": "字符数组后缀变式",
+      "source_text_sha256": "12f278b978c4073564894f5774f9404c8e97067132d181d2201ffee4433acb72",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-025"
+      ],
+      "knowledge_points": [
+        "二维字符数组"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "二维字符数组"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "PG",
+      "question_number": 1,
+      "question_type": "编程题",
+      "short_signature": "递归阶乘",
+      "source_text_sha256": "625db549e015724bec1ac5912ca0d9f4dfc26b507e366b41591db5e428d65546",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-018"
+      ],
+      "knowledge_points": [
+        "递归",
+        "阶乘"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L11",
+          "location": "QB-PG-018",
+          "evidence_terms": [
+            "QB-PG-018"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "PG",
+      "question_number": 2,
+      "question_type": "编程题",
+      "short_signature": "景点距离与编号同步排序",
+      "source_text_sha256": "2aabeb1d9410217136b964e254c4482fa664cbc9173cb63ee0404500e2a1dbfd",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-016"
+      ],
+      "knowledge_points": [
+        "选择排序",
+        "平行数组"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB07",
+          "location": "QB-PG-016",
+          "evidence_terms": [
+            "QB-PG-016"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "PG",
+      "question_number": 3,
+      "question_type": "编程题",
+      "short_signature": "四类字符统计",
+      "source_text_sha256": "6c89700e06b4607f667f4725e4df3b27ca762919230faa6aabce00a5e7e287bd",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-019"
+      ],
+      "knowledge_points": [
+        "字符串",
+        "字符统计"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB02",
+          "location": "QB-PG-019",
+          "evidence_terms": [
+            "QB-PG-019"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-02",
+      "section": "PG",
+      "question_number": 4,
+      "question_type": "编程题",
+      "short_signature": "输出杨辉三角",
+      "source_text_sha256": "6d62e9f5ac076ddd708bca47929d06a5930ac9eb96cded97e6aed0296195d286",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-020"
+      ],
+      "knowledge_points": [
+        "二维数组",
+        "递推"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB06",
+          "location": "QB-PG-020",
+          "evidence_terms": [
+            "QB-PG-020"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "SC",
+      "question_number": 1,
+      "question_type": "选择题",
+      "short_signature": "合法标识符",
+      "source_text_sha256": "9f5c207b3bd1475f4a0f37085e4e512ce737894914f71c117660739826437159",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-001"
+      ],
+      "knowledge_points": [
+        "标识符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L01",
+          "location": "QB-SC-001",
+          "evidence_terms": [
+            "QB-SC-001"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "SC",
+      "question_number": 2,
+      "question_type": "选择题",
+      "short_signature": "科学计数法",
+      "source_text_sha256": "503e515f900bba915cfe2c5184e6a419bd0724b4ffaa8d8f07ebfb594880f2cf",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-055"
+      ],
+      "knowledge_points": [
+        "浮点常量"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-055",
+          "evidence_terms": [
+            "QB-SC-055"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "SC",
+      "question_number": 3,
+      "question_type": "选择题",
+      "short_signature": "整型除法",
+      "source_text_sha256": "9ac3d85418daa1ed4d4c14de3d2aa78d5d890c91e08a42693c6a9c11c3194c65",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-007"
+      ],
+      "knowledge_points": [
+        "算术运算",
+        "类型转换"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-007",
+          "evidence_terms": [
+            "QB-SC-007"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "SC",
+      "question_number": 4,
+      "question_type": "选择题",
+      "short_signature": "后缀自增",
+      "source_text_sha256": "dc9b395ef172e2be48940c05932b9f102a8d64cb76d11756a188125511f0076a",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-006"
+      ],
+      "knowledge_points": [
+        "自增运算符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L06",
+          "location": "QB-SC-006",
+          "evidence_terms": [
+            "QB-SC-006"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "SC",
+      "question_number": 5,
+      "question_type": "选择题",
+      "short_signature": "switch贯穿",
+      "source_text_sha256": "4066e64a32fc7636050f9eb7fbaaa73f2662379956dce6323219df82c0bd252e",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-010"
+      ],
+      "knowledge_points": [
+        "switch",
+        "贯穿"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L05",
+          "location": "QB-SC-010",
+          "evidence_terms": [
+            "QB-SC-010"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "SC",
+      "question_number": 6,
+      "question_type": "选择题",
+      "short_signature": "循环中的break",
+      "source_text_sha256": "462a05aa510d8f655b0daba263b4f40d735c847b6bf53bc9c21bc54f1d0a40bd",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-057"
+      ],
+      "knowledge_points": [
+        "break",
+        "嵌套循环"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "QB-SC-057",
+          "evidence_terms": [
+            "QB-SC-057"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "SC",
+      "question_number": 7,
+      "question_type": "选择题",
+      "short_signature": "switch输出",
+      "source_text_sha256": "b4cb2bf7a1fce6708305b61b4b8dad1b2d7f88d1ea7d178130a27f93dd51e67d",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-016"
+      ],
+      "knowledge_points": [
+        "switch",
+        "循环"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L05",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "switch",
+            "循环"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "SC",
+      "question_number": 8,
+      "question_type": "选择题",
+      "short_signature": "数组定义",
+      "source_text_sha256": "4d71a7c03bc0f6cf254b3d0a67a99ca829c0973b59ff9bfee53d7bb65ffe1eff",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-012"
+      ],
+      "knowledge_points": [
+        "数组定义"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L08",
+          "location": "QB-SC-012",
+          "evidence_terms": [
+            "QB-SC-012"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "SC",
+      "question_number": 9,
+      "question_type": "选择题",
+      "short_signature": "字符串占用字节",
+      "source_text_sha256": "b7d4add6272c9e7dd35592f8009bd1ea718b3b62fa2e64f7537df8d37ee9a8b0",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-015"
+      ],
+      "knowledge_points": [
+        "字符数组",
+        "字符串结束符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "字符数组",
+            "字符串结束符"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "SC",
+      "question_number": 10,
+      "question_type": "选择题",
+      "short_signature": "递归函数求值",
+      "source_text_sha256": "77f417a674121f21d254263c7348c3d9a00441f829f9c24acbbac57b00582e7a",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-046"
+      ],
+      "knowledge_points": [
+        "递归",
+        "跟踪"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L11",
+          "location": "QB-SC-046",
+          "evidence_terms": [
+            "QB-SC-046"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "SC",
+      "question_number": 11,
+      "question_type": "选择题",
+      "short_signature": "指针交换值",
+      "source_text_sha256": "7d8eb0dae53d259ea1039d960ef9197c07c197ca3ff650978d610f2e8b62a1b5",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-028"
+      ],
+      "knowledge_points": [
+        "指针参数",
+        "交换"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L13",
+          "location": "QB-TR-028",
+          "evidence_terms": [
+            "QB-TR-028"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "SC",
+      "question_number": 12,
+      "question_type": "选择题",
+      "short_signature": "函数嵌套定义",
+      "source_text_sha256": "414ede9feb99cbce097da7fb890116f74483c9631bc704bd2cd7174ce7f19029",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-018"
+      ],
+      "knowledge_points": [
+        "函数定义"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L10",
+          "location": "QB-SC-018",
+          "evidence_terms": [
+            "QB-SC-018"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "SC",
+      "question_number": 13,
+      "question_type": "选择题",
+      "short_signature": "结构体指针成员",
+      "source_text_sha256": "83581bb7b2bb951a2d306075d64ac37308cf45f6ef60c961329fa40da8eb2cc4",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-027"
+      ],
+      "knowledge_points": [
+        "结构体指针"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L15",
+          "location": "QB-SC-027",
+          "evidence_terms": [
+            "QB-SC-027"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "SC",
+      "question_number": 14,
+      "question_type": "选择题",
+      "short_signature": "结构体类型名称",
+      "source_text_sha256": "e5383a787a92b38ae89f2959875e89549ff4314cfff4c5b4259dbd60a0ca7a8c",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-028"
+      ],
+      "knowledge_points": [
+        "结构体声明"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L14",
+          "location": "QB-SC-028",
+          "evidence_terms": [
+            "QB-SC-028"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "SC",
+      "question_number": 15,
+      "question_type": "选择题",
+      "short_signature": "Windows路径字符串",
+      "source_text_sha256": "f818a51d0ecf50be326067d228bf4d9e0f1716a13f5446991db52d2853708524",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-031"
+      ],
+      "knowledge_points": [
+        "转义字符",
+        "文件路径"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L16",
+          "location": "QB-SC-031",
+          "evidence_terms": [
+            "QB-SC-031"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "FB",
+      "question_number": 1,
+      "question_type": "程序填空",
+      "short_signature": "统计大写字母",
+      "source_text_sha256": "2a04e77437b6228a2e578e72396cd10b82abc54e3585cac79244b3cff300b57b",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-001"
+      ],
+      "knowledge_points": [
+        "字符统计",
+        "数组"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB02",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "英文字母",
+            "计数器"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "FB",
+      "question_number": 2,
+      "question_type": "程序填空",
+      "short_signature": "杨辉三角递推",
+      "source_text_sha256": "4837f605c35c8398ff7bc4b59d55f11d37db4846e741134c50d904227e9bb349",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-002"
+      ],
+      "knowledge_points": [
+        "二维数组",
+        "递推"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB06",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "二维数组",
+            "递推"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "FB",
+      "question_number": 3,
+      "question_type": "程序填空",
+      "short_signature": "冒泡排序",
+      "source_text_sha256": "86a42f19b97dc891f90dfae0646ec1be137ef50a40402b8dca43a122b3a74c45",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-003"
+      ],
+      "knowledge_points": [
+        "冒泡排序",
+        "函数"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L10",
+          "location": "QB-FB-003",
+          "evidence_terms": [
+            "QB-FB-003"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "FB",
+      "question_number": 4,
+      "question_type": "程序填空",
+      "short_signature": "复制指定位置后的字符串",
+      "source_text_sha256": "cd53cb954dd0b1d0ac44cd3e8a8751afdcf719f5b32fc9c7ddcecf365dc1429e",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-004"
+      ],
+      "knowledge_points": [
+        "字符指针",
+        "字符串复制"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L13",
+          "location": "QB-FB-004",
+          "evidence_terms": [
+            "QB-FB-004"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "FB",
+      "question_number": 5,
+      "question_type": "程序填空",
+      "short_signature": "函数复制字符串",
+      "source_text_sha256": "a397772f1c253b7c38ec54e8ca24aa3e8ea05cd5542db1e423b1434cac27a3a8",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-008"
+      ],
+      "knowledge_points": [
+        "函数",
+        "字符指针"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L13",
+          "location": "QB-FB-008",
+          "evidence_terms": [
+            "QB-FB-008"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "TR",
+      "question_number": 1,
+      "question_type": "读程序写结果",
+      "short_signature": "未定义求值顺序诊断",
+      "source_text_sha256": "8f81d86c36573d85800a39c39fdf831e1be260ef367a84e5ec6a39fcc735186f",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-063"
+      ],
+      "knowledge_points": [
+        "未定义行为",
+        "求值顺序"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L06",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "未定义行为",
+            "求值顺序"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "TR",
+      "question_number": 2,
+      "question_type": "读程序写结果",
+      "short_signature": "矩阵非对角线求和",
+      "source_text_sha256": "95c986a720ac0776a0777c409aec9b3aa6db24226c2e23b1a6ac3037175f0787",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-011"
+      ],
+      "knowledge_points": [
+        "二维数组",
+        "求和"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "二维数组",
+            "同步更新"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "TR",
+      "question_number": 3,
+      "question_type": "读程序写结果",
+      "short_signature": "结构体指针字符串",
+      "source_text_sha256": "5ba1963424ed5336523b4d5072afcdfcda880126d24980914fb8a37b7350e3be",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-012"
+      ],
+      "knowledge_points": [
+        "结构体指针",
+        "字符串"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L15",
+          "location": "QB-TR-012",
+          "evidence_terms": [
+            "QB-TR-012"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "TR",
+      "question_number": 4,
+      "question_type": "读程序写结果",
+      "short_signature": "逻辑与分支",
+      "source_text_sha256": "6ee764e1b83f8abb8c21d676fbd22bf38492cd876837cab86b47e2e1e9932e2e",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-013"
+      ],
+      "knowledge_points": [
+        "逻辑与",
+        "if"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L04",
+          "location": "QB-TR-013",
+          "evidence_terms": [
+            "QB-TR-013"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "TR",
+      "question_number": 5,
+      "question_type": "读程序写结果",
+      "short_signature": "偶数下标转大写",
+      "source_text_sha256": "4038313a044f0cea0ac03a00f2c0178fbebd2639bc0e9d96fad309721d02c7ae",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-014"
+      ],
+      "knowledge_points": [
+        "字符串",
+        "下标"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "字符",
+            "大小写"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "PG",
+      "question_number": 1,
+      "question_type": "编程题",
+      "short_signature": "一元二次方程",
+      "source_text_sha256": "38bf7127e1cdf792df445919e5743745d765c071a24b6480cd9ecb137e60010e",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-001"
+      ],
+      "knowledge_points": [
+        "多分支",
+        "判别式",
+        "浮点运算"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L05",
+          "location": "QB-PG-001",
+          "evidence_terms": [
+            "QB-PG-001"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "PG",
+      "question_number": 2,
+      "question_type": "编程题",
+      "short_signature": "日期是当年第几天",
+      "source_text_sha256": "58363420bd174a62fdeaed2e1164dfcb51c70649ebd9c157d853d662539947f1",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-005"
+      ],
+      "knowledge_points": [
+        "日期",
+        "闰年",
+        "数组"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB01",
+          "location": "QB-PG-005",
+          "evidence_terms": [
+            "QB-PG-005"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "PG",
+      "question_number": 3,
+      "question_type": "编程题",
+      "short_signature": "递归生成斐波那契数组",
+      "source_text_sha256": "b8cd5c57e64c2e8900e7bdabbffb6b4163e99bd3609c89eb37acca8f59f40961",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-028"
+      ],
+      "knowledge_points": [
+        "递归",
+        "数组"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L11",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "递归",
+            "20项"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-03",
+      "section": "PG",
+      "question_number": 4,
+      "question_type": "编程题",
+      "short_signature": "十个整数冒泡排序",
+      "source_text_sha256": "56488c6ed568ecc8e5cc8d7a32abdcef29deeb93a3fd7258d2e86fb9e2bebb0e",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-004"
+      ],
+      "knowledge_points": [
+        "冒泡排序"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L08",
+          "location": "QB-PG-004",
+          "evidence_terms": [
+            "QB-PG-004"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "SC",
+      "question_number": 1,
+      "question_type": "选择题",
+      "short_signature": "转义字符表示",
+      "source_text_sha256": "4253b0f7f11d622e4f840ea1d9393a1d098806330eab42e6cf25c14a9f2e66fe",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-037"
+      ],
+      "knowledge_points": [
+        "转义字符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-037",
+          "evidence_terms": [
+            "QB-SC-037"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "SC",
+      "question_number": 2,
+      "question_type": "选择题",
+      "short_signature": "字符串常量",
+      "source_text_sha256": "1f36510406efde4c358afcb5fd328bcc3b27a14b5ce7c79b5ef62b2c5fdbc42d",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-004"
+      ],
+      "knowledge_points": [
+        "字符串常量"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-004",
+          "evidence_terms": [
+            "QB-SC-004"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "SC",
+      "question_number": 3,
+      "question_type": "选择题",
+      "short_signature": "scanf格式匹配",
+      "source_text_sha256": "454d398384c24dbe4b1b84479b48d707203ce22f970bcf948510b02fe569cefb",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-036"
+      ],
+      "knowledge_points": [
+        "scanf",
+        "格式串"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-036",
+          "evidence_terms": [
+            "QB-SC-036"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "SC",
+      "question_number": 4,
+      "question_type": "选择题",
+      "short_signature": "取余运算数",
+      "source_text_sha256": "c76eb97a1ab0df19b05530139508e040c97d17a512bce77127d8063442bc4d45",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-008"
+      ],
+      "knowledge_points": [
+        "运算符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L03",
+          "location": "QB-SC-008",
+          "evidence_terms": [
+            "QB-SC-008"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "SC",
+      "question_number": 5,
+      "question_type": "选择题",
+      "short_signature": "逻辑非",
+      "source_text_sha256": "0d6956c78ed59393389718b73d24db2c8cef7bcc880d4a291cb534408bf3f342",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-039"
+      ],
+      "knowledge_points": [
+        "逻辑运算"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L04",
+          "location": "QB-SC-039",
+          "evidence_terms": [
+            "QB-SC-039"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "SC",
+      "question_number": 6,
+      "question_type": "选择题",
+      "short_signature": "continue死循环",
+      "source_text_sha256": "a4db80c8cc79a7fe31447e691e1d44d8397c3ddea2d00233cb6c7e75558f3228",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-034"
+      ],
+      "knowledge_points": [
+        "continue",
+        "循环控制"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "QB-SC-034",
+          "evidence_terms": [
+            "QB-SC-034"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "SC",
+      "question_number": 7,
+      "question_type": "选择题",
+      "short_signature": "continue死循环",
+      "source_text_sha256": "144a56fad8215a788363160338428c3c2932ca1a20c53f2261f972b24cc54eaa",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-034"
+      ],
+      "knowledge_points": [
+        "continue",
+        "循环控制"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "QB-SC-034",
+          "evidence_terms": [
+            "QB-SC-034"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "SC",
+      "question_number": 8,
+      "question_type": "选择题",
+      "short_signature": "数组定义",
+      "source_text_sha256": "759e8ea86d6f6c29a51046c1c0d5cc3c472896a3678db8729016ebb5f27c8c03",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-012"
+      ],
+      "knowledge_points": [
+        "数组定义"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L08",
+          "location": "QB-SC-012",
+          "evidence_terms": [
+            "QB-SC-012"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "SC",
+      "question_number": 9,
+      "question_type": "选择题",
+      "short_signature": "数组下标类型",
+      "source_text_sha256": "6104549cd5b31c70cf54a16f1f5d9e0945fcee655f967716a8fb2af61db7dc80",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-013"
+      ],
+      "knowledge_points": [
+        "数组下标"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L08",
+          "location": "QB-SC-013",
+          "evidence_terms": [
+            "QB-SC-013"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "SC",
+      "question_number": 10,
+      "question_type": "选择题",
+      "short_signature": "递归函数求值",
+      "source_text_sha256": "b730e86b4cf5da9a363a78715a73dcbb5ecbfe75562c28f8630d86ab1a6ff6f4",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-046"
+      ],
+      "knowledge_points": [
+        "递归",
+        "跟踪"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L11",
+          "location": "QB-SC-046",
+          "evidence_terms": [
+            "QB-SC-046"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "SC",
+      "question_number": 11,
+      "question_type": "选择题",
+      "short_signature": "二级指针解引用",
+      "source_text_sha256": "bbf199964e0e1727e1a3ceaaf2e66c686629743f1e6743b70e7d44844a23e5ad",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-024"
+      ],
+      "knowledge_points": [
+        "二级指针"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L12",
+          "location": "QB-SC-024",
+          "evidence_terms": [
+            "QB-SC-024"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "SC",
+      "question_number": 12,
+      "question_type": "选择题",
+      "short_signature": "指针偏移取字符",
+      "source_text_sha256": "1af4d5518895e1c37a38d2dd072e932e67a91be073dfbd9e9af0f465e71e4810",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-021"
+      ],
+      "knowledge_points": [
+        "字符指针",
+        "指针运算"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L12",
+          "location": "QB-SC-021",
+          "evidence_terms": [
+            "QB-SC-021"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "SC",
+      "question_number": 13,
+      "question_type": "选择题",
+      "short_signature": "结构体成员访问",
+      "source_text_sha256": "2a8783b891863131ef867842b2c1a6b32e5062bfca62bc0815343f32a98a7197",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-026"
+      ],
+      "knowledge_points": [
+        "结构体成员"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L15",
+          "location": "QB-SC-026",
+          "evidence_terms": [
+            "QB-SC-026"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "SC",
+      "question_number": 14,
+      "question_type": "选择题",
+      "short_signature": "结构体类型名称",
+      "source_text_sha256": "8df6a93e8f997d81d0bb12b33402568c4cf59bd074fd41b1218a505485cd785b",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-028"
+      ],
+      "knowledge_points": [
+        "结构体声明"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L14",
+          "location": "QB-SC-028",
+          "evidence_terms": [
+            "QB-SC-028"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "SC",
+      "question_number": 15,
+      "question_type": "选择题",
+      "short_signature": "文件指针定义",
+      "source_text_sha256": "8ed84f31c88ab6e2d0fcc4ace4cf7b5f79a351006bd3de66e83a0ffcf05f4f4d",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-029"
+      ],
+      "knowledge_points": [
+        "文件指针"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L16",
+          "location": "QB-SC-029",
+          "evidence_terms": [
+            "QB-SC-029"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "FB",
+      "question_number": 1,
+      "question_type": "程序填空",
+      "short_signature": "数组逆序",
+      "source_text_sha256": "dae1ee152c458c327548826388d45f7e41d29fc8d646c63a3e6a5752ae168181",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-005"
+      ],
+      "knowledge_points": [
+        "数组逆序"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L08",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "逆序数组",
+            "交换"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "FB",
+      "question_number": 2,
+      "question_type": "程序填空",
+      "short_signature": "字符串连接",
+      "source_text_sha256": "56f8bb650bafc5e2fe3d00657308e932a11b89f6bf680ddf95af14e800bb4308",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-006"
+      ],
+      "knowledge_points": [
+        "字符串连接"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "QB-FB-006",
+          "evidence_terms": [
+            "QB-FB-006"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "FB",
+      "question_number": 3,
+      "question_type": "程序填空",
+      "short_signature": "字符分类统计",
+      "source_text_sha256": "f26ad7ca4c1bff5c4ba2fa0ee51241fe4dcc3ca23066f1a274b132bb80263e72",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-007"
+      ],
+      "knowledge_points": [
+        "字符分类",
+        "计数"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB02",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "英文字母",
+            "计数器"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "FB",
+      "question_number": 4,
+      "question_type": "程序填空",
+      "short_signature": "函数复制字符串",
+      "source_text_sha256": "05bdf6b5ff659cd2c9f1f57b29886fcdfe38fcdfeb3d8658a55db4050d8c01da",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-008"
+      ],
+      "knowledge_points": [
+        "函数",
+        "字符指针"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L13",
+          "location": "QB-FB-008",
+          "evidence_terms": [
+            "QB-FB-008"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "FB",
+      "question_number": 5,
+      "question_type": "程序填空",
+      "short_signature": "逐字符写文件",
+      "source_text_sha256": "96ed6e16eec316da11703ab216925741faccd1afd23241b34802a3e0fbc92bee",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-019"
+      ],
+      "knowledge_points": [
+        "文件写入"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L16",
+          "location": "QB-FB-019",
+          "evidence_terms": [
+            "QB-FB-019"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "TR",
+      "question_number": 1,
+      "question_type": "读程序写结果",
+      "short_signature": "二维字符数组后缀",
+      "source_text_sha256": "c0514064337f610e9275a1427fa868f27727ad06fe23e017e0aeaacaacaaacba",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-009"
+      ],
+      "knowledge_points": [
+        "二维字符数组",
+        "字符串"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "QB-TR-009",
+          "evidence_terms": [
+            "QB-TR-009"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "TR",
+      "question_number": 2,
+      "question_type": "读程序写结果",
+      "short_signature": "字符替换下标",
+      "source_text_sha256": "713a22f310d18ab09fec5a6472e2194b9d4f3299a48cac1f376db6df2f009e85",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-021"
+      ],
+      "knowledge_points": [
+        "字符串",
+        "字符替换"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "字符",
+            "大小写"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "TR",
+      "question_number": 3,
+      "question_type": "读程序写结果",
+      "short_signature": "结构体指针字符串",
+      "source_text_sha256": "e39da14ac5c802803d98dda95235fc640d94512da150f11f683f0a454c8165d4",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-012"
+      ],
+      "knowledge_points": [
+        "结构体指针",
+        "字符串"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L15",
+          "location": "QB-TR-012",
+          "evidence_terms": [
+            "QB-TR-012"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "TR",
+      "question_number": 4,
+      "question_type": "读程序写结果",
+      "short_signature": "数组条件递推",
+      "source_text_sha256": "f37bf40395b0eebe7febc17ea8c5645cfe61a358be0befc9ec305e402a8bb5e7",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-024"
+      ],
+      "knowledge_points": [
+        "数组",
+        "递推"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "数组",
+            "状态更新"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "TR",
+      "question_number": 5,
+      "question_type": "读程序写结果",
+      "short_signature": "二维数组筛选求和",
+      "source_text_sha256": "393b4306a16a6fbb730e454d55e137fb79ab4223c0e26f643b962b350c61a183",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-015"
+      ],
+      "knowledge_points": [
+        "二维数组",
+        "循环"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "二维数组",
+            "循环"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "PG",
+      "question_number": 1,
+      "question_type": "编程题",
+      "short_signature": "三阶矩阵转置",
+      "source_text_sha256": "da1d091101b6f84df2db235e2bfeeb4f68e69cc456b4906ec5f458196eb85fb9",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-021"
+      ],
+      "knowledge_points": [
+        "二维数组",
+        "矩阵转置"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB04",
+          "location": "QB-PG-021",
+          "evidence_terms": [
+            "QB-PG-021"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "PG",
+      "question_number": 2,
+      "question_type": "编程题",
+      "short_signature": "数字字符串转换",
+      "source_text_sha256": "590e11970aff86f77683817dfb67613fae110cb92622791eb6dcc97499d05b4e",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-007"
+      ],
+      "knowledge_points": [
+        "字符串",
+        "整数转换"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB05",
+          "location": "QB-PG-007",
+          "evidence_terms": [
+            "QB-PG-007"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "PG",
+      "question_number": 3,
+      "question_type": "编程题",
+      "short_signature": "递归阶乘",
+      "source_text_sha256": "238c36dd5f728a3d855ccc1c383922ad0eb8ac996aff2b79d92642c953c605be",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-018"
+      ],
+      "knowledge_points": [
+        "递归",
+        "阶乘"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L11",
+          "location": "QB-PG-018",
+          "evidence_terms": [
+            "QB-PG-018"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-04",
+      "section": "PG",
+      "question_number": 4,
+      "question_type": "编程题",
+      "short_signature": "选择法排序",
+      "source_text_sha256": "2deed1903d1063366bfd488e8d8446ec8dcb4dd4afb908cb383a45c0b764595f",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-008"
+      ],
+      "knowledge_points": [
+        "选择排序"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "QB-PG-008",
+          "evidence_terms": [
+            "QB-PG-008"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "SC",
+      "question_number": 1,
+      "question_type": "选择题",
+      "short_signature": "转义字符表示",
+      "source_text_sha256": "642832b4efe978bebc47e2692c3a5934ec423bec5320923198e7a4081f5900f0",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-037"
+      ],
+      "knowledge_points": [
+        "转义字符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-037",
+          "evidence_terms": [
+            "QB-SC-037"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "SC",
+      "question_number": 2,
+      "question_type": "选择题",
+      "short_signature": "合法标识符",
+      "source_text_sha256": "ae85da0d7261b459b0cdcbcb67544f65a16daeb9c9b24d3c1f6e696b54a49c0c",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-001"
+      ],
+      "knowledge_points": [
+        "标识符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L01",
+          "location": "QB-SC-001",
+          "evidence_terms": [
+            "QB-SC-001"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "SC",
+      "question_number": 3,
+      "question_type": "选择题",
+      "short_signature": "函数嵌套定义",
+      "source_text_sha256": "c706ac584b4b9437f08ccd0fef64b0ac7023cde0bb6db5a2a92a0499190689ae",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-018"
+      ],
+      "knowledge_points": [
+        "函数定义"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L10",
+          "location": "QB-SC-018",
+          "evidence_terms": [
+            "QB-SC-018"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "SC",
+      "question_number": 4,
+      "question_type": "选择题",
+      "short_signature": "字符串常量",
+      "source_text_sha256": "62f7e8606827d49b6689d9fc4538dda1a7c23a3b9be07ae3cbc62afe6a18e103",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-004"
+      ],
+      "knowledge_points": [
+        "字符串常量"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-004",
+          "evidence_terms": [
+            "QB-SC-004"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "SC",
+      "question_number": 5,
+      "question_type": "选择题",
+      "short_signature": "字符的存储",
+      "source_text_sha256": "68dae1acbe4093cfad373594b2fd915991dc5ff543211de0115a0c88841d069a",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-005"
+      ],
+      "knowledge_points": [
+        "字符型",
+        "编码"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-005",
+          "evidence_terms": [
+            "QB-SC-005"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "SC",
+      "question_number": 6,
+      "question_type": "选择题",
+      "short_signature": "后缀自增",
+      "source_text_sha256": "f526d32a5d3a1edfb31959d56327c7cdb4d785ec5697ae5f2bd9c8352f6a0a94",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-006"
+      ],
+      "knowledge_points": [
+        "自增运算符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L06",
+          "location": "QB-SC-006",
+          "evidence_terms": [
+            "QB-SC-006"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "SC",
+      "question_number": 7,
+      "question_type": "选择题",
+      "short_signature": "未定义求值顺序诊断",
+      "source_text_sha256": "f611acbdf84607e9a82dbde787413fb9685149fbfebe7f05f3c4e055ca770bf0",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-063"
+      ],
+      "knowledge_points": [
+        "未定义行为",
+        "求值顺序"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L06",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "未定义行为",
+            "求值顺序"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "SC",
+      "question_number": 8,
+      "question_type": "选择题",
+      "short_signature": "取余运算数",
+      "source_text_sha256": "d986d79fc3fa35835e279c4052870737bcd07d4c42a757dfc92dbd8063a9b3ce",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-008"
+      ],
+      "knowledge_points": [
+        "运算符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L03",
+          "location": "QB-SC-008",
+          "evidence_terms": [
+            "QB-SC-008"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "SC",
+      "question_number": 9,
+      "question_type": "选择题",
+      "short_signature": "读取含空格文本",
+      "source_text_sha256": "a042830a001700fdbe3862fdeaab44df6dd8c44a54e15394389b0cd23eb05d09",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-038"
+      ],
+      "knowledge_points": [
+        "字符串输入",
+        "安全输入"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "gets()",
+            "含空格"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "SC",
+      "question_number": 10,
+      "question_type": "选择题",
+      "short_signature": "条件表达式真值",
+      "source_text_sha256": "ecb222cbde1b1e41470a208c690fcaf9cba9eeeb1364f93c588f76ae74d3725a",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-009"
+      ],
+      "knowledge_points": [
+        "if",
+        "真值"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L04",
+          "location": "QB-SC-009",
+          "evidence_terms": [
+            "QB-SC-009"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "SC",
+      "question_number": 11,
+      "question_type": "选择题",
+      "short_signature": "switch贯穿",
+      "source_text_sha256": "672440cc063ae68dbd5b988a90202c0dcf15bfe4fcaa865962209abfefb03e6b",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-010"
+      ],
+      "knowledge_points": [
+        "switch",
+        "贯穿"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L05",
+          "location": "QB-SC-010",
+          "evidence_terms": [
+            "QB-SC-010"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "SC",
+      "question_number": 12,
+      "question_type": "选择题",
+      "short_signature": "break与continue",
+      "source_text_sha256": "505e5b9f92df901a513c27a2ce53b549d588fc5f8af6241006aa0c9b0eda1c5c",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-011"
+      ],
+      "knowledge_points": [
+        "break",
+        "continue"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "QB-SC-011",
+          "evidence_terms": [
+            "QB-SC-011"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "SC",
+      "question_number": 13,
+      "question_type": "选择题",
+      "short_signature": "数组定义",
+      "source_text_sha256": "84a19cb98d0cbae76c9b23445ffed01f3eca9175ce6f7509b4c07a96afc55fad",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-012"
+      ],
+      "knowledge_points": [
+        "数组定义"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L08",
+          "location": "QB-SC-012",
+          "evidence_terms": [
+            "QB-SC-012"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "SC",
+      "question_number": 14,
+      "question_type": "选择题",
+      "short_signature": "数组下标类型",
+      "source_text_sha256": "00150866088c19e1008a44e174663f23244facc413a0cc0b93598c9f70623bbc",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-013"
+      ],
+      "knowledge_points": [
+        "数组下标"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L08",
+          "location": "QB-SC-013",
+          "evidence_terms": [
+            "QB-SC-013"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "SC",
+      "question_number": 15,
+      "question_type": "选择题",
+      "short_signature": "数组连续存储",
+      "source_text_sha256": "911d4e4cbb27a94cbd963a7cd74a10e84d45454372d1f0b8bee4455c06bbd9e5",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-042"
+      ],
+      "knowledge_points": [
+        "数组存储"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L08",
+          "location": "QB-SC-042",
+          "evidence_terms": [
+            "QB-SC-042"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "FB",
+      "question_number": 1,
+      "question_type": "程序填空",
+      "short_signature": "字符大小写转换",
+      "source_text_sha256": "3fee3d76d64beeba02e414a001386db7be8262be538ab8fcf3766ebc43bf351d",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-017"
+      ],
+      "knowledge_points": [
+        "字符编码"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-FB-017",
+          "evidence_terms": [
+            "QB-FB-017"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "FB",
+      "question_number": 2,
+      "question_type": "程序填空",
+      "short_signature": "求数组平均值",
+      "source_text_sha256": "23e880190875f20d1053cc1c5d652955ff9a62382acf400c410b1bc25c678fc4",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-009"
+      ],
+      "knowledge_points": [
+        "数组",
+        "平均值"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L08",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "数组",
+            "maximum"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "FB",
+      "question_number": 3,
+      "question_type": "程序填空",
+      "short_signature": "统计大写字母",
+      "source_text_sha256": "2abe6273e8d2111265941564022779a8c5162c775cf668addd36dd5e8eafbaab",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-001"
+      ],
+      "knowledge_points": [
+        "字符统计",
+        "数组"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB02",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "英文字母",
+            "计数器"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "FB",
+      "question_number": 4,
+      "question_type": "程序填空",
+      "short_signature": "统计正数",
+      "source_text_sha256": "aa1285c21009b4ea0a34cbc66b0e29cb566bd078e0ae6cbe7dffd216ea1dab1b",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-010"
+      ],
+      "knowledge_points": [
+        "条件",
+        "数组"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L08",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "条件",
+            "数组"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "FB",
+      "question_number": 5,
+      "question_type": "程序填空",
+      "short_signature": "数组逆序",
+      "source_text_sha256": "7afe93312fbed142d2d3eb81d12219aaeb0be35157cab2810785c55b7b4ef269",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-005"
+      ],
+      "knowledge_points": [
+        "数组逆序"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L08",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "逆序数组",
+            "交换"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "TR",
+      "question_number": 1,
+      "question_type": "读程序写结果",
+      "short_signature": "赋值表达式作条件",
+      "source_text_sha256": "c84e95792fcaf7f2fb550111b82a385c684f38fecbc72b6d1bd689cad707f499",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-001"
+      ],
+      "knowledge_points": [
+        "赋值表达式",
+        "if"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L04",
+          "location": "QB-TR-001",
+          "evidence_terms": [
+            "QB-TR-001"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "TR",
+      "question_number": 2,
+      "question_type": "读程序写结果",
+      "short_signature": "嵌套if与后续语句",
+      "source_text_sha256": "db3a8f4db5c42178f6fccd1ea4376f263827469895c85417b418d6f2df84f725",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-002"
+      ],
+      "knowledge_points": [
+        "嵌套if"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L05",
+          "location": "QB-TR-002",
+          "evidence_terms": [
+            "QB-TR-002"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "TR",
+      "question_number": 3,
+      "question_type": "读程序写结果",
+      "short_signature": "循环中的自减与continue",
+      "source_text_sha256": "9fcd4afdfb77921a44fe31ac1573e32f62b72e71f79bff793167f070b80bc6fe",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-003"
+      ],
+      "knowledge_points": [
+        "for",
+        "continue",
+        "自减"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "QB-TR-003",
+          "evidence_terms": [
+            "QB-TR-003"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "TR",
+      "question_number": 4,
+      "question_type": "读程序写结果",
+      "short_signature": "字符结束标志",
+      "source_text_sha256": "3c0fc6cdd1ae6a041088cdab60312864b77e158ef41bb0b1dcd4419800983e9a",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-004"
+      ],
+      "knowledge_points": [
+        "字符输入",
+        "循环"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "getchar()",
+            "字符"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "TR",
+      "question_number": 5,
+      "question_type": "读程序写结果",
+      "short_signature": "数组累加",
+      "source_text_sha256": "59b69d43f7c6f68f348bd76dbdbfa137261d812ef3422161160f0db51891fd91",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-005"
+      ],
+      "knowledge_points": [
+        "数组",
+        "循环"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L08",
+          "location": "QB-TR-005",
+          "evidence_terms": [
+            "QB-TR-005"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "PG",
+      "question_number": 1,
+      "question_type": "编程题",
+      "short_signature": "一元二次方程",
+      "source_text_sha256": "0ad9024284c73c903f1d279bdbbf7d13d7865b72b1dd84afa46df59ae8f0a8ef",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-001"
+      ],
+      "knowledge_points": [
+        "多分支",
+        "判别式",
+        "浮点运算"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L05",
+          "location": "QB-PG-001",
+          "evidence_terms": [
+            "QB-PG-001"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "PG",
+      "question_number": 2,
+      "question_type": "编程题",
+      "short_signature": "十个数中的最大值",
+      "source_text_sha256": "3f898ac835c090d79e4d01d3fe34eadf66ad2e2623456033bb2885b7f1710987",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-002"
+      ],
+      "knowledge_points": [
+        "数组",
+        "最大值"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L08",
+          "location": "QB-PG-002",
+          "evidence_terms": [
+            "QB-PG-002"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "PG",
+      "question_number": 3,
+      "question_type": "编程题",
+      "short_signature": "判断闰年",
+      "source_text_sha256": "003ec047ca1a20e07d4b294a82183f5960fb29d0b31ef6285e64ebe7115bfd31",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-003"
+      ],
+      "knowledge_points": [
+        "条件",
+        "闰年"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L04",
+          "location": "QB-PG-003",
+          "evidence_terms": [
+            "QB-PG-003"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-05",
+      "section": "PG",
+      "question_number": 4,
+      "question_type": "编程题",
+      "short_signature": "十个整数冒泡排序",
+      "source_text_sha256": "1eece04b4ed0a42e57b3b0cdc119074360df19f392c0f7781c9c0f68ae3f68eb",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-004"
+      ],
+      "knowledge_points": [
+        "冒泡排序"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L08",
+          "location": "QB-PG-004",
+          "evidence_terms": [
+            "QB-PG-004"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "SC",
+      "question_number": 1,
+      "question_type": "选择题",
+      "short_signature": "合法常量",
+      "source_text_sha256": "096a163b1d9d713c2e3bcb7b7a2f8b453ec46e3385baac5249c3a362e1f171e8",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-003"
+      ],
+      "knowledge_points": [
+        "常量",
+        "转义字符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-003",
+          "evidence_terms": [
+            "QB-SC-003"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "SC",
+      "question_number": 2,
+      "question_type": "选择题",
+      "short_signature": "未定义求值顺序诊断",
+      "source_text_sha256": "19a7070297891bf50e4bee379fa41b3ea638d89fec2c6c37c675e323c574b041",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-063"
+      ],
+      "knowledge_points": [
+        "未定义行为",
+        "求值顺序"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L06",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "未定义行为",
+            "求值顺序"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "SC",
+      "question_number": 3,
+      "question_type": "选择题",
+      "short_signature": "科学计数法",
+      "source_text_sha256": "ae93e4ac06c86992b528cb4315ce5be8caf167554efd19a26dff82e9ce372a7c",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-055"
+      ],
+      "knowledge_points": [
+        "浮点常量"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-055",
+          "evidence_terms": [
+            "QB-SC-055"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "SC",
+      "question_number": 4,
+      "question_type": "选择题",
+      "short_signature": "整型除法",
+      "source_text_sha256": "a0843e9f64bc508f4743ccc116d62ee55ad77e4325fc0ff5248ceae2edaf0fa5",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-007"
+      ],
+      "knowledge_points": [
+        "算术运算",
+        "类型转换"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-007",
+          "evidence_terms": [
+            "QB-SC-007"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "SC",
+      "question_number": 5,
+      "question_type": "选择题",
+      "short_signature": "嵌套if与后续语句",
+      "source_text_sha256": "4c0f6b9c6228f4b0783ff4b1cfc48521969c1accd0fbb793ad1f785351480485",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-002"
+      ],
+      "knowledge_points": [
+        "嵌套if"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L05",
+          "location": "QB-TR-002",
+          "evidence_terms": [
+            "QB-TR-002"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "SC",
+      "question_number": 6,
+      "question_type": "选择题",
+      "short_signature": "continue死循环",
+      "source_text_sha256": "15ad15d3ecaefbe865cf9da293fd75922acbabca92ba1429b7f1953aa0f136af",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-034"
+      ],
+      "knowledge_points": [
+        "continue",
+        "循环控制"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "QB-SC-034",
+          "evidence_terms": [
+            "QB-SC-034"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "SC",
+      "question_number": 7,
+      "question_type": "选择题",
+      "short_signature": "continue死循环",
+      "source_text_sha256": "1e06c8a8db3043efa02866359cb829b31a3142426a07db78f8367ba7dd05dad8",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-034"
+      ],
+      "knowledge_points": [
+        "continue",
+        "循环控制"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "QB-SC-034",
+          "evidence_terms": [
+            "QB-SC-034"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "SC",
+      "question_number": 8,
+      "question_type": "选择题",
+      "short_signature": "关键字不能作标识符",
+      "source_text_sha256": "8b180857919828d94e10074be6342e9bb1b9cc2781b7c75132930c1528e562e8",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-002"
+      ],
+      "knowledge_points": [
+        "标识符",
+        "关键字"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L01",
+          "location": "QB-SC-002",
+          "evidence_terms": [
+            "QB-SC-002"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "SC",
+      "question_number": 9,
+      "question_type": "选择题",
+      "short_signature": "二维数组边界",
+      "source_text_sha256": "70a8855a6bbe97065bdfa27e972a2e97f4f14e4867d6afc0895d9baa63bfbda2",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-014"
+      ],
+      "knowledge_points": [
+        "二维数组",
+        "边界"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "QB-SC-014",
+          "evidence_terms": [
+            "QB-SC-014"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "SC",
+      "question_number": 10,
+      "question_type": "选择题",
+      "short_signature": "二维数组线性位置",
+      "source_text_sha256": "717ad6f202738ae1bc0b35ee1ca38299a88886a15c06edc4c569a34a3340b4e3",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-047"
+      ],
+      "knowledge_points": [
+        "二维数组"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "QB-SC-047",
+          "evidence_terms": [
+            "QB-SC-047"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "SC",
+      "question_number": 11,
+      "question_type": "选择题",
+      "short_signature": "字符串占用字节",
+      "source_text_sha256": "bb01250c7bfaa4172b261a4c22393777d0b7aca07ac25f02cf177bb44502f74a",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-015"
+      ],
+      "knowledge_points": [
+        "字符数组",
+        "字符串结束符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "字符数组",
+            "字符串结束符"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "SC",
+      "question_number": 12,
+      "question_type": "选择题",
+      "short_signature": "字符串结束符位置",
+      "source_text_sha256": "fd955f20dd093da5191808913c2c6dd188b0ef1fdfe1f9064ec3e8fa6d11a466",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-016"
+      ],
+      "knowledge_points": [
+        "字符串结束符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "字符串结束符"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "SC",
+      "question_number": 13,
+      "question_type": "选择题",
+      "short_signature": "函数嵌套定义",
+      "source_text_sha256": "1c24d547d074a0130c8750c02af2e340037f5afe632771170b95701c5e56b5f4",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-018"
+      ],
+      "knowledge_points": [
+        "函数定义"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L10",
+          "location": "QB-SC-018",
+          "evidence_terms": [
+            "QB-SC-018"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "SC",
+      "question_number": 14,
+      "question_type": "选择题",
+      "short_signature": "函数嵌套定义",
+      "source_text_sha256": "b957cea4e11235b38800b7c888023f87653d15347cdff0caa7d4ebd95084a2bd",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-018"
+      ],
+      "knowledge_points": [
+        "函数定义"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L10",
+          "location": "QB-SC-018",
+          "evidence_terms": [
+            "QB-SC-018"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "SC",
+      "question_number": 15,
+      "question_type": "选择题",
+      "short_signature": "函数返回值",
+      "source_text_sha256": "d981a909487836239b40c20634ae612109c69c76fee8b9d7fab8628103565e8d",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-043"
+      ],
+      "knowledge_points": [
+        "return"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L10",
+          "location": "QB-SC-043",
+          "evidence_terms": [
+            "QB-SC-043"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "FB",
+      "question_number": 1,
+      "question_type": "程序填空",
+      "short_signature": "字符大小写转换",
+      "source_text_sha256": "47dc52a9ae868887d5220edaf2d5c080bd4744c5f551af7254dbe0091efb5ebc",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-017"
+      ],
+      "knowledge_points": [
+        "字符编码"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-FB-017",
+          "evidence_terms": [
+            "QB-FB-017"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "FB",
+      "question_number": 2,
+      "question_type": "程序填空",
+      "short_signature": "判断素数",
+      "source_text_sha256": "1b6b28deb21912c49ac97c0e5cdec89c07f09dd8a662ee2f42107aff629dcbfb",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-011"
+      ],
+      "knowledge_points": [
+        "素数",
+        "循环"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L06",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "素数",
+            "循环"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "FB",
+      "question_number": 3,
+      "question_type": "程序填空",
+      "short_signature": "输出区间素数",
+      "source_text_sha256": "a3ff470c8dace1cc1b28e9db75717ad9ff162906635f700d03109d9756c91ec1",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-012"
+      ],
+      "knowledge_points": [
+        "素数",
+        "嵌套循环"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "QB-FB-012",
+          "evidence_terms": [
+            "QB-FB-012"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "FB",
+      "question_number": 4,
+      "question_type": "程序填空",
+      "short_signature": "冒泡排序",
+      "source_text_sha256": "1a8c0586fe013d5e3509b8f70e3698117ad9b7ba5be9819e0fc6c38227354e37",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-003"
+      ],
+      "knowledge_points": [
+        "冒泡排序",
+        "函数"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L10",
+          "location": "QB-FB-003",
+          "evidence_terms": [
+            "QB-FB-003"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "FB",
+      "question_number": 5,
+      "question_type": "程序填空",
+      "short_signature": "调和级数分组求和",
+      "source_text_sha256": "706c2270e80ebd6239e48fe455ef85b7c51975b2bb65e4abbaf27206be2444db",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-013"
+      ],
+      "knowledge_points": [
+        "函数",
+        "浮点运算"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L10",
+          "location": "QB-FB-013",
+          "evidence_terms": [
+            "QB-FB-013"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "TR",
+      "question_number": 1,
+      "question_type": "读程序写结果",
+      "short_signature": "多分支最大值",
+      "source_text_sha256": "aea6584f6e220e6c3b5a1f25b1b6b7e0666488147de9ff0a766e0124c5e3b719",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-006"
+      ],
+      "knowledge_points": [
+        "顺序if"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L04",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "单分支",
+            "条件为真"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "TR",
+      "question_number": 2,
+      "question_type": "读程序写结果",
+      "short_signature": "悬空else",
+      "source_text_sha256": "5fd2d8f4a4f34559281d8a054e838ca7ce611e9ce9d346f0c732d829adb4b72d",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-007"
+      ],
+      "knowledge_points": [
+        "悬空else"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L05",
+          "location": "QB-TR-007",
+          "evidence_terms": [
+            "QB-TR-007"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "TR",
+      "question_number": 3,
+      "question_type": "读程序写结果",
+      "short_signature": "带符号数字转换",
+      "source_text_sha256": "9b9f3f1c76f2be1240ed6b917bcf71afe9f93e07162ca9f97be2e21a15f326bb",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-008"
+      ],
+      "knowledge_points": [
+        "字符串",
+        "数值转换"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB05",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "字符串",
+            "逐位转换"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "TR",
+      "question_number": 4,
+      "question_type": "读程序写结果",
+      "short_signature": "二维字符数组后缀",
+      "source_text_sha256": "2d4df3e5dfeec50d61fc5b87c877b7e082dd74448845e78614b0379d0fae9934",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-009"
+      ],
+      "knowledge_points": [
+        "二维字符数组",
+        "字符串"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "QB-TR-009",
+          "evidence_terms": [
+            "QB-TR-009"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "TR",
+      "question_number": 5,
+      "question_type": "读程序写结果",
+      "short_signature": "递推数组",
+      "source_text_sha256": "bdfd5452eba1c5a52896e55ae1c02429a27b878308e37898550e25faf31db3b2",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-010"
+      ],
+      "knowledge_points": [
+        "数组",
+        "递推"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB06",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "数组",
+            "递推"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "PG",
+      "question_number": 1,
+      "question_type": "编程题",
+      "short_signature": "日期是当年第几天",
+      "source_text_sha256": "da67fccf88f9ef622672f8f1832f2033958a1bd2cd6ce092a2b31a6bdc5dd012",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-005"
+      ],
+      "knowledge_points": [
+        "日期",
+        "闰年",
+        "数组"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB01",
+          "location": "QB-PG-005",
+          "evidence_terms": [
+            "QB-PG-005"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "PG",
+      "question_number": 2,
+      "question_type": "编程题",
+      "short_signature": "判断整数是否为素数",
+      "source_text_sha256": "af07f91b8b024bdc953963d6348812dd4c29ca798ed561429e8b6ee8ddeb93ab",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-006"
+      ],
+      "knowledge_points": [
+        "素数",
+        "试除"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L06",
+          "location": "QB-PG-006",
+          "evidence_terms": [
+            "QB-PG-006"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "PG",
+      "question_number": 3,
+      "question_type": "编程题",
+      "short_signature": "数字字符串转换",
+      "source_text_sha256": "983bf2ed06f61dd7872710c4f58fb21d49afbb532f9bde8e14b13767622b813a",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-007"
+      ],
+      "knowledge_points": [
+        "字符串",
+        "整数转换"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB05",
+          "location": "QB-PG-007",
+          "evidence_terms": [
+            "QB-PG-007"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-06",
+      "section": "PG",
+      "question_number": 4,
+      "question_type": "编程题",
+      "short_signature": "选择法排序",
+      "source_text_sha256": "34a304fc81909b411e629ca0673715e7d3c5534a21579d270109d73d036ac65d",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-008"
+      ],
+      "knowledge_points": [
+        "选择排序"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "QB-PG-008",
+          "evidence_terms": [
+            "QB-PG-008"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "SC",
+      "question_number": 1,
+      "question_type": "选择题",
+      "short_signature": "关键字不能作标识符",
+      "source_text_sha256": "95abb466cc98b628e8484d63e97487019ab49c213dee328af1d41a98c3c873f7",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-002"
+      ],
+      "knowledge_points": [
+        "标识符",
+        "关键字"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L01",
+          "location": "QB-SC-002",
+          "evidence_terms": [
+            "QB-SC-002"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "SC",
+      "question_number": 2,
+      "question_type": "选择题",
+      "short_signature": "科学计数法",
+      "source_text_sha256": "b9c9af626c2822b936ccbbffd6bb26b4b8c2d9f32e80f1040dba7be13bfbe935",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-055"
+      ],
+      "knowledge_points": [
+        "浮点常量"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-055",
+          "evidence_terms": [
+            "QB-SC-055"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "SC",
+      "question_number": 3,
+      "question_type": "选择题",
+      "short_signature": "整型除法",
+      "source_text_sha256": "4659f135c2061117a60dd20f08f88b113e046ddc7c037a067e7dee8087c33bee",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-007"
+      ],
+      "knowledge_points": [
+        "算术运算",
+        "类型转换"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-007",
+          "evidence_terms": [
+            "QB-SC-007"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "SC",
+      "question_number": 4,
+      "question_type": "选择题",
+      "short_signature": "八进制整数",
+      "source_text_sha256": "bc00d9735bcb03e397a59173fa3ec4779fcbf46ca5af7ecd6eb2a6d574d6b0bf",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-040"
+      ],
+      "knowledge_points": [
+        "整数常量",
+        "进制"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "整数常量",
+            "进制"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "SC",
+      "question_number": 5,
+      "question_type": "选择题",
+      "short_signature": "嵌套if与后续语句",
+      "source_text_sha256": "043b98ec27d5057b6cbfb43d4206782512eb77b66967b65ce68472aa01d9133c",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-002"
+      ],
+      "knowledge_points": [
+        "嵌套if"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L05",
+          "location": "QB-TR-002",
+          "evidence_terms": [
+            "QB-TR-002"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "SC",
+      "question_number": 6,
+      "question_type": "选择题",
+      "short_signature": "scanf与指针",
+      "source_text_sha256": "fb1903653de0a99d929fb888b9add29214edeedba3532651babebe6602ce4a2e",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-023"
+      ],
+      "knowledge_points": [
+        "指针",
+        "scanf"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L12",
+          "location": "QB-SC-023",
+          "evidence_terms": [
+            "QB-SC-023"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "SC",
+      "question_number": 7,
+      "question_type": "选择题",
+      "short_signature": "switch输出",
+      "source_text_sha256": "26682ae705da0488b2e60eff528a21b8a9bd580ef1e7f9d689577b50d86de42d",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-016"
+      ],
+      "knowledge_points": [
+        "switch",
+        "循环"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L05",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "switch",
+            "循环"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "SC",
+      "question_number": 8,
+      "question_type": "选择题",
+      "short_signature": "数组定义",
+      "source_text_sha256": "c831a64b6012fb6b5c0b94f0edf051354cee6cfa362786bd83729d04083c2877",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-012"
+      ],
+      "knowledge_points": [
+        "数组定义"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L08",
+          "location": "QB-SC-012",
+          "evidence_terms": [
+            "QB-SC-012"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "SC",
+      "question_number": 9,
+      "question_type": "选择题",
+      "short_signature": "字符串比较",
+      "source_text_sha256": "b38ee9110fd373b6e6f700d51c1a84bd6768ba743118dca4dbd55d9ad1dae951",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-020"
+      ],
+      "knowledge_points": [
+        "字符串比较"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "QB-SC-020",
+          "evidence_terms": [
+            "QB-SC-020"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "SC",
+      "question_number": 10,
+      "question_type": "选择题",
+      "short_signature": "递归函数求值",
+      "source_text_sha256": "36ed99af1a5a7e1f64bed97ef438ca33f01910f6e393bac62a3d8a2010a58f3e",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-046"
+      ],
+      "knowledge_points": [
+        "递归",
+        "跟踪"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L11",
+          "location": "QB-SC-046",
+          "evidence_terms": [
+            "QB-SC-046"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "SC",
+      "question_number": 11,
+      "question_type": "选择题",
+      "short_signature": "指针偏移取字符",
+      "source_text_sha256": "3ea979e42234c8e5a5e1a8b3f0ea92a2063d2fc9d21e9fa030f191e70f7f4d15",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-021"
+      ],
+      "knowledge_points": [
+        "字符指针",
+        "指针运算"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L12",
+          "location": "QB-SC-021",
+          "evidence_terms": [
+            "QB-SC-021"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "SC",
+      "question_number": 12,
+      "question_type": "选择题",
+      "short_signature": "数组名不可赋值",
+      "source_text_sha256": "22577271926dd93d0d523929ac63b4061a1c6b782020b7ae57749bb106372996",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-022"
+      ],
+      "knowledge_points": [
+        "数组名",
+        "指针"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L12",
+          "location": "QB-SC-022",
+          "evidence_terms": [
+            "QB-SC-022"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "SC",
+      "question_number": 13,
+      "question_type": "选择题",
+      "short_signature": "字符的存储",
+      "source_text_sha256": "ab96d16c82895fab120d1a3c6df58814890bf0cd799400457bea5cb9f565141e",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-005"
+      ],
+      "knowledge_points": [
+        "字符型",
+        "编码"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-005",
+          "evidence_terms": [
+            "QB-SC-005"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "SC",
+      "question_number": 14,
+      "question_type": "选择题",
+      "short_signature": "结构体类型名称",
+      "source_text_sha256": "46b8572f5c6b694726a21395e75b283ef35612395da23104ad4e06900bbfa93c",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-028"
+      ],
+      "knowledge_points": [
+        "结构体声明"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L14",
+          "location": "QB-SC-028",
+          "evidence_terms": [
+            "QB-SC-028"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "SC",
+      "question_number": 15,
+      "question_type": "选择题",
+      "short_signature": "Windows路径字符串",
+      "source_text_sha256": "1fa5bb66ce876aec2d2378b9f57b664f06ffac61b3fb280098daae027321afe5",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-031"
+      ],
+      "knowledge_points": [
+        "转义字符",
+        "文件路径"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L16",
+          "location": "QB-SC-031",
+          "evidence_terms": [
+            "QB-SC-031"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "FB",
+      "question_number": 1,
+      "question_type": "程序填空",
+      "short_signature": "数字字符串转整数",
+      "source_text_sha256": "da561f070d03681cef35530f5f4f9a05d68d4eeb11a60802e21b71c0fb3040a9",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-014"
+      ],
+      "knowledge_points": [
+        "字符串",
+        "数值转换"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB05",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "字符串",
+            "逐位转换"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "FB",
+      "question_number": 2,
+      "question_type": "程序填空",
+      "short_signature": "统计负数",
+      "source_text_sha256": "ac16169e390e9f3d21187dc93a9a38937c18775d544371de9262957ff1d0bae0",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-015"
+      ],
+      "knowledge_points": [
+        "条件",
+        "数组"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L08",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "条件",
+            "数组"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "FB",
+      "question_number": 3,
+      "question_type": "程序填空",
+      "short_signature": "复制指定位置后的字符串",
+      "source_text_sha256": "54446d1956ff4024e2af1a180312c4d9e10fd02b4c78012e157b679cb4680e51",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-004"
+      ],
+      "knowledge_points": [
+        "字符指针",
+        "字符串复制"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L13",
+          "location": "QB-FB-004",
+          "evidence_terms": [
+            "QB-FB-004"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "FB",
+      "question_number": 4,
+      "question_type": "程序填空",
+      "short_signature": "限制长度读取单词",
+      "source_text_sha256": "800e43dd44a455e961c39d4b18980491391e67f8fa1b65d5d961183c2768ca4b",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-018"
+      ],
+      "knowledge_points": [
+        "字符串输入"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "%79s",
+            "非空白字符"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "FB",
+      "question_number": 5,
+      "question_type": "程序填空",
+      "short_signature": "指针遍历后复位",
+      "source_text_sha256": "000a998ccc034bb701055165e4dd225acae97b054df17dfb29657571a79d82a7",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-020"
+      ],
+      "knowledge_points": [
+        "指针移动",
+        "指针复位"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L12",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "指针移动",
+            "不会自动恢复"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "TR",
+      "question_number": 1,
+      "question_type": "读程序写结果",
+      "short_signature": "嵌套if与后续语句",
+      "source_text_sha256": "f54abe4c3ce3d634b4c3402958edafa236651de868505091d01d2f8c579cd4e3",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-002"
+      ],
+      "knowledge_points": [
+        "嵌套if"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L05",
+          "location": "QB-TR-002",
+          "evidence_terms": [
+            "QB-TR-002"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "TR",
+      "question_number": 2,
+      "question_type": "读程序写结果",
+      "short_signature": "循环中的自减与continue",
+      "source_text_sha256": "60a941a510a16015cf0eb99d1eca0e1f1bbd3e5a57bf823ae7b4b25a2b4515d2",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-003"
+      ],
+      "knowledge_points": [
+        "for",
+        "continue",
+        "自减"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "QB-TR-003",
+          "evidence_terms": [
+            "QB-TR-003"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "TR",
+      "question_number": 3,
+      "question_type": "读程序写结果",
+      "short_signature": "递推数组",
+      "source_text_sha256": "c843fec7caeed5890464dafc05351a56da9210ad125f0b61c2ed8692b9039b22",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-010"
+      ],
+      "knowledge_points": [
+        "数组",
+        "递推"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB06",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "数组",
+            "递推"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "TR",
+      "question_number": 4,
+      "question_type": "读程序写结果",
+      "short_signature": "二维数组筛选求和",
+      "source_text_sha256": "a663b6c65f5e8f91c4c0574da404efa45a35cff93eea70226b5862bb18fe5ca2",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-015"
+      ],
+      "knowledge_points": [
+        "二维数组",
+        "循环"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "二维数组",
+            "循环"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "TR",
+      "question_number": 5,
+      "question_type": "读程序写结果",
+      "short_signature": "结构体指针字符串",
+      "source_text_sha256": "8a587b749ff049f18bf15d8647ff9e8f126d3cb2a2af363b219d8b19d391fc4a",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-012"
+      ],
+      "knowledge_points": [
+        "结构体指针",
+        "字符串"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L15",
+          "location": "QB-TR-012",
+          "evidence_terms": [
+            "QB-TR-012"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "PG",
+      "question_number": 1,
+      "question_type": "编程题",
+      "short_signature": "区间素数",
+      "source_text_sha256": "d863327066cd6b3c8964abadb03b40829fe66da43ee638f07fa3a878ba588a5a",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-009"
+      ],
+      "knowledge_points": [
+        "素数",
+        "嵌套循环"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "QB-PG-009",
+          "evidence_terms": [
+            "QB-PG-009"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "PG",
+      "question_number": 2,
+      "question_type": "编程题",
+      "short_signature": "矩阵最大元素及位置",
+      "source_text_sha256": "2897395b28f31d87c75a39591dcf8bbdbff5df03d4cd2d798e94efa39c25633e",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-010"
+      ],
+      "knowledge_points": [
+        "二维数组",
+        "最大值"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "QB-PG-010",
+          "evidence_terms": [
+            "QB-PG-010"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "PG",
+      "question_number": 3,
+      "question_type": "编程题",
+      "short_signature": "水仙花数",
+      "source_text_sha256": "38462f463d24fb601f35eabd173a8927cc92d766703959c7ab16fdd02cb2943c",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-011"
+      ],
+      "knowledge_points": [
+        "循环",
+        "数位分解"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L06",
+          "location": "QB-PG-011",
+          "evidence_terms": [
+            "QB-PG-011"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-07",
+      "section": "PG",
+      "question_number": 4,
+      "question_type": "编程题",
+      "short_signature": "浮点数组子函数排序",
+      "source_text_sha256": "3a7e7666718408ea468aa099929a2eda2f4090dbcd08a57b158e2863244ed4a3",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-013"
+      ],
+      "knowledge_points": [
+        "冒泡排序",
+        "函数"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L10",
+          "location": "QB-PG-013",
+          "evidence_terms": [
+            "QB-PG-013"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "SC",
+      "question_number": 1,
+      "question_type": "选择题",
+      "short_signature": "科学计数法",
+      "source_text_sha256": "9ad493fd11d9f6535e794ac288ab464d0499d9f4844bd2167133e9401c4d0e3a",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-055"
+      ],
+      "knowledge_points": [
+        "浮点常量"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-055",
+          "evidence_terms": [
+            "QB-SC-055"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "SC",
+      "question_number": 2,
+      "question_type": "选择题",
+      "short_signature": "字符串常量",
+      "source_text_sha256": "c18f5a7b8ad165342a9aadd7352e66919b4540ccc8e4a441d7ae93b9e6135d50",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-004"
+      ],
+      "knowledge_points": [
+        "字符串常量"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-004",
+          "evidence_terms": [
+            "QB-SC-004"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "SC",
+      "question_number": 3,
+      "question_type": "选择题",
+      "short_signature": "scanf格式匹配",
+      "source_text_sha256": "8a593c48748f065f8948d6c5378f56038c8e3cc7d286aefaf0eb8f2e2baa7dc9",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-036"
+      ],
+      "knowledge_points": [
+        "scanf",
+        "格式串"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "QB-SC-036",
+          "evidence_terms": [
+            "QB-SC-036"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "SC",
+      "question_number": 4,
+      "question_type": "选择题",
+      "short_signature": "取余运算数",
+      "source_text_sha256": "6f7633a24e971316ab3a8b472f28b39effb776f2ae5a96f0106969aa4b7f9a34",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-008"
+      ],
+      "knowledge_points": [
+        "运算符"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L03",
+          "location": "QB-SC-008",
+          "evidence_terms": [
+            "QB-SC-008"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "SC",
+      "question_number": 5,
+      "question_type": "选择题",
+      "short_signature": "switch贯穿",
+      "source_text_sha256": "4ff144b0b36d74909b113e82ecfabcad553f1f689c8ebba9b009738009a708ba",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-010"
+      ],
+      "knowledge_points": [
+        "switch",
+        "贯穿"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L05",
+          "location": "QB-SC-010",
+          "evidence_terms": [
+            "QB-SC-010"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "SC",
+      "question_number": 6,
+      "question_type": "选择题",
+      "short_signature": "continue死循环",
+      "source_text_sha256": "6febb08e7f1ad3c13ba4bc783f581a2a9c8b7f2f5b447916f05847e1e7a60392",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-034"
+      ],
+      "knowledge_points": [
+        "continue",
+        "循环控制"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L07",
+          "location": "QB-SC-034",
+          "evidence_terms": [
+            "QB-SC-034"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "SC",
+      "question_number": 7,
+      "question_type": "选择题",
+      "short_signature": "数组定义",
+      "source_text_sha256": "60a740735e5c64c13c4a1cf4acefbc2facd18cd6429789d56df647fdc1aa3667",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-012"
+      ],
+      "knowledge_points": [
+        "数组定义"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L08",
+          "location": "QB-SC-012",
+          "evidence_terms": [
+            "QB-SC-012"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "SC",
+      "question_number": 8,
+      "question_type": "选择题",
+      "short_signature": "循环后变量值",
+      "source_text_sha256": "07ccbe965115ec51ebeb81d9fda05fe66ad0dd215c4f429b924914a1aad7636f",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-020"
+      ],
+      "knowledge_points": [
+        "while",
+        "自减"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L06",
+          "location": "QB-TR-020",
+          "evidence_terms": [
+            "QB-TR-020"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "SC",
+      "question_number": 9,
+      "question_type": "选择题",
+      "short_signature": "二维数组边界",
+      "source_text_sha256": "d127cec367103052f8c5c36426b74f658e5bd4cb8c129806a658b3134593c653",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-014"
+      ],
+      "knowledge_points": [
+        "二维数组",
+        "边界"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "QB-SC-014",
+          "evidence_terms": [
+            "QB-SC-014"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "SC",
+      "question_number": 10,
+      "question_type": "选择题",
+      "short_signature": "递归函数求值",
+      "source_text_sha256": "d385d5214d7d63c21da003d88f215594dc77177c78074392ed6e1c1b769a7d53",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-046"
+      ],
+      "knowledge_points": [
+        "递归",
+        "跟踪"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L11",
+          "location": "QB-SC-046",
+          "evidence_terms": [
+            "QB-SC-046"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "SC",
+      "question_number": 11,
+      "question_type": "选择题",
+      "short_signature": "函数嵌套定义",
+      "source_text_sha256": "a5babf2f1313dbc0dc490a268a47a713d4973059d21c122e5c7ae98e37693fca",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-018"
+      ],
+      "knowledge_points": [
+        "函数定义"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L10",
+          "location": "QB-SC-018",
+          "evidence_terms": [
+            "QB-SC-018"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "SC",
+      "question_number": 12,
+      "question_type": "选择题",
+      "short_signature": "字符串比较",
+      "source_text_sha256": "92f4fd193a8a650671d205752e781e971434f36125da49afc0b3ded484665065",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-020"
+      ],
+      "knowledge_points": [
+        "字符串比较"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "QB-SC-020",
+          "evidence_terms": [
+            "QB-SC-020"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "SC",
+      "question_number": 13,
+      "question_type": "选择题",
+      "short_signature": "结构体关键字",
+      "source_text_sha256": "fde035f6ea51937f4bf45934830087dbc906e61bdfffdd4a88acbc6267def23d",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-025"
+      ],
+      "knowledge_points": [
+        "结构体"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L14",
+          "location": "QB-SC-025",
+          "evidence_terms": [
+            "QB-SC-025"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "SC",
+      "question_number": 14,
+      "question_type": "选择题",
+      "short_signature": "结构体成员访问",
+      "source_text_sha256": "e4a70036678e76c9f37bcd0e637a8145864140a7a80932a3406a342bd42dc90d",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-026"
+      ],
+      "knowledge_points": [
+        "结构体成员"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L15",
+          "location": "QB-SC-026",
+          "evidence_terms": [
+            "QB-SC-026"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "SC",
+      "question_number": 15,
+      "question_type": "选择题",
+      "short_signature": "文件指针定义",
+      "source_text_sha256": "76a9e5f8f73f3545ed16d0b7e60b9ad77549fae59c674121df08bdba8e3c06f5",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-SC-029"
+      ],
+      "knowledge_points": [
+        "文件指针"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L16",
+          "location": "QB-SC-029",
+          "evidence_terms": [
+            "QB-SC-029"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "FB",
+      "question_number": 1,
+      "question_type": "程序填空",
+      "short_signature": "字符分类统计",
+      "source_text_sha256": "deb0996f054545c8e96c7f18189d24d70da4bac89edc60332c6556688ed84257",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-007"
+      ],
+      "knowledge_points": [
+        "字符分类",
+        "计数"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB02",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "英文字母",
+            "计数器"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "FB",
+      "question_number": 2,
+      "question_type": "程序填空",
+      "short_signature": "调和级数分组求和",
+      "source_text_sha256": "b5c161de8c0c9c28e3eefd8e76ab02c7d3f8103ed33d547ff231f800900e9318",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-013"
+      ],
+      "knowledge_points": [
+        "函数",
+        "浮点运算"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L10",
+          "location": "QB-FB-013",
+          "evidence_terms": [
+            "QB-FB-013"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "FB",
+      "question_number": 3,
+      "question_type": "程序填空",
+      "short_signature": "字符串正序后接逆序",
+      "source_text_sha256": "861942e2901882b74a166362f3ebafa9e711b51a715cbae854a792cc57b006cd",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-016"
+      ],
+      "knowledge_points": [
+        "字符串",
+        "逆序"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "QB-FB-016",
+          "evidence_terms": [
+            "QB-FB-016"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "FB",
+      "question_number": 4,
+      "question_type": "程序填空",
+      "short_signature": "限制长度读取单词",
+      "source_text_sha256": "27dda180a18925dda3012ee81c8066a598c0958989df3ed9b34f09b580a276a7",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-018"
+      ],
+      "knowledge_points": [
+        "字符串输入"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "%79s",
+            "非空白字符"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "FB",
+      "question_number": 5,
+      "question_type": "程序填空",
+      "short_signature": "函数复制字符串",
+      "source_text_sha256": "13da6af004226d2494d05ab68262712f7a42e8650c5479fdb5a5a714701aaad7",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-FB-008"
+      ],
+      "knowledge_points": [
+        "函数",
+        "字符指针"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L13",
+          "location": "QB-FB-008",
+          "evidence_terms": [
+            "QB-FB-008"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "TR",
+      "question_number": 1,
+      "question_type": "读程序写结果",
+      "short_signature": "赋值表达式作条件",
+      "source_text_sha256": "621e716894c669e025bb47741a8619eea555dca9e839256786ad65c8eb7cd4c5",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-001"
+      ],
+      "knowledge_points": [
+        "赋值表达式",
+        "if"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L04",
+          "location": "QB-TR-001",
+          "evidence_terms": [
+            "QB-TR-001"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "TR",
+      "question_number": 2,
+      "question_type": "读程序写结果",
+      "short_signature": "二维字符数组后缀",
+      "source_text_sha256": "6738916e539d92a2c3e3d2cfec62a17db806320f854ddfbc8b16b441895767d2",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-009"
+      ],
+      "knowledge_points": [
+        "二维字符数组",
+        "字符串"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "QB-TR-009",
+          "evidence_terms": [
+            "QB-TR-009"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "TR",
+      "question_number": 3,
+      "question_type": "读程序写结果",
+      "short_signature": "二维数组筛选求和",
+      "source_text_sha256": "d64fb3709eac1caed1301d31b8f77ce2380a4433411445c100e020d70e64fd42",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-015"
+      ],
+      "knowledge_points": [
+        "二维数组",
+        "循环"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L09",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "二维数组",
+            "循环"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "TR",
+      "question_number": 4,
+      "question_type": "读程序写结果",
+      "short_signature": "字符替换下标",
+      "source_text_sha256": "3517fd9d39ed73003a5915318164c00b63c75a093f3af2c4a275e181e1c675ca",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-021"
+      ],
+      "knowledge_points": [
+        "字符串",
+        "字符替换"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L02",
+          "location": "concept-equivalent normalized example",
+          "evidence_terms": [
+            "字符",
+            "大小写"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "TR",
+      "question_number": 5,
+      "question_type": "读程序写结果",
+      "short_signature": "结构体指针字符串",
+      "source_text_sha256": "a6d0090101da0bd9f90d8f48036e9fcc01ae91c8ffcf661845f45d0d8acf4eeb",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-TR-012"
+      ],
+      "knowledge_points": [
+        "结构体指针",
+        "字符串"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L15",
+          "location": "QB-TR-012",
+          "evidence_terms": [
+            "QB-TR-012"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "PG",
+      "question_number": 1,
+      "question_type": "编程题",
+      "short_signature": "一元二次方程",
+      "source_text_sha256": "4e4f6e746aca636db4d1c33a1d7101b6f4b0990a0249e49406db62f0a9edacd1",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-001"
+      ],
+      "knowledge_points": [
+        "多分支",
+        "判别式",
+        "浮点运算"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L05",
+          "location": "QB-PG-001",
+          "evidence_terms": [
+            "QB-PG-001"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "PG",
+      "question_number": 2,
+      "question_type": "编程题",
+      "short_signature": "统计一行中的单词数",
+      "source_text_sha256": "02aed8034c45457716e540e02b07cae27f4063994a2a7f0a900b2da33c4e37b5",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-012"
+      ],
+      "knowledge_points": [
+        "字符串",
+        "状态"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-LAB03",
+          "location": "QB-PG-012",
+          "evidence_terms": [
+            "QB-PG-012"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "PG",
+      "question_number": 3,
+      "question_type": "编程题",
+      "short_signature": "浮点数组子函数排序",
+      "source_text_sha256": "6fdb3d1b3bc694ce7534349de702235da3f9944aea4bdb5fc3e5b656cf702656",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-013"
+      ],
+      "knowledge_points": [
+        "冒泡排序",
+        "函数"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L10",
+          "location": "QB-PG-013",
+          "evidence_terms": [
+            "QB-PG-013"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    },
+    {
+      "source_id": "EXAM-08",
+      "section": "PG",
+      "question_number": 4,
+      "question_type": "编程题",
+      "short_signature": "四位数各位立方和",
+      "source_text_sha256": "2401a001fb50becc87fdaa1eba0cadc19c29494901ca1f1cdc179f6b64da8e44",
+      "question_status": "normalized",
+      "question_ids": [
+        "QB-PG-014"
+      ],
+      "knowledge_points": [
+        "顺序结构",
+        "整数除法",
+        "取余",
+        "数位分解"
+      ],
+      "courseware_evidence": [
+        {
+          "courseware_id": "CW-L03",
+          "location": "QB-PG-014",
+          "evidence_terms": [
+            "QB-PG-014"
+          ]
+        }
+      ],
+      "answer_disposition": "retained",
+      "review_note": "依据原卷版面与题库规范化版本逐题复核；排版、旧式语法或数据可能已规范化，考查目标保持不变。"
+    }
+  ]
+}
