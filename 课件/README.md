@@ -2,7 +2,7 @@
 
 本目录依据《C语言程序设计A》教学大纲组织，共48学时：16次讲授课、8次上机课，每次2课时、每课时45分钟。
 
-当前已完成课次结构、制作约束、CW-L01课程引入PPTX以及CW-L01至CW-L16全部学生端HTML。讲授课采用16:9离线交互式HTML，上机课使用VS Code和MinGW GCC完成指定考试型编程题。
+当前已完成课次结构、制作约束、CW-L01课程引入PPTX以及CW-L01至CW-L16全部学生端HTML。讲授课采用16:9离线交互式HTML，上机课使用VS Code和GNU GCC完成指定考试型编程题；完整仓库校验仍以Windows MinGW-w64为正式基线。
 
 ## 使用入口
 
@@ -12,6 +12,7 @@
 - [往届试卷逐题映射](往届试卷题目映射.json)
 - [16次讲授课](讲授/README.md)
 - [8次上机课](上机/README.md)
+- [Windows、macOS和Linux GNU GCC环境配置](../环境配置/README.md)
 - [CW-L01课程引入讨论稿](讲授/01-course-introduction-and-hello-world/课程引入讨论.md)
 - [CW-L01课程引入PPTX](讲授/01-course-introduction-and-hello-world/course-introduction.pptx)
 - [CW-L01 Hello World HTML](讲授/01-course-introduction-and-hello-world/index.html)

@@ -33,7 +33,7 @@ conda run -n base python tools/validate_routines.py --id EX-C05-010
 conda run -n base python tools/generate_routine_index.py --check
 ```
 
-Python 工具仅使用标准库，不会自动安装软件包。编译和运行均发生在仓库根的隔离临时目录，命令结束时自动删除，最终必须无过程产物。
+Python 工具仅使用标准库，不会自动安装软件包。编译和运行均发生在仓库根的隔离临时目录，命令结束时自动删除，最终必须无过程产物。各脚本职责、依赖关系和生命周期见[工具说明](tools/README.md)。
 
 ### 4. 识别教材旧语法
 
@@ -61,7 +61,7 @@ conda run -n base python tools/generate_question_index.py --check
 
 ## 课件
 
-打开[课件索引](课件/README.md)，可查看16次讲授课、8次上机课的安排及后续制作规范。每次讲授为2课时，围绕1–2个程序展开；每次上机为2课时，使用VS Code和MinGW GCC独立完成1道考试型编程题。
+打开[课件索引](课件/README.md)，可查看16次讲授课、8次上机课的安排及后续制作规范。每次讲授为2课时，围绕1–2个程序展开；每次上机为2课时，使用VS Code和GNU GCC独立完成1道考试型编程题。Windows、macOS和Linux的安装步骤见[GNU GCC环境配置](环境配置/README.md)。
 
 当前课件板块包含课次目录、课程安排、设计契约、CW-L01课程引入PPTX，以及已通过回归校验的CW-L01至CW-L16全部学生端HTML。CW-L16为36页“文件输入输出：逐字符写入与文件复制”，浏览器仅模拟虚拟文件状态，真实C文件行为在校验器临时目录中验证。
 
@@ -98,17 +98,20 @@ conda run -n base python tools/generate_question_index.py --check
 - `2023-2024-1/`、`2024-2025-1/`、`migration/` 及一次性迁移工具已从工作区移除；原始路径、哈希和处置关系可通过 Git 历史追溯。
 - 39/39 项旧内容已交接到题库，对应 26 个稳定题目 ID；日常题库校验器只检查稳定 ID，不依赖旧学期目录。
 - 例程源码头中的“来源”字段保留历史 provenance 字符串；这些路径不再表示当前工作区中的可访问目录。
-- 8份历史试卷已在242条逐题映射、学生端知识覆盖和全量验证闭环建立后退役；日常校验读取版本化映射数据，不再依赖原卷。两份教材 PDF 与教学大纲 DOC 仍按精确根目录文件名忽略并只作本地参考。
+- 8份历史试卷已在242条逐题映射、学生端知识覆盖和全量验证闭环建立后退役；日常校验读取版本化映射数据，不再依赖原卷。
+- 两份教材PDF与教学大纲DOC中的课程知识、章节映射和规范化安排已经吸收，原件现已退役；例程仍按谭浩强《C程序设计（第五版）》章节组织并保留来源说明。
+- MinGW-w64课程基线不在仓库保存二进制压缩包，下载、哈希核对和三平台GNU GCC配置见[环境配置教程](环境配置/README.md)。
 - 日常仓库只保留例程、题库、课件、索引器和校验器；编译、运行、审计、渲染和转录产物不作为仓库内容保存。
 ## 环境约定
 
 - 正式最低基线：MinGW-w64 GCC 8.1。
 - CI：Windows 上较新 MinGW-w64 GCC 的向前兼容复验。
 - Python：`conda run -n base`，依赖声明见根目录 `requirements.txt`。
+- 学生环境：Windows、macOS和Linux均使用GNU GCC；完整步骤见[环境配置教程](环境配置/README.md)。
 
 ## GitHub Actions CI
 
-[GitHub Actions 工作流](.github/workflows/routines.yml) 在 Windows `windows-latest` 上使用 `msys2/setup-msys2` 的动态安装路径定位 MinGW GCC，再分别运行例程、题库和上机任务单校验器。CI 不依赖本地教材、已退役试卷或其他被忽略参考资料；失败时仅将验证日志作为 7 天的 Actions 诊断产物保存，不写入仓库。CI 使用较新 MinGW-w64 GCC 做向前兼容复验，本地最低基线仍为 GCC 8.1。
+[GitHub Actions 工作流](.github/workflows/routines.yml) 在 Windows `windows-latest` 上使用 `msys2/setup-msys2` 的动态安装路径定位 MinGW GCC，再分别运行例程、题库和上机任务单校验器。CI 不依赖已退役的教材、大纲、试卷或本地工具链压缩包；失败时仅将验证日志作为 7 天的 Actions 诊断产物保存，不写入仓库。CI 使用较新 MinGW-w64 GCC 做向前兼容复验，本地最低基线仍为 GCC 8.1。
 
 ## 教学诊断与告警策略
 

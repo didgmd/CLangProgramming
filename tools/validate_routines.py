@@ -16,10 +16,23 @@ from generate_routine_index import INDEX_PATH, render_index
 from routine_common import MetadataError, ROOT, ROUTINES_ROOT, Routine, scan_routines
 
 
-LOCAL_REFERENCE_NAMES = {
+RETIRED_ROOT_ARTIFACT_NAMES = {
     "C程序设计 (第五版)_9787302481447.pdf",
     "C程序设计 (第五版) 学习辅导_9787302480877.pdf",
     "C语言程序设计 - 教学大纲.doc",
+    "x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z",
+}
+ACTIVE_TOOL_NAMES = {
+    "generate_question_index.py",
+    "generate_routine_index.py",
+    "question_common.py",
+    "question_program_quality.py",
+    "question_quality.py",
+    "routine_common.py",
+    "validate_courseware.py",
+    "validate_labs.py",
+    "validate_questions.py",
+    "validate_routines.py",
 }
 FEATURE_PATTERNS = {
     "gets": r"\bgets\s*\(",
@@ -122,29 +135,95 @@ def validate_layout() -> None:
             + ", ".join(str(path.relative_to(ROOT)) for path in residue_files[:20])
         )
 
-def validate_reference_boundary() -> None:
+def validate_retired_root_artifacts() -> None:
     git = shutil.which("git")
     if not git:
-        raise ValidationError("git is required for the local reference boundary check")
-    tracked = run([git, "ls-files", "--", "*.pdf", "*.doc"], cwd=ROOT)
+        raise ValidationError("git is required for the retired-artifact boundary check")
+    existing = [name for name in RETIRED_ROOT_ARTIFACT_NAMES if (ROOT / name).exists()]
+    if existing:
+        raise ValidationError(
+            "Retired root artifact still exists: " + ", ".join(sorted(existing))
+        )
+    tracked = run(
+        [git, "ls-files", "--", *sorted(RETIRED_ROOT_ARTIFACT_NAMES)],
+        cwd=ROOT,
+    )
     if tracked.returncode != 0:
         raise ValidationError(
-            f"Cannot inspect tracked reference files: {tracked.stderr.strip()}"
+            f"Cannot inspect retired root artifacts: {tracked.stderr.strip()}"
         )
-    tracked_names = {
-        Path(line).name for line in tracked.stdout.splitlines() if line.strip()
-    }
-    forbidden = tracked_names & LOCAL_REFERENCE_NAMES
-    if forbidden:
+    tracked_names = [line for line in tracked.stdout.splitlines() if line.strip()]
+    if tracked_names:
         raise ValidationError(
-            "Local reference file is tracked: " + ", ".join(sorted(forbidden))
+            "Retired root artifact is tracked: " + ", ".join(sorted(tracked_names))
         )
-    for name in LOCAL_REFERENCE_NAMES:
+    ignore_text = (ROOT / ".gitignore").read_text(encoding="utf-8")
+    stale_rules = [name for name in RETIRED_ROOT_ARTIFACT_NAMES if name in ignore_text]
+    if stale_rules:
+        raise ValidationError(
+            "Retired root artifact remains in .gitignore: "
+            + ", ".join(sorted(stale_rules))
+        )
+    for name in RETIRED_ROOT_ARTIFACT_NAMES:
         ignored = run([git, "check-ignore", "-q", "--", name], cwd=ROOT)
-        if ignored.returncode != 0:
+        if ignored.returncode == 0:
             raise ValidationError(
-                f"Local reference file is not protected by .gitignore: {name}"
+                f"Retired root artifact is still ignored by another rule: {name}"
             )
+
+
+def validate_maintenance_docs() -> None:
+    tools_doc_path = ROOT / "tools" / "README.md"
+    environment_doc_path = ROOT / "环境配置" / "README.md"
+    if not tools_doc_path.is_file():
+        raise ValidationError("Missing tools lifecycle document: tools/README.md")
+    if not environment_doc_path.is_file():
+        raise ValidationError("Missing GCC setup guide: 环境配置/README.md")
+
+    tool_names = {path.name for path in (ROOT / "tools").glob("*.py")}
+    if tool_names != ACTIVE_TOOL_NAMES:
+        missing = sorted(ACTIVE_TOOL_NAMES - tool_names)
+        unexpected = sorted(tool_names - ACTIVE_TOOL_NAMES)
+        raise ValidationError(
+            f"Active tool inventory drifted; missing={missing}, unexpected={unexpected}"
+        )
+    tools_doc = tools_doc_path.read_text(encoding="utf-8")
+    undocumented = sorted(name for name in ACTIVE_TOOL_NAMES if name not in tools_doc)
+    if undocumented:
+        raise ValidationError(
+            "Active tools missing from tools/README.md: " + ", ".join(undocumented)
+        )
+
+    environment_doc = environment_doc_path.read_text(encoding="utf-8")
+    required_terms = (
+        "853970527B5DE4A55EC8CA4D3FD732C00AE1C69974CC930C82604396D43E79F8",
+        "brew install gcc",
+        'GCC_MAJOR="$(brew list --versions gcc',
+        "command -v gcc",
+        "gcc -dumpmachine",
+        "sudo apt install build-essential gdb",
+        "sudo dnf install gcc gdb",
+        "C:\\mingw64\\bin",
+    )
+    absent_terms = [term for term in required_terms if term not in environment_doc]
+    if absent_terms:
+        raise ValidationError(
+            "GCC setup guide is missing required content: " + ", ".join(absent_terms)
+        )
+    macos_start = environment_doc.find("## macOS")
+    linux_start = environment_doc.find("## Linux", macos_start)
+    if macos_start < 0 or linux_start < 0:
+        raise ValidationError("GCC setup guide must contain macOS and Linux sections")
+    macos_section = environment_doc[macos_start:linux_start].casefold()
+    forbidden_macos_terms = ("xcode", "command line tools", "apple clang")
+    present_forbidden = [
+        term for term in forbidden_macos_terms if term in macos_section
+    ]
+    if present_forbidden:
+        raise ValidationError(
+            "macOS guide contains a forbidden compiler route: "
+            + ", ".join(present_forbidden)
+        )
 
 
 def validate_index(routines: dict[str, Routine]) -> None:
@@ -370,7 +449,8 @@ def main() -> int:
         routines, texts = scan_routines()
         validate_routine_structure(routines, texts)
         validate_retired_sources_absent()
-        validate_reference_boundary()
+        validate_retired_root_artifacts()
+        validate_maintenance_docs()
         validate_index(routines)
         if args.routine_id and args.routine_id not in routines:
             raise ValidationError(f"Unknown routine ID: {args.routine_id}")

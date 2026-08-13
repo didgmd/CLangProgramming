@@ -1,0 +1,44 @@
+# 仓库维护工具
+
+本目录保存当前正式维护链路中的10个Python脚本。命令行入口负责校验或生成索引，共享模块由这些入口导入；共享模块没有独立命令入口并不表示其生命周期已经结束。
+
+## 命令行入口
+
+| 脚本 | 职责 | 直接调用 |
+|---|---|---|
+| `validate_routines.py` | 校验例程元数据、目录、编译、行为、索引、退役根目录制品及历史迁移残留 | `conda run -n base python tools/validate_routines.py` |
+| `validate_questions.py` | 校验题库结构、答案、程序、行为、索引和往届试卷映射 | `conda run -n base python tools/validate_questions.py` |
+| `validate_courseware.py` | 校验CW-L01至CW-L16的HTML结构、交互、本地链接和课程专属契约 | `conda run -n base python tools/validate_courseware.py --id CW-L01` |
+| `validate_labs.py` | 校验8份上机任务单、参考程序和确定性行为结果 | `conda run -n base python tools/validate_labs.py` |
+| `generate_routine_index.py` | 生成或检查例程索引 | `conda run -n base python tools/generate_routine_index.py --check` |
+| `generate_question_index.py` | 生成或检查题库索引 | `conda run -n base python tools/generate_question_index.py --check` |
+
+生成器去掉`--check`时会更新对应索引；日常验收优先使用只读检查模式。
+
+## 共享内部模块
+
+| 模块 | 使用方 | 职责 |
+|---|---|---|
+| `routine_common.py` | 例程生成器、例程校验器 | 例程元数据、路径和索引共享逻辑 |
+| `question_common.py` | 题库生成器、题库校验器、课件校验器 | 题目解析、稳定ID和题库路径共享逻辑 |
+| `question_quality.py` | 题库校验器 | 题干、答案和排版质量规则 |
+| `question_program_quality.py` | 题库校验器 | C代码块、参考程序和行为契约质量规则 |
+
+## 生命周期规则
+
+- 上述10个脚本均为`active`，本轮没有可删除的现存脚本。
+- `migrate_examples.py`、`source_fixes.py`等一次性迁移脚本已经退役，校验器会阻止旧迁移脚本、目录和构建残留重新进入仓库。
+- 删除或合并工具前，应先检查其他工具的导入关系、GitHub Actions和文档入口，再运行受影响的全部校验器。
+- 共享模块属于内部接口；不得仅因它们不能直接执行而判定为冗余。
+- Python工具只使用标准库；课程C程序的临时源码和运行产物由校验器在隔离临时目录中创建并清理。
+
+## 完整维护检查
+
+```powershell
+conda run -n base python tools/validate_routines.py
+conda run -n base python tools/validate_questions.py
+conda run -n base python tools/validate_labs.py
+conda run -n base python tools/generate_routine_index.py --check
+conda run -n base python tools/generate_question_index.py --check
+git diff --check
+```

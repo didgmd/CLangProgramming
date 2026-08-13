@@ -1,10 +1,3 @@
-# Local textbook references. These files are intentionally never published.
-/C程序设计 (第五版)_9787302481447.pdf
-/C程序设计 (第五版) 学习辅导_9787302480877.pdf
-
-# Local syllabus source. The normalized course schedule is published under 课件/.
-/C语言程序设计 - 教学大纲.doc
-
 # Python caches and accidental compiled outputs.
 /__pycache__/
 **/__pycache__/
