@@ -1092,10 +1092,10 @@ def validate_cw_l05(path: Path) -> list[str]:
     for marker in (
         'scanf("%lf %lf %lf", &a, &b, &c);',
         "d = b * b - 4.0 * a * c;",
-        "if (d > 1e-12)",
-        "else if (fabs(d) <= 1e-12)",
+        "if (d > 0)",
+        "else if (d == 0)",
         "x1 = (-b + sqrt(d)) / (2.0 * a);",
-        "imag_part = sqrt(-d) / fabs(2.0 * a);",
+        "imag_part = sqrt(-d / (4.0 * a * a));",
         'scanf("%c", &grade);',
         "switch (grade)",
         "case 'A':",

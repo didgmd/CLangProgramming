@@ -56,11 +56,11 @@ footer{display:grid;grid-template-columns:190px 1fr 190px;align-items:center;bac
 
 <section class="slide" data-slide data-section="formula-to-c"><div class="slide-inner"><div class="eyebrow">06 · 从公式到C表达式</div><h2>数学符号需要转换为运算符和函数</h2><div class="grid-2"><div><div class="formula" data-formula="Delta=b^2-4ac">Δ = <em>b</em><sup>2</sup> − 4<em>ac</em></div><pre class="code-block">d = b * b - 4.0 * a * c;</pre><div class="formula" data-formula="x1=(-b+sqrt(Delta))/(2a)"><em>x</em><sub>1</sub> = <span class="fraction"><span>−<em>b</em> + √Δ</span><span>2<em>a</em></span></span></div><pre class="code-block">x1 = (-b + sqrt(d)) / (2.0 * a);</pre></div><div class="card accent"><h3>转换规则</h3><ul><li><em>b</em><sup>2</sup> 写成 <code>b * b</code>。</li><li>省略的乘号必须写成 <code>*</code>。</li><li>根号使用 <code>sqrt()</code>。</li><li>分子和分母分别使用括号。</li></ul></div></div></div></section>
 
-<section class="slide" data-slide data-section="multi-branch"><div class="slide-inner"><div class="eyebrow">07 · 多分支</div><h2>if / else if / else：互斥路径</h2><div class="grid-2"><pre class="code-block">if (d &gt; 1e-12)
+<section class="slide" data-slide data-section="multi-branch"><div class="slide-inner"><div class="eyebrow">07 · 多分支</div><h2>if / else if / else：互斥路径</h2><div class="grid-2"><pre class="code-block">if (d &gt; 0)
 {
     /* 两个实根 */
 }
-else if (fabs(d) &lt;= 1e-12)
+else if (d == 0)
 {
     /* 重根 */
 }
@@ -79,22 +79,22 @@ int main()
 <span class="code-line" data-code-line>    /* 输入、判别式和两个实根 */
     scanf("%lf %lf %lf", &amp;a, &amp;b, &amp;c);
     d = b * b - 4.0 * a * c;
-    if (d &gt; 1e-12)
+    if (d &gt; 0)
     {
         x1 = (-b + sqrt(d)) / (2.0 * a);
         x2 = (-b - sqrt(d)) / (2.0 * a);
-        printf("%.6f %.6f\n", x1, x2);
+        printf("%.2f %.2f\n", x1, x2);
     }</span>
 <span class="code-line" data-code-line>    /* 重根、复根和程序结束 */
-    else if (fabs(d) &lt;= 1e-12)
+    else if (d == 0)
     {
-        printf("%.6f\n", -b / (2.0 * a));
+        printf("%.2f\n", -b / (2.0 * a));
     }
     else
     {
         real_part = -b / (2.0 * a);
-        imag_part = sqrt(-d) / fabs(2.0 * a);
-        printf("%.6f+%.6fi %.6f-%.6fi\n",
+        imag_part = sqrt(-d / (4.0 * a * a));
+        printf("%.2f+%.2fi %.2f-%.2fi\n",
             real_part, imag_part, real_part, imag_part);
     }</span>
 <span class="code-line" data-code-line>    return 0;
