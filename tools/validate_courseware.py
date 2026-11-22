@@ -28,6 +28,7 @@ CW_L06 = ROOT / "课件" / "讲授" / "06-loops-and-state" / "index.html"
 CW_L07 = ROOT / "课件" / "讲授" / "07-nested-loops-and-primes" / "index.html"
 CW_L08 = ROOT / "课件" / "讲授" / "08-one-dimensional-arrays" / "index.html"
 CW_L09 = ROOT / "课件" / "讲授" / "09-matrices-and-strings" / "index.html"
+CW_L09_SLIDE_COUNT = 37
 CW_L10 = ROOT / "课件" / "讲授" / "10-functions-and-parameters" / "index.html"
 CW_L11 = ROOT / "课件" / "讲授" / "11-recursion" / "index.html"
 CW_L12 = ROOT / "课件" / "讲授" / "12-pointer-model-and-arrays" / "index.html"
@@ -192,6 +193,8 @@ def validate_embedded_questions(
     failures: list[str],
     expected_ids: tuple[str, ...],
     course_id: str,
+    *,
+    optional_prompt_blank_ids: tuple[str, ...] = (),
 ) -> None:
     source_questions = scan_questions()
     blocks = list(QUESTION_BLOCK_PATTERN.finditer(text))
@@ -228,7 +231,10 @@ def validate_embedded_questions(
         source_prompt, source_options = question_source_parts(
             source_questions[question_id].text
         )
-        if html_prompt != source_prompt:
+        expected_prompts = {source_prompt}
+        if question_id in optional_prompt_blank_ids:
+            expected_prompts.add(source_prompt.removesuffix("（ ）。"))
+        if html_prompt not in expected_prompts:
             fail(failures, f"{question_id} prompt differs from the question bank")
         if html_options != source_options:
             fail(failures, f"{question_id} options differ from the question bank")
@@ -2039,14 +2045,18 @@ def validate_cw_l09(path: Path) -> list[str]:
         if phrase in text:
             fail(failures, f"student-facing teacher-prep phrase found: {phrase}")
 
-    if len(SLIDE_PATTERN.findall(text)) != 36:
-        fail(failures, "CW-L09 must contain exactly 36 slides")
-    if len(SECTION_BLOCK_PATTERN.findall(text)) != 36:
-        fail(failures, "CW-L09 must contain exactly 36 complete slide sections")
+    if len(SLIDE_PATTERN.findall(text)) != CW_L09_SLIDE_COUNT:
+        fail(failures, f"CW-L09 must contain exactly {CW_L09_SLIDE_COUNT} slides")
+    sections = SECTION_BLOCK_PATTERN.findall(text)
+    if len(sections) != CW_L09_SLIDE_COUNT:
+        fail(failures, f"CW-L09 must contain exactly {CW_L09_SLIDE_COUNT} complete slide sections")
+    for number, (section_id, body) in enumerate(sections, start=1):
+        if f'<div class="eyebrow">{number:02d} · ' not in body:
+            fail(failures, f"CW-L09 slide {section_id} must display page {number}")
     if text.count("<details") != 0:
         fail(failures, "CW-L09 must expose all exercises directly")
-    if " / 36 · Kevin@SUT" not in text:
-        fail(failures, "CW-L09 footer total must be 36")
+    if f' / <span id="page-total">{CW_L09_SLIDE_COUNT}</span> · Kevin@SUT' not in text:
+        fail(failures, f"CW-L09 footer total must be {CW_L09_SLIDE_COUNT}")
 
     choice_text = "".join(
         match.group(0)
@@ -2061,6 +2071,7 @@ def validate_cw_l09(path: Path) -> list[str]:
         failures,
         ("QB-SC-014", "QB-SC-052", "QB-SC-047", "QB-SC-051", "QB-SC-054", "QB-SC-020"),
         "CW-L09",
+        optional_prompt_blank_ids=("QB-SC-051",),
     )
     if text.count('data-question-option="') != 24:
         fail(failures, "CW-L09 must expose twenty-four options across six choice questions")
@@ -2157,7 +2168,7 @@ def validate_cw_l09_programs(
     visible = normalize_visible_text(text)
     for marker in (
         "9 + 8 + 7 + … + 1 = 45", "行下标", "列下标", "全负矩阵",
-        "char words[3][4]", "'\\n'", "'\\0'",
+        "x[3][4]", "'\\n'", "'\\0'",
         "strlen", "strcpy", "strcmp", "strcat", "gets", "puts", "abcbcc",
         "浏览器进行确定性预演",
     ):
@@ -2168,7 +2179,8 @@ def validate_cw_l09_programs(
         ('data-matrix-cell="', 3, "matrix cell demonstrations"),
         ('data-matrix-case="', 3, "matrix behavior cases"),
         ('data-matrix-error="', 4, "matrix diagnosis cases"),
-        ("data-review ", 14, "review questions"),
+        ('data-suffix-row="', 3, "character-array rows"),
+        ("data-review ", 15, "review questions"),
     )
     for marker, expected, label in counts:
         actual = text.count(marker)
@@ -4067,7 +4079,10 @@ def main() -> int:
             print(f"- {item}")
         return 1
 
-    slide_count = 35 if args.id == "CW-L15" else 36 if args.id in {"CW-L09", "CW-L12", "CW-L13", "CW-L14", "CW-L16"} else 34 if args.id in {"CW-L10", "CW-L11"} else 12 if args.id == "CW-L01" else 32 if args.id == "CW-L07" else 30 if args.id in {"CW-L04", "CW-L08"} else 29 if args.id in {"CW-L02", "CW-L06"} else 26 if args.id == "CW-L05" else 25
+    if args.id == "CW-L09":
+        slide_count = CW_L09_SLIDE_COUNT
+    else:
+        slide_count = 35 if args.id == "CW-L15" else 36 if args.id in {"CW-L12", "CW-L13", "CW-L14", "CW-L16"} else 34 if args.id in {"CW-L10", "CW-L11"} else 12 if args.id == "CW-L01" else 32 if args.id == "CW-L07" else 30 if args.id in {"CW-L04", "CW-L08"} else 29 if args.id in {"CW-L02", "CW-L06"} else 26 if args.id == "CW-L05" else 25
     optional_external = 1 if args.id == "CW-L01" else 0
     print(f"COURSEWARE VALIDATION PASS: {args.id}, slides={slide_count}, offline-core=ok, optional_external={optional_external}, links=ok, text_encoding=UTF-8, bom=utf8-no-bom")
     return 0

@@ -14,6 +14,10 @@
 table{width:100%;border-collapse:collapse;background:#fff}th,td{border:1px solid #cbd8e2;padding:5px 7px;text-align:left}th{background:#e7f2f7}.center td,.center th{text-align:center}.array-strip{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin:9px 0}.array-cell,.matrix-cell,.char-cell{min-width:0;background:#fff;border:2px solid #8bb8ca;border-radius:8px;text-align:center;padding:5px 2px}.array-cell .index,.matrix-cell .index,.char-cell .index{display:block;color:var(--muted);font-size:11px}.array-cell .value,.matrix-cell .value,.char-cell .value{display:block;color:var(--blue);font-weight:800;font-size:17px}.array-cell.active,.matrix-cell.active,.char-cell.active{background:#fff1c8;border-color:#d7960a}.array-cell.locked{background:#d9f2e5;border-color:#3b9b70}.matrix{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:9px auto;max-width:650px}.char-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:10px auto;max-width:720px}.char-cell.terminator{background:#ffe9c2;border-color:#d7960a}
 button,.button-link{border:0;border-radius:10px;background:var(--blue);color:#fff;padding:8px 13px;font-size:15.5px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}button:hover,button:focus-visible,.button-link:focus-visible{outline:3px solid var(--amber);outline-offset:2px}button.secondary{background:#53657d}button.option{display:block;width:100%;text-align:left;margin:4px 0;background:#eaf2f7;color:var(--ink)}button.option.correct{background:#d7f1e4;color:#124c34}button.option.wrong{background:#fae1e1;color:#772a2a}.button-row{display:flex;gap:7px;flex-wrap:wrap;margin:7px 0}.feedback{min-height:43px;padding:7px 12px;border-radius:10px;background:#e8f1f5;color:#18354b;font-size:16px}.feedback.good{background:#d9f2e5;color:#155e35}.feedback.bad{background:#fae1e1;color:#772a2a}.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.review{background:#edf3f7;color:var(--ink);text-align:left;padding:7px 9px}.review.done{background:#d9f2e5;color:#155e35}
 [data-section="selection-program"] .slide-inner,[data-section="matrix-program"] .slide-inner{padding-top:9px;padding-bottom:9px}[data-section="selection-program"] h2,[data-section="matrix-program"] h2{margin:1px 0 3px}
+.char-strip.four-cells{grid-template-columns:repeat(4,1fr)}.char-row{display:grid;grid-template-columns:max-content 1fr;align-items:center;gap:10px;margin:5px 0}.char-row .char-strip{width:100%;margin:0}.char-row .char-cell.active{background:#e6f5f7;border-color:var(--blue)}
+.function-examples caption{text-align:left;font-size:17px;padding-bottom:5px}.function-examples th,.function-examples td{padding-block:3px}
+.char-row .char-cell{padding-block:3px}.suffix-note{margin:6px 0}.suffix-result{display:grid;grid-template-columns:1fr auto;gap:7px}.suffix-result .terminal{margin:0;min-width:96px;min-height:0;align-content:center}
+.concat-note{margin:6px 0}[data-concat-answer]{color:#ffdb87;font-weight:700}
 footer{display:grid;grid-template-columns:190px 1fr 190px;align-items:center;background:#0d2238;color:#fff;padding:0 22px;gap:18px}.nav-buttons{display:flex;gap:8px}.nav-buttons button{padding:7px 13px;background:#264c6d;min-width:84px}.progress{height:8px;background:#39566d;border-radius:8px;overflow:hidden}.progress>span{display:block;height:100%;background:var(--amber)}.page{text-align:right;font-weight:700}
 @media(max-width:850px){body{grid-template-rows:1fr 62px}.slide{padding:8px}.slide-inner{padding:13px}.grid-2,.grid-3,.review-grid{grid-template-columns:1fr}.array-strip{grid-template-columns:repeat(5,1fr)}h1{font-size:31px}h2{font-size:25px}p,li,td,th{font-size:15px}footer{grid-template-columns:150px 1fr 90px}.code-block,.trace-code,.error-code{font-size:12.5px}}
 </style>
@@ -211,34 +215,134 @@ int main()
 <section class="slide" data-slide data-section="matrix-review"><div class="slide-inner"><div class="eyebrow">29 · 测试与自检</div><h2>普通、全相等和全负矩阵均能确定结果</h2><div class="grid-2"><div><table class="center"><tr><th>数据特征</th><th>输出</th></tr><tr><td>20位于第1行第2列</td><td>20 1 2</td></tr><tr><td>12个元素均为5</td><td>5 0 0</td></tr><tr><td>-1至-12</td><td>-1 0 0</td></tr></table><pre class="code-block">gcc matrix_max.c -o matrix_max.exe
 .\matrix_max.exe</pre><div class="button-row"><a class="button-link" href="../../../题库/编程题/qb_pg_010.md">QB-PG-010</a><a class="button-link" href="../../../题库/选择题/qb_sc_014.md">QB-SC-014</a><a class="button-link" href="../../../题库/选择题/qb_sc_052.md">QB-SC-052</a></div></div><div><div class="review-grid"><button class="review" data-review data-answer="3行4列，共12个元素。">a[3][4]有多少元素？</button><button class="review" data-review data-answer="行0至2，列0至3。">下标范围？</button><button class="review" data-review data-answer="a[i][j]表示第i行第j列元素。">a[i][j]表示什么？</button><button class="review" data-review data-answer="外层遍历行，内层遍历列。">如何遍历？</button><button class="review" data-review data-answer="用a[0][0]初始化。">maximum如何初始化？</button><button class="review" data-review data-answer="同时更新maximum、row、column。">何时更新位置？</button><button class="review" data-review data-answer="严格大于保留第一次出现位置。">相同最大值保留谁？</button></div><div class="feedback review-feedback">点击问题查看答案。</div></div></div></div></section>
 
-<section class="slide" data-slide data-section="string-model"><div class="slide-inner compact"><div class="eyebrow">30 · 字符数组与字符串</div><h2>字符序列遇到第一个 <code>\0</code> 才结束</h2><div class="grid-2"><div class="card"><h3>三个不同的字符</h3><table><tr><th>写法</th><th>作用</th></tr><tr><td><code>'0'</code></td><td>普通数字字符</td></tr><tr><td><code>'\n'</code></td><td>换行字符</td></tr><tr><td><code>'\0'</code></td><td>字符串结束符</td></tr></table></div><article class="question-card" data-question-id="QB-SC-051"><p class="question-text"><code>char c[]="Very Good";</code>（ ）。</p><button class="option" data-question-option="A" data-correct="true" data-feedback="正确。空格是普通字符，编译器还会加入结束符。">A. 是合法初始化</button><button class="option" data-question-option="B" data-correct="false" data-feedback="空格可以出现在字符串中。">B. 因空格而非法</button><button class="option" data-question-option="C" data-correct="false" data-feedback="初始化时可以省略长度。">C. 缺少长度必定错误</button><button class="option" data-question-option="D" data-correct="false" data-feedback="大写字母可以作为字符串内容。">D. 不能含大写字母</button><div class="feedback" data-question-feedback>选择一个答案。</div></article></div><div class="rule">字符数组不一定是字符串；字符串长度不包含<code>\0</code>，但数组必须为它保留位置。</div></div></section>
+<section class="slide" data-slide data-section="string-basics">
+  <div class="slide-inner">
+    <div class="eyebrow">30 · 字符数组</div>
+    <h2>用字符数组存字符串</h2>
+    <div class="grid-2">
+      <div class="card accent">
+        <pre class="trace-code"><span class="code-line active-code-line">char s[] = "CAT";</span></pre>
+        <div class="char-strip four-cells" data-chars="C,A,T,\0"></div>
+        <p>字符串长度为 3，数组有 4 个元素，最后一格存 <code>'\0'</code>。</p>
+        <p><code>s[0]</code> 是首字符 <code>'C'</code>。逐个处理时，用 <code>s[i] != '\0'</code> 判断是否继续。</p>
+      </div>
+      <div class="card">
+        <h3>这个数组能当作字符串吗？</h3>
+        <pre class="trace-code">char t[3] = {'C', 'A', 'T'};</pre>
+        <div class="button-row"><button class="review" data-review data-answer="不能。三个格子都存了字母，数组内没有 '\0'。">揭示答案</button></div>
+        <div class="feedback review-feedback" aria-live="polite">先找一找结束符的位置。</div>
+      </div>
+    </div>
+    <div class="rule">手工填入字符串时，要给末尾的 <code>'\0'</code> 留一格。</div>
+  </div>
+</section>
 
-<section class="slide" data-slide data-section="question-sc047"><div class="slide-inner compact"><div class="eyebrow">31 · QB-SC-047</div><h2>二维数组按行依次排列元素</h2><article class="question-card" data-question-id="QB-SC-047"><p class="question-text">二维数组每行有 <code>m</code> 列，<code>a[i][j]</code> 前面共有（ ）个元素。</p><div class="grid-2"><div><button class="option" data-question-option="A" data-correct="false" data-feedback="行数和列数的作用写反了。">A. j*m+i</button><button class="option" data-question-option="B" data-correct="true" data-feedback="正确。前面有i个完整行和本行前面的j个元素。">B. i*m+j</button></div><div><button class="option" data-question-option="C" data-correct="false" data-feedback="不需要再减1。">C. i*m+j-1</button><button class="option" data-question-option="D" data-correct="false" data-feedback="必须计入前面完整行的列数。">D. i+j</button></div></div><div class="feedback" data-question-feedback>选择一个答案。</div></article><div class="formula"><code>前面元素数 = i × m + j</code></div><p class="rule"><code>char words[3][4]</code>的每一行可保存最多3个可见字符和一个<code>\0</code>；完整初始化时可省略行数，不能省略列数。</p></div></section>
+<section class="slide" data-slide data-section="string-model"><div class="slide-inner compact"><div class="eyebrow">31 · 字符数组与字符串</div><h2>字符序列遇到第一个 <code>\0</code> 才结束</h2><div class="grid-2"><div class="card"><h3>三个不同的字符</h3><table><tr><th>写法</th><th>作用</th></tr><tr><td><code>'0'</code></td><td>普通数字字符</td></tr><tr><td><code>'\n'</code></td><td>换行字符</td></tr><tr><td><code>'\0'</code></td><td>字符串结束符</td></tr></table></div><article class="question-card" data-question-id="QB-SC-051"><p class="question-text"><code>char c[]="Very Good";</code></p><button class="option" data-question-option="A" data-correct="true" data-feedback="正确。空格是普通字符，编译器还会加入结束符。">A. 是合法初始化</button><button class="option" data-question-option="B" data-correct="false" data-feedback="空格可以出现在字符串中。">B. 因空格而非法</button><button class="option" data-question-option="C" data-correct="false" data-feedback="初始化时可以省略长度。">C. 缺少长度必定错误</button><button class="option" data-question-option="D" data-correct="false" data-feedback="大写字母可以作为字符串内容。">D. 不能含大写字母</button><div class="feedback" data-question-feedback>选择一个答案。</div></article></div><div class="rule">字符数组不一定是字符串；字符串长度不包含<code>\0</code>，但数组必须为它保留位置。</div></div></section>
 
-<section class="slide" data-slide data-section="string-library"><div class="slide-inner compact"><div class="eyebrow">32 · 字符串标准库函数</div><h2><code>&lt;string.h&gt;</code>声明常用字符串函数</h2><div class="grid-2"><article class="question-card" data-question-id="QB-SC-054"><p class="question-text">字符串处理函数 <code>strcmp</code>、<code>strcpy</code> 声明在（ ）。</p><button class="option" data-question-option="A" data-correct="false" data-feedback="stdio.h声明输入输出函数。">A. stdio.h</button><button class="option" data-question-option="B" data-correct="true" data-feedback="正确。标准字符串处理函数声明在string.h。">B. string.h</button><button class="option" data-question-option="C" data-correct="false" data-feedback="stdlib.h主要声明通用工具函数。">C. stdlib.h</button><button class="option" data-question-option="D" data-correct="false" data-feedback="math.h声明数学函数。">D. math.h</button><div class="feedback" data-question-feedback>选择一个答案。</div></article><table><tr><th>函数</th><th>核心作用</th></tr><tr><td><code>strlen(s)</code></td><td>计算<code>\0</code>之前的字符数</td></tr><tr><td><code>strcpy(d,s)</code></td><td>复制字符及末尾<code>\0</code></td></tr><tr><td><code>strcmp(a,b)</code></td><td>返回负数、0或正数</td></tr><tr><td><code>strcat(d,s)</code></td><td>从目标结束位置追加</td></tr></table></div></div></section>
+<section class="slide" data-slide data-section="question-sc047"><div class="slide-inner compact"><div class="eyebrow">32 · QB-SC-047</div><h2>二维数组按行依次排列元素</h2><article class="question-card" data-question-id="QB-SC-047"><p class="question-text">二维数组每行有 <code>m</code> 列，<code>a[i][j]</code> 前面共有（ ）个元素。</p><div class="grid-2"><div><button class="option" data-question-option="A" data-correct="false" data-feedback="行数和列数的作用写反了。">A. j*m+i</button><button class="option" data-question-option="B" data-correct="true" data-feedback="正确。前面有i个完整行和本行前面的j个元素。">B. i*m+j</button></div><div><button class="option" data-question-option="C" data-correct="false" data-feedback="不需要再减1。">C. i*m+j-1</button><button class="option" data-question-option="D" data-correct="false" data-feedback="必须计入前面完整行的列数。">D. i+j</button></div></div><div class="feedback" data-question-feedback>选择一个答案。</div></article><div class="formula"><code>前面元素数 = i × m + j</code></div></div></section>
 
-<section class="slide" data-slide data-section="strlen-and-line-io"><div class="slide-inner compact"><div class="eyebrow">33 · 长度与整行输入输出</div><h2><code>strlen()</code>计数；<code>gets()</code>和<code>puts()</code>处理一行</h2><div class="grid-2"><article class="card" data-question-id="QB-FB-016"><h3>QB-FB-016 · 字符串正序后接逆序</h3><pre class="trace-code">char s[50], d[100];
-scanf("%49s", s);
+<section class="slide" data-slide data-section="string-functions">
+  <div class="slide-inner">
+    <div class="eyebrow">33 · 常用函数</div>
+    <h2>字符串处理和行输入输出</h2>
+    <table class="function-examples">
+      <caption>用 <code>char d[8];</code> 依次演示复制、拼接和输出。</caption>
+      <thead><tr><th scope="col">头文件</th><th scope="col">调用</th><th scope="col">作用和结果</th></tr></thead>
+      <tbody>
+        <tr><th scope="rowgroup" rowspan="4"><code>&lt;string.h&gt;</code></th><td><code>strlen("abc")</code></td><td>返回 3，数 <code>'\0'</code> 前的字节。</td></tr>
+        <tr><td><code>strcpy(d, "ab")</code></td><td>复制 <code>"ab"</code>，连同结束符。</td></tr>
+        <tr><td><code>strcat(d, "c")</code></td><td>在 <code>d</code> 末尾追加，得到 <code>"abc"</code>。</td></tr>
+        <tr><td><code>strcmp("ab", "ab")</code></td><td>比较内容，本例返回 0。第一个串较小或较大时，分别返回负数或正数。</td></tr>
+      </tbody>
+      <tbody>
+        <tr><th scope="row"><code>&lt;stdio.h&gt;</code></th><td><code>puts(d)</code></td><td>输出 <code>abc</code>，然后自动换行。</td></tr>
+        <tr class="warn"><th scope="row"><code>&lt;stdio.h&gt;</code>（旧版）</th><td><code>char line[80];</code><br><code>gets(line);</code></td><td>旧代码示例。输入 <code>A B</code> 并回车，成功时存入 <code>A B</code> 和 <code>'\0'</code>，舍弃输入的换行。</td></tr>
+      </tbody>
+    </table>
+    <div class="rule">
+      复制和拼接都要为结果及 <code>'\0'</code> 留足空间。<br>
+      <code>gets()</code> 无法限制读入长度，C11 已将它移除。可用 <code>fgets(line, sizeof line, stdin)</code> 限长读入。
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-slide data-section="string-library"><div class="slide-inner compact"><div class="eyebrow">34 · 字符串标准库函数</div><h2><code>&lt;string.h&gt;</code>声明常用字符串函数</h2><div class="grid-2"><article class="question-card" data-question-id="QB-SC-054"><p class="question-text">字符串处理函数 <code>strcmp</code>、<code>strcpy</code> 声明在（ ）。</p><button class="option" data-question-option="A" data-correct="false" data-feedback="stdio.h声明输入输出函数。">A. stdio.h</button><button class="option" data-question-option="B" data-correct="true" data-feedback="正确。标准字符串处理函数声明在string.h。">B. string.h</button><button class="option" data-question-option="C" data-correct="false" data-feedback="stdlib.h主要声明通用工具函数。">C. stdlib.h</button><button class="option" data-question-option="D" data-correct="false" data-feedback="math.h声明数学函数。">D. math.h</button><div class="feedback" data-question-feedback>选择一个答案。</div></article><table><tr><th>函数</th><th>核心作用</th></tr><tr><td><code>strlen(s)</code></td><td>计算<code>\0</code>之前的字符数</td></tr><tr><td><code>strcpy(d,s)</code></td><td>复制字符及末尾<code>\0</code></td></tr><tr><td><code>strcmp(a,b)</code></td><td>返回负数、0或正数</td></tr><tr><td><code>strcat(d,s)</code></td><td>从目标结束位置追加</td></tr></table></div></div></section>
+
+<section class="slide" data-slide data-section="strlen-and-line-io">
+  <div class="slide-inner">
+    <div class="eyebrow">35 · 字符串长度</div>
+    <h2><code>strlen()</code> 的返回值与 <code>(int)</code></h2>
+    <div class="grid-2">
+      <article class="card" data-question-id="QB-FB-016">
+        <h3>QB-FB-016 · 字符串正序后接逆序</h3>
+        <pre class="trace-code">char s[50], d[100];
+if (scanf("%49s", s) != 1)
+    return 1;
 int n = (int) /*〔1〕*/;
 for (int i = 0; i &lt; n; i++)
     /*〔2〕*/;
 for (int i = 0; i &lt; n; i++)
     d[n + i] = /*〔3〕*/;
 /*〔4〕*/;
-puts(d);</pre><button data-string-fill="length">揭示四空</button><div class="feedback" id="string-fill-feedback">各空答案尚未揭示。</div></article><div><pre class="trace-code">char line[80];
+puts(d);</pre>
+        <div class="button-row"><button data-string-fill="length">揭示四空</button></div>
+        <div class="feedback" id="string-fill-feedback" aria-live="polite">各空答案尚未揭示。</div>
+      </article>
+      <div class="card accent">
+        <h3>这里可以省略 <code>(int)</code></h3>
+        <p><code>strlen()</code> 返回 <code>size_t</code>，一种无符号整数类型。<code>(int)</code> 显式地把后面表达式的值转换成 <code>int</code>。</p>
+        <p><code>%49s</code> 成功读入后，字符串长度最多为 49，<code>int</code> 能表示这个值。用返回值初始化 <code>n</code> 时，C 会自动完成同样的转换。</p>
+        <pre class="trace-code" id="length-without-cast" hidden><span class="code-line active-code-line">int n = strlen(s);</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
 
-gets(line);
-puts(line);</pre><ul><li><code>gets()</code>读取含空格的一行，输入换行不存入数组，并在末尾形成<code>\0</code></li><li><code>scanf("%79s", word)</code>限制最多读取79个非空白字符</li><li><code>puts()</code>输出字符串并自动换行</li><li><code>strlen("")</code>为0；字符串占用空间通常是长度加1</li></ul></div></div></div></section>
+<section class="slide" data-slide data-section="copy-compare-connect">
+  <div class="slide-inner">
+    <div class="eyebrow">36 · QB-FB-006</div>
+    <h2>不用 <code>strcat()</code> 连接字符串</h2>
+    <div class="grid-2">
+      <article data-question-id="QB-FB-006">
+        <pre class="trace-code" id="concat-program">#include &lt;stdio.h&gt;
+int main(void)
+{
+    char dst[100] = "C language ",
+         src[] = "practice";
+    int i = 0, j = 0;
+    while (<span data-concat-answer="dst[i] != &#x27;\0&#x27;">/*〔1〕*/</span>)
+    {
+        i++;
+    }
+    while (<span data-concat-answer="src[j] != &#x27;\0&#x27;">/*〔2〕*/</span>)
+    {
+        <span data-concat-answer="dst[i++] = src[j++]">/*〔3〕*/</span>;
+    }
+    <span data-concat-answer="dst[i] = &#x27;\0&#x27;">/*〔4〕*/</span>;
+    puts(dst);
+    return 0;
+}</pre>
+      </article>
+      <div>
+        <p class="concat-note">找到 <code>dst</code> 的结束符，逐个复制 <code>src</code> 的字符，最后补写 <code>'\0'</code>。</p>
+        <div class="button-row">
+          <button data-string-fill="concat" aria-controls="concat-program">揭示完整代码</button>
+          <div class="feedback" id="concat-fill-feedback" aria-live="polite">程序无需输入。先补四空，再预测输出。</div>
+        </div>
+        <article class="question-card" data-question-id="QB-SC-020"><h3>QB-SC-020 · 字符串比较</h3><p class="question-text">判断字符串 <code>s1</code> 是否大于 <code>s2</code>，正确条件是（ ）。</p><div class="grid-2"><div><button class="option" data-question-option="A" data-correct="false" data-feedback="这比较的不是字符串内容。">A. s1&gt;s2</button><button class="option" data-question-option="B" data-correct="false" data-feedback="非零既可能表示大于，也可能表示小于。">B. strcmp(s1,s2)</button></div><div><button class="option" data-question-option="C" data-correct="true" data-feedback="正确。返回正数表示第一个字符串较大。">C. strcmp(s1,s2)&gt;0</button><button class="option" data-question-option="D" data-correct="false" data-feedback="strcat用于连接，不用于比较。">D. strcat(s1,s2)&gt;0</button></div></div><div class="feedback" data-question-feedback>选择一个答案。</div></article>
+      </div>
+    </div>
+  </div>
+</section>
 
-<section class="slide" data-slide data-section="copy-compare-connect"><div class="slide-inner compact"><div class="eyebrow">34 · 复制、比较与连接</div><h2>三个函数分别改变什么、返回什么</h2><div class="grid-2"><article class="question-card" data-question-id="QB-SC-020"><p class="question-text">判断字符串 <code>s1</code> 是否大于 <code>s2</code>，正确条件是（ ）。</p><button class="option" data-question-option="A" data-correct="false" data-feedback="这比较的不是字符串内容。">A. s1&gt;s2</button><button class="option" data-question-option="B" data-correct="false" data-feedback="非零既可能表示大于，也可能表示小于。">B. strcmp(s1,s2)</button><button class="option" data-question-option="C" data-correct="true" data-feedback="正确。返回正数表示第一个字符串较大。">C. strcmp(s1,s2)&gt;0</button><button class="option" data-question-option="D" data-correct="false" data-feedback="strcat用于连接，不用于比较。">D. strcat(s1,s2)&gt;0</button><div class="feedback" data-question-feedback>选择一个答案。</div></article><article class="card" data-question-id="QB-FB-006"><h3>QB-FB-006 · 不用<code>strcat</code>连接</h3><pre class="trace-code">while (/*〔1〕*/) i++;
-while (/*〔2〕*/)
-    /*〔3〕*/;
-/*〔4〕*/;</pre><button data-string-fill="concat">揭示四空</button><div class="feedback" id="concat-fill-feedback">各空答案尚未揭示。</div><p><code>strcpy(dst,src)</code>复制<code>\0</code>；<code>strcat(dst,src)</code>先找到<code>dst</code>的<code>\0</code>再追加。</p></article></div></div></section>
-
-<section class="slide" data-slide data-section="string-copy-model"><div class="slide-inner"><div class="eyebrow">35 · 字符串复制</div><h2><code>strcpy()</code>连同结束符一起复制</h2><div class="grid-2"><div class="card"><h3>源字符串</h3><div class="char-strip" data-chars="C,A,T,\0"></div><pre class="trace-code">char src[] = "CAT";</pre></div><div class="card accent"><h3>目标数组</h3><div class="char-strip" data-chars="C,A,T,\0"></div><pre class="trace-code">char dst[10];
-strcpy(dst, src);</pre></div></div><div class="rule">目标数组必须有足够空间。若漏掉<code>\0</code>，目标字符序列就不能作为完整C字符串使用。</div></div></section>
-
-<section class="slide" data-slide data-section="question-tr009"><div class="slide-inner compact"><div class="eyebrow">36 · QB-TR-009</div><h2>二维字符数组中的字符串后缀</h2><article class="card" data-question-id="QB-TR-009"><pre class="trace-code">#include &lt;stdio.h&gt;
+<section class="slide" data-slide data-section="question-tr009">
+  <div class="slide-inner">
+    <div class="eyebrow">37 · QB-TR-009</div>
+    <h2>二维字符数组中的字符串后缀</h2>
+    <div class="grid-2">
+      <div>
+        <article class="card" data-question-id="QB-TR-009">
+          <pre class="trace-code">#include &lt;stdio.h&gt;
 #include &lt;string.h&gt;
 int main(void)
 {
@@ -249,14 +353,45 @@ int main(void)
         printf("%s", &amp;x[i][i]);
     putchar('\n');
     return 0;
-}</pre></article><div class="button-row"><button data-suffix="0">i=0</button><button data-suffix="1">i=1</button><button data-suffix="2">i=2</button><button data-suffix="all">完整输出</button></div><div class="feedback" id="suffix-feedback">三行均保存<code>abc\0</code>；选择下标查看输出后缀。</div><pre class="terminal" id="suffix-output">等待推导</pre><div class="button-row"><a class="button-link" href="../../../题库/读程序写结果/qb_tr_009.md">QB-TR-009</a><a class="button-link" href="../../../例程/chapters/06-arrays-and-strings/ex_c06_005_6_5.c">EX-C06-005</a><a class="button-link" href="../../../例程/chapters/06-arrays-and-strings/ex_c06_006_6_6.c">EX-C06-006</a></div></div></section>
+}</pre>
+        </article>
+        <div class="button-row"><a class="button-link" href="../../../题库/读程序写结果/qb_tr_009.md">QB-TR-009</a><a class="button-link" href="../../../例程/chapters/06-arrays-and-strings/ex_c06_005_6_5.c">EX-C06-005</a><a class="button-link" href="../../../例程/chapters/06-arrays-and-strings/ex_c06_006_6_6.c">EX-C06-006</a></div>
+      </div>
+      <div class="card accent">
+        <h3><code>strcpy()</code> 复制后的每一行</h3>
+        <div class="char-row"><code>x[0]</code><div class="char-strip four-cells" data-chars="a,b,c,\0" data-suffix-row="0"></div></div>
+        <div class="char-row"><code>x[1]</code><div class="char-strip four-cells" data-chars="a,b,c,\0" data-suffix-row="1"></div></div>
+        <div class="char-row"><code>x[2]</code><div class="char-strip four-cells" data-chars="a,b,c,\0" data-suffix-row="2"></div></div>
+        <p class="suffix-note"><code>%s</code> 从高亮格开始，到本行第 3 列的 <code>'\0'</code> 停止。</p>
+        <div class="button-row"><button data-suffix="0">i=0</button><button data-suffix="1">i=1</button><button data-suffix="2">i=2</button><button data-suffix="all">完整输出</button></div>
+        <div class="suffix-result">
+          <div class="feedback" id="suffix-feedback" aria-live="polite">选择下标，查看起读位置。</div>
+          <pre class="terminal" id="suffix-output">等待推导</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 </main>
-<footer><div class="nav-buttons"><button id="prev">上一页</button><button id="next">下一页</button></div><div class="progress"><span id="progress"></span></div><div class="page"><span id="page">1</span> / 36 · Kevin@SUT</div></footer>
+<footer><div class="nav-buttons"><button id="prev">上一页</button><button id="next">下一页</button></div><div class="progress"><span id="progress"></span></div><div class="page"><span id="page">1</span> / <span id="page-total">37</span> · Kevin@SUT</div></footer>
 <script>
 "use strict";
 var slides=Array.from(document.querySelectorAll("[data-slide]")),slideIndex=0;
-function show(n){slideIndex=Math.max(0,Math.min(35,n));slides.forEach(function(s,i){s.classList.toggle("active",i===slideIndex);});document.getElementById("page").textContent=slideIndex+1;document.getElementById("progress").style.width=((slideIndex+1)/36*100)+"%";}
-document.getElementById("prev").onclick=function(){show(slideIndex-1);};document.getElementById("next").onclick=function(){show(slideIndex+1);};document.addEventListener("keydown",function(e){if(["ArrowRight","PageDown"].includes(e.key))show(slideIndex+1);if(["ArrowLeft","PageUp"].includes(e.key))show(slideIndex-1);if(e.key==="Home")show(0);if(e.key==="End")show(35);});
+document.getElementById("page-total").textContent=slides.length;
+function show(n){
+    slideIndex=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach(function(s,i){s.classList.toggle("active",i===slideIndex);});
+    document.getElementById("page").textContent=slideIndex+1;
+    document.getElementById("progress").style.width=((slideIndex+1)/slides.length*100)+"%";
+}
+document.getElementById("prev").onclick=function(){show(slideIndex-1);};
+document.getElementById("next").onclick=function(){show(slideIndex+1);};
+document.addEventListener("keydown",function(e){
+    if(["ArrowRight","PageDown"].includes(e.key))show(slideIndex+1);
+    if(["ArrowLeft","PageUp"].includes(e.key))show(slideIndex-1);
+    if(e.key==="Home")show(0);
+    if(e.key==="End")show(slides.length-1);
+});
 function setFeedback(el,text,good){el.textContent=text;el.classList.remove("good","bad");if(good!==undefined)el.classList.add(good?"good":"bad");}
 function drawArray(el,values,active,locked){el.innerHTML=values.map(function(v,i){return'<div class="array-cell '+(i===active?'active ':'')+(locked&&i<locked?'locked':'')+'"><span class="index">a['+i+']</span><span class="value">'+v+'</span></div>';}).join("");}
 function drawMatrix(el,values,active){el.innerHTML=values.map(function(v,n){return'<div class="matrix-cell '+(n===active?'active':'')+'"><span class="index">a['+Math.floor(n/4)+']['+(n%4)+']</span><span class="value">'+v+'</span></div>';}).join("");}
@@ -284,8 +419,38 @@ function resetMatrix(){matAt=-1;matMax=mat[0];matR=0;matC=0;drawMatrix(matEl,mat
 document.querySelectorAll("[data-matrix-case]").forEach(function(b){b.onclick=function(){mat=matrixCases[b.dataset.matrixCase];resetMatrix();};});
 document.getElementById("matrix-next").onclick=function(){if(matAt>=11)return;matAt++;var r=Math.floor(matAt/4),c=matAt%4;if(mat[matAt]>matMax){matMax=mat[matAt];matR=r;matC=c;}drawMatrix(matEl,mat,matAt);setFeedback(document.getElementById("matrix-step-feedback"),"a["+r+"]["+c+"]="+mat[matAt]+"，当前状态为 "+matMax+" "+matR+" "+matC+"。",true);if(matAt===11)document.getElementById("matrix-step-output").textContent=matMax+" "+matR+" "+matC;};document.getElementById("matrix-reset").onclick=resetMatrix;
 var matrixErrors={zero:"全负矩阵中0并不是数组元素，结果会错误。",column:"3×4矩阵有4列，j<3会漏掉最后一列。",position:"maximum改变后，row和column仍指向旧位置。",order:"题目要求先输出行下标，再输出列下标。"};document.querySelectorAll("[data-matrix-error]").forEach(function(b){b.onclick=function(){setFeedback(document.getElementById("matrix-error-feedback"),matrixErrors[b.dataset.matrixError],false);};});
-document.querySelectorAll("[data-string-fill]").forEach(function(button){button.onclick=function(){if(button.dataset.stringFill==="length"){setFeedback(document.getElementById("string-fill-feedback"),"〔1〕strlen(s)；〔2〕d[i] = s[i]；〔3〕s[n - 1 - i]；〔4〕d[2 * n] = '\\0'。",true);}else{setFeedback(document.getElementById("concat-fill-feedback"),"〔1〕dst[i] != '\\0'；〔2〕src[j] != '\\0'；〔3〕dst[i++] = src[j++]；〔4〕dst[i] = '\\0'。",true);}};});
-document.querySelectorAll("[data-suffix]").forEach(function(button){button.onclick=function(){var key=button.dataset.suffix;var text={"0":"x[0]从下标0开始，%s输出 abc。","1":"x[1]从下标1开始，%s输出 bc。","2":"x[2]从下标2开始，%s输出 c。","all":"三次输出依次连接为 abcbcc。"}[key];var output={"0":"abc","1":"bc","2":"c","all":"abcbcc"}[key];setFeedback(document.getElementById("suffix-feedback"),text,true);document.getElementById("suffix-output").textContent=output;};});
+document.querySelectorAll("[data-string-fill]").forEach(function(button){
+    button.onclick=function(){
+        if(button.dataset.stringFill==="length"){
+            setFeedback(document.getElementById("string-fill-feedback"),"〔1〕strlen(s)；〔2〕d[i] = s[i]；〔3〕s[n - 1 - i]；〔4〕d[2 * n] = '\\0'。",true);
+            document.getElementById("length-without-cast").hidden=false;
+        }else{
+            document.querySelectorAll("#concat-program [data-concat-answer]").forEach(function(blank){
+                blank.textContent=blank.dataset.concatAnswer;
+            });
+            setFeedback(document.getElementById("concat-fill-feedback"),"输出 C language practice",true);
+        }
+    };
+});
+var suffixRows=document.querySelectorAll("[data-suffix-row]");
+var suffixResults={
+    "0":{text:"从 x[0][0] 读到 x[0][3] 的 \\0。",output:"abc"},
+    "1":{text:"从 x[1][1] 读到 x[1][3] 的 \\0。",output:"bc"},
+    "2":{text:"从 x[2][2] 读到 x[2][3] 的 \\0。",output:"c"},
+    "all":{text:"依次输出三个后缀，最后由 putchar 换行。",output:"abcbcc\n"}
+};
+document.querySelectorAll("[data-suffix]").forEach(function(button){
+    button.onclick=function(){
+        var key=button.dataset.suffix;
+        suffixRows.forEach(function(row){
+            var rowIndex=row.dataset.suffixRow;
+            var start=key===rowIndex||key==="all"?Number(rowIndex):-1;
+            drawChars(row,row.dataset.chars.split(","),start);
+        });
+        setFeedback(document.getElementById("suffix-feedback"),suffixResults[key].text,true);
+        document.getElementById("suffix-output").textContent=suffixResults[key].output;
+    };
+});
 document.querySelectorAll("[data-review]").forEach(function(b){b.onclick=function(){b.classList.toggle("done");setFeedback(b.closest(".slide").querySelector(".review-feedback"),b.dataset.answer,true);};});show(0);
 </script>
 </body>
