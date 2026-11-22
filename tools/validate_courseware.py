@@ -30,6 +30,7 @@ CW_L08 = ROOT / "课件" / "讲授" / "08-one-dimensional-arrays" / "index.html"
 CW_L09 = ROOT / "课件" / "讲授" / "09-matrices-and-strings" / "index.html"
 CW_L09_SLIDE_COUNT = 37
 CW_L10 = ROOT / "课件" / "讲授" / "10-functions-and-parameters" / "index.html"
+CW_L10_SLIDE_COUNT = 26
 CW_L11 = ROOT / "课件" / "讲授" / "11-recursion" / "index.html"
 CW_L12 = ROOT / "课件" / "讲授" / "12-pointer-model-and-arrays" / "index.html"
 CW_L13 = ROOT / "课件" / "讲授" / "13-pointer-parameters-and-strings" / "index.html"
@@ -2286,14 +2287,18 @@ def validate_cw_l10(path: Path) -> list[str]:
         if phrase in text:
             fail(failures, f"student-facing teacher-prep phrase found: {phrase}")
 
-    if len(SLIDE_PATTERN.findall(text)) != 34:
-        fail(failures, "CW-L10 must contain exactly 34 slides")
-    if len(SECTION_BLOCK_PATTERN.findall(text)) != 34:
-        fail(failures, "CW-L10 must contain exactly 34 complete slide sections")
+    if len(SLIDE_PATTERN.findall(text)) != CW_L10_SLIDE_COUNT:
+        fail(failures, f"CW-L10 must contain exactly {CW_L10_SLIDE_COUNT} slides")
+    sections = SECTION_BLOCK_PATTERN.findall(text)
+    if len(sections) != CW_L10_SLIDE_COUNT:
+        fail(failures, f"CW-L10 must contain exactly {CW_L10_SLIDE_COUNT} complete slide sections")
+    for number, (section_id, body) in enumerate(sections, start=1):
+        if f'<div class="eyebrow">{number:02d} · ' not in body:
+            fail(failures, f"CW-L10 slide {section_id} must display page {number}")
     if text.count("<details") != 0:
         fail(failures, "CW-L10 must expose all exercises directly")
-    if " / 34 · Kevin@SUT" not in text:
-        fail(failures, "CW-L10 footer total must be 34")
+    if f' / <span id="page-total">{CW_L10_SLIDE_COUNT}</span> · Kevin@SUT' not in text:
+        fail(failures, f"CW-L10 footer total must be {CW_L10_SLIDE_COUNT}")
 
     choice_text = "".join(
         match.group(0)
@@ -2358,17 +2363,32 @@ def validate_cw_l10(path: Path) -> list[str]:
         if source_tokens != html_tokens:
             fail(failures, f"{question_id} program differs from the question bank")
 
-    program_blocks = {
-        match.group("id"): html.unescape(re.sub(r"<[^>]+>", "", match.group("body")))
-        for match in re.finditer(
-            r'<pre\b[^>]*data-positive-program="(?P<id>[^"]+)"[^>]*>(?P<body>.*?)</pre>',
-            text,
-            re.IGNORECASE | re.DOTALL,
+    programs_by_order: dict[str, dict[str, str]] = {"positive": {}, "definition-first": {}}
+    for match in re.finditer(
+        r'<pre\b[^>]*data-(?P<order>positive|definition-first)-program="(?P<id>[^"]+)"'
+        r'[^>]*>(?P<body>.*?)</pre>',
+        text,
+        re.DOTALL,
+    ):
+        programs_by_order[match.group("order")][match.group("id")] = html.unescape(
+            re.sub(r"<[^>]+>", "", match.group("body"))
         )
+    signatures = {
+        "scalar-maximum": "int max(int x, int y)",
+        "float-array-sort": "void sort(double a[], int n)",
     }
-    if set(program_blocks) != {"scalar-maximum", "float-array-sort"}:
-        fail(failures, "CW-L10 must contain exactly the two declared positive programs")
-    validate_cw_l10_programs(text, program_blocks, failures)
+    if any(programs.keys() != signatures.keys() for programs in programs_by_order.values()):
+        fail(failures, "CW-L10 must show both code orders for each of its two programs")
+    else:
+        validate_cw_l10_programs(text, programs_by_order["positive"], failures)
+        for program_id, signature in signatures.items():
+            code = programs_by_order["definition-first"][program_id]
+            definition = re.search(re.escape(signature) + r"\s*\{", code)
+            prototype = re.search(re.escape(signature) + r"\s*;", code)
+            if not definition or prototype or not 0 <= definition.start() < code.find("int main("):
+                fail(failures, f"CW-L10 {program_id} must define its helper before main without a separate prototype")
+        for order, programs in programs_by_order.items():
+            compile_cw_l10_programs(programs, failures, order)
     check_links(text, path, failures, require_optional_external=False)
     return failures
 
@@ -2419,7 +2439,7 @@ def validate_cw_l10_programs(
 
     visible = normalize_visible_text(text)
     for marker in (
-        "普通参数按值传递", "实参按位置对应形参", "void函数", "不展开数组参数的底层实现",
+        "普通参数按值传递", "实参按位置对应形参", "void函数", "main 中的数组元素",
         "main负责输入、调用和输出", "sort负责排列数组元素", "浏览器进行确定性预演",
     ):
         if marker not in text and marker not in visible:
@@ -2441,12 +2461,12 @@ def validate_cw_l10_programs(
     ):
         if command not in text:
             fail(failures, f"CW-L10 beginner command is missing: {command.splitlines()[0]}")
-    compile_cw_l10_programs(program_blocks, failures)
 
 
 def compile_cw_l10_programs(
     program_blocks: dict[str, str],
     failures: list[str],
+    order: str,
 ) -> None:
     gcc = shutil.which("gcc")
     if not gcc:
@@ -2482,7 +2502,7 @@ def compile_cw_l10_programs(
                 text=True, encoding="utf-8", errors="replace", capture_output=True, check=False,
             )
             if build.returncode != 0:
-                fail(failures, f"CW-L10 {program_id} compile failed: {build.stderr.strip()}")
+                fail(failures, f"CW-L10 {program_id} ({order}) compile failed: {build.stderr.strip()}")
                 continue
             for stdin_text, expected in cases:
                 result = subprocess.run(
@@ -2491,7 +2511,7 @@ def compile_cw_l10_programs(
                 )
                 actual = result.stdout.replace("\r\n", "\n")
                 if result.returncode != 0 or actual != expected:
-                    fail(failures, f"CW-L10 {program_id} output mismatch: exit={result.returncode}, actual={actual!r}")
+                    fail(failures, f"CW-L10 {program_id} ({order}) output mismatch: exit={result.returncode}, actual={actual!r}")
 
 
 def validate_cw_l11(path: Path) -> list[str]:
@@ -4081,8 +4101,10 @@ def main() -> int:
 
     if args.id == "CW-L09":
         slide_count = CW_L09_SLIDE_COUNT
+    elif args.id == "CW-L10":
+        slide_count = CW_L10_SLIDE_COUNT
     else:
-        slide_count = 35 if args.id == "CW-L15" else 36 if args.id in {"CW-L12", "CW-L13", "CW-L14", "CW-L16"} else 34 if args.id in {"CW-L10", "CW-L11"} else 12 if args.id == "CW-L01" else 32 if args.id == "CW-L07" else 30 if args.id in {"CW-L04", "CW-L08"} else 29 if args.id in {"CW-L02", "CW-L06"} else 26 if args.id == "CW-L05" else 25
+        slide_count = 35 if args.id == "CW-L15" else 36 if args.id in {"CW-L12", "CW-L13", "CW-L14", "CW-L16"} else 34 if args.id == "CW-L11" else 12 if args.id == "CW-L01" else 32 if args.id == "CW-L07" else 30 if args.id in {"CW-L04", "CW-L08"} else 29 if args.id in {"CW-L02", "CW-L06"} else 26 if args.id == "CW-L05" else 25
     optional_external = 1 if args.id == "CW-L01" else 0
     print(f"COURSEWARE VALIDATION PASS: {args.id}, slides={slide_count}, offline-core=ok, optional_external={optional_external}, links=ok, text_encoding=UTF-8, bom=utf8-no-bom")
     return 0
