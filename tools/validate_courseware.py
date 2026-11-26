@@ -2603,14 +2603,17 @@ def validate_cw_l11(path: Path) -> list[str]:
             block.group(1) if block else "",
             re.DOTALL,
         )
-        source_tokens = re.sub(r"\s+", "", source_code.group(1)) if source_code else ""
+        classroom_code = source_code.group(1) if source_code else ""
+        classroom_code = re.sub(r"\blong(?: long)?(?= f\(int n\))", "int", classroom_code)
+        classroom_code = re.sub(r"%l{1,2}d", "%d", classroom_code)
+        source_tokens = re.sub(r"\s+", "", classroom_code)
         html_tokens = re.sub(
             r"\s+",
             "",
             html.unescape(re.sub(r"<[^>]+>", "", html_code.group(1))),
         ) if html_code else ""
         if source_tokens != html_tokens:
-            fail(failures, f"{question_id} program differs from the question bank")
+            fail(failures, f"{question_id} program differs from its int classroom version")
 
     program_blocks = {
         match.group("id"): html.unescape(re.sub(r"<[^>]+>", "", match.group("body")))
@@ -2877,9 +2880,10 @@ def validate_cw_l11_programs(
     factorial = program_blocks.get("recursive-factorial", "")
     fibonacci = program_blocks.get("recursive-fibonacci", "")
     for marker in (
-        "long long factorial(int n);",
-        "if (n < 0 || n > 20)",
+        "int factorial(int n);",
+        "if (n < 0 || n > 12)",
         'printf("invalid\\n");',
+        'printf("%d\\n", factorial(n));',
         "if (n <= 1)",
         "return n * factorial(n - 1);",
     ):
@@ -2949,9 +2953,9 @@ def compile_cw_l11_programs(
         "recursive-factorial": (
             ("0\n", "1\n"),
             ("5\n", "120\n"),
-            ("20\n", "2432902008176640000\n"),
+            ("12\n", "479001600\n"),
             ("-1\n", "invalid\n"),
-            ("21\n", "invalid\n"),
+            ("13\n", "invalid\n"),
         ),
         "recursive-fibonacci": (
             ("", "0 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987 1597 2584 4181\n"),
